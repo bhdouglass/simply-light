@@ -1,0 +1,44 @@
+{
+	"uuid": "04a6e68a-42d6-4738-87b2-1c80a994dee4",
+	"shortName": "Simply Light",
+	"longName": "Simply Light",
+	"companyName": "Brian Douglass",
+	"versionCode": 1,
+	"versionLabel": "1.0",
+	"watchapp": {
+		"watchface": true
+	},
+	"appKeys": {
+		"temperature": 0,
+		"condition": 1,
+		"fetchWeather": 10
+	},
+	"resources": {
+		"media": [
+			{
+				"name": "DROIDSANS_BOLD_50",
+				"file": "fonts/DroidSans-Bold.ttf",
+				"characterRegex": "[0-9:]",
+				"type": "font"
+			},
+			{
+				"name": "DROIDSANS_32",
+				"file": "fonts/DroidSans.ttf",
+				"characterRegex": "[A-Za-z0-9 \u00b0]",
+				"type": "font"
+			},
+			{
+				"name": "DROIDSANS_MONO_20",
+				"file": "fonts/DroidSansMono.ttf",
+				"characterRegex": "[A-Za-z]",
+				"type": "font"
+			},
+			{
+				"name": "WEATHER_32",
+				"file": "fonts/weathericons.ttf",
+				"characterRegex": "[\uf010-\uf100]",
+				"type": "font"
+			}
+		]
+	}
+}
