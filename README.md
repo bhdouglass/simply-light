@@ -1,6 +1,6 @@
 # Simply Light #
 
-A simple watch face for pebble with time and weather.
+A simple Pebble watchface with time, weather, and battery status.
 Weather icons from http://erikflowers.github.io/weather-icons/.
 Weather data from http://openweathermap.org/.
 
