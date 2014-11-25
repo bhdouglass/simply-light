@@ -8,7 +8,7 @@
 static char date_text[7];
 static char time_text[6];
 static char month_text[10];
-static char temperature_text[5];
+static char temperature_text[6];
 static char condition_text[5];
 
 static Window *window;

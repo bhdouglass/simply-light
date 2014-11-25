@@ -9,6 +9,7 @@ Pebble.addEventListener('ready', function(e) {
 	console.log('starting js');
 
 	loadConfig();
+	console.log(JSON.stringify(config));
 	fetchWeather();
 });
 
@@ -17,7 +18,8 @@ Pebble.addEventListener('appmessage', function(e) {
 });
 
 Pebble.addEventListener('showConfiguration', function(e) {
-	Pebble.openURL('http://bhdouglass.com/pebble/simply-light-config.html#' + encodeURIComponent(JSON.stringify(config))); //TODO: make webpage accept this
+	Pebble.openURL('http://bhdouglass.com/pebble/simply-light-config.html#' + encodeURIComponent(JSON.stringify(config)));
+	console.log('http://bhdouglass.com/pebble/simply-light-config.html#' + encodeURIComponent(JSON.stringify(config)));
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -27,6 +29,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
 	else {
 		config = JSON.parse(decodeURIComponent(e.response));
 		console.log(JSON.stringify(config));
+
 		saveConfig();
 		fetchWeather();
 	}
