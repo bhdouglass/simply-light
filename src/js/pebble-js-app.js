@@ -7,7 +7,6 @@ Pebble.addEventListener('ready', function(e) {
 	console.log('starting js');
 
 	fetchWeather();
-	setInterval(fetchWeather, 60000 * fetch_time);
 });
 
 Pebble.addEventListener('appmessage', function(e) {
@@ -64,6 +63,8 @@ function fetchWeather() {
 				temperature: temperature,
 				condition: condition,
 			});
+
+			setTimeout(fetchWeather, 60000 * fetch_time);
 
 		}, function(err) { //Error
 			console.warn('Error while getting weather: ' + err.status);

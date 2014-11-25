@@ -36,7 +36,7 @@
 			{
 				"name": "WEATHER_32",
 				"file": "fonts/weathericons.ttf",
-				"characterRegex": "[\uf010-\uf100]",
+				"characterRegex": "[\uf001-\uf100]",
 				"type": "font"
 			}
 		]
