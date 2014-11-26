@@ -2,9 +2,11 @@
 
 A simple Pebble watchface with time, weather, and battery status.
 
-Weather icons from http://erikflowers.github.io/weather-icons/.
+Weather icons from <http://erikflowers.github.io/weather-icons/>.
 
-Weather data from http://openweathermap.org/.
+Weather data from <http://openweathermap.org/>.
+
+Get it on your Pebble - <https://apps.getpebble.com/applications/5472c040c13ebf3ddf000045>.
 
 ## License ##
 
