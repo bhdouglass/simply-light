@@ -12,7 +12,9 @@
 	"appKeys": {
 		"temperature": 0,
 		"condition": 1,
-		"fetchWeather": 10
+		"refresh_time": 2,
+		"wait_time": 3,
+		"fetch_weather": 10
 	},
 	"resources": {
 		"media": [

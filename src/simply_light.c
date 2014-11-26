@@ -27,6 +27,10 @@ GFont font_weather;
 
 BatteryChargeState battery_state;
 
+static AppTimer *timer;
+int refresh_time = 60;
+int wait_time = 1;
+
 int invert = 0;
 GColor text_color = GColorBlack;
 GColor background_color = GColorWhite;
@@ -34,6 +38,9 @@ GColor background_color = GColorWhite;
 enum {
 	TEMPERATURE = 0,
 	CONDITION = 1,
+	REFRESH_TIME = 2,
+	WAIT_TIME = 3,
+	FETCH_WEATHER = 10,
 };
 
 static void update_battery_layer(Layer *layer, GContext *ctx) {
@@ -124,6 +131,23 @@ static void condition(int id) {
 	}
 }
 
+static void handle_timer(void *data) {
+	Tuplet value = TupletInteger(FETCH_WEATHER, 1);
+
+	DictionaryIterator *iter;
+	app_message_outbox_begin(&iter);
+
+	if (iter == NULL) {
+		return;
+	}
+
+	dict_write_tuplet(iter, &value);
+	dict_write_end(iter);
+	app_message_outbox_send();
+
+	timer = app_timer_register(refresh_time * 60000, handle_timer, NULL);
+}
+
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
 	(void) context;
 
@@ -135,6 +159,9 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 			case TEMPERATURE:
 				if (value == -999) {
 					strncpy(temperature_text, " ", sizeof(temperature_text));
+
+					app_timer_cancel(timer);
+					timer = app_timer_register(wait_time * 60000, handle_timer, NULL);
 				}
 				else {
 					snprintf(temperature_text, sizeof(temperature_text), "%d\u00b0", value);
@@ -146,6 +173,19 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 			case CONDITION:
 				condition(value);
 				text_layer_set_text(condition_layer, condition_text);
+
+				break;
+
+			case REFRESH_TIME:
+				refresh_time = value;
+
+				app_timer_cancel(timer);
+				timer = app_timer_register(refresh_time * 60000, handle_timer, NULL);
+
+				break;
+
+			case WAIT_TIME:
+				wait_time = value;
 
 				break;
 		}
@@ -184,21 +224,21 @@ static void window_load(Window *window) {
 
 	month_layer = text_layer_create(GRect(0, top + 96, PWIDTH, 28));
 	text_layer_set_text_color(month_layer, text_color);
-	text_layer_set_background_color(month_layer, background_color);
+	text_layer_set_background_color(month_layer, GColorClear);
 	text_layer_set_font(month_layer, font_month);
 	text_layer_set_text_alignment(month_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(month_layer));
 
-	temperature_layer = text_layer_create(GRect(0, top + 116, HALFPWIDTH, 50));
+	temperature_layer = text_layer_create(GRect(0, top + 120, HALFPWIDTH, 50));
 	text_layer_set_text_color(temperature_layer, text_color);
-	text_layer_set_background_color(temperature_layer, background_color);
+	text_layer_set_background_color(temperature_layer, GColorClear);
 	text_layer_set_font(temperature_layer, font_date);
 	text_layer_set_text_alignment(temperature_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(temperature_layer));
 
-	condition_layer = text_layer_create(GRect(HALFPWIDTH + 1, top + 116, HALFPWIDTH, 50));
+	condition_layer = text_layer_create(GRect(HALFPWIDTH + 1, top + 120, HALFPWIDTH, 50));
 	text_layer_set_text_color(condition_layer, text_color);
-	text_layer_set_background_color(condition_layer, background_color);
+	text_layer_set_background_color(condition_layer, GColorClear);
 	text_layer_set_font(condition_layer, font_weather);
 	text_layer_set_text_alignment(condition_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(condition_layer));
@@ -240,6 +280,8 @@ static void init(void) {
 
 	app_message_register_inbox_received(msg_received_handler);
 	app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+
+	timer = app_timer_register(refresh_time * 60000, handle_timer, NULL);
 }
 
 static void deinit(void) {
@@ -251,6 +293,8 @@ static void deinit(void) {
 	fonts_unload_custom_font(font_date);
 	fonts_unload_custom_font(font_month);
 	fonts_unload_custom_font(font_weather);
+
+	app_timer_cancel(timer);
 }
 
 int main(void) {

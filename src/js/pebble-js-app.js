@@ -15,6 +15,9 @@ Pebble.addEventListener('ready', function(e) {
 
 Pebble.addEventListener('appmessage', function(e) {
 	console.log('Received message: ' + JSON.stringify(e));
+	if (e.payload.fetch_weather) {
+		fetchWeather();
+	}
 });
 
 Pebble.addEventListener('showConfiguration', function(e) {
@@ -42,12 +45,22 @@ function loadConfig() {
 			config[key] = value;
 		}
 	}
+
+	Pebble.sendAppMessage({
+		refresh_time: config.refresh_time,
+		wait_time: config.wait_time,
+	});
 }
 
 function saveConfig() {
 	for (key in config) {
 		window.localStorage.setItem(key, config[key]);
 	}
+
+	Pebble.sendAppMessage({
+		refresh_time: config.refresh_time,
+		wait_time: config.wait_time,
+	});
 }
 
 function get(url, callback, errCallback) {
@@ -123,12 +136,10 @@ function fetchWeatherHelper(pos) {
 		console.log('loc:  ' + location);
 
 		Pebble.sendAppMessage({
-			temperature: temperature, //TODO: kelvin in watch app is too big
+			temperature: temperature,
 			condition: condition,
 			//TODO: send back day/night based on sunrise/sunset
 		});
-
-		setTimeout(fetchWeather, 60000 * config.refresh_time); //TODO: make watch send timer update
 
 	}, function(err) { //Error
 		console.warn('Error while getting weather: ' + err.status);
@@ -137,8 +148,6 @@ function fetchWeatherHelper(pos) {
 			temperature: -999,
 			condition: 0,
 		});
-
-		setTimeout(fetchWeather, 60000 * config.wait_time);
 	});
 }
 
@@ -154,8 +163,6 @@ function fetchWeather() {
 				temperature: -999,
 				condition: 0,
 			});
-
-			setTimeout(fetchWeather, 60000 * config.wait_time);
 		});
 	}
 }
