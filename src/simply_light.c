@@ -28,7 +28,7 @@ GFont font_weather;
 BatteryChargeState battery_state;
 
 static AppTimer *timer;
-int refresh_time = 60;
+int refresh_time = 30;
 int wait_time = 1;
 
 int invert = 0;
@@ -40,6 +40,7 @@ enum {
 	CONDITION = 1,
 	REFRESH_TIME = 2,
 	WAIT_TIME = 3,
+	COLOR_INVERT = 4,
 	FETCH_WEATHER = 10,
 };
 
@@ -148,6 +149,27 @@ static void handle_timer(void *data) {
 	timer = app_timer_register(refresh_time * 60000, handle_timer, NULL);
 }
 
+static void colorize() {
+	if (invert == 1) {
+		text_color = GColorWhite;
+		background_color = GColorBlack;
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "invert");
+	}
+	else {
+		text_color = GColorBlack;
+		background_color = GColorWhite;
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "normal");
+	}
+
+	window_set_background_color(window, background_color);
+	text_layer_set_text_color(time_layer, text_color);
+	layer_mark_dirty(battery_layer);
+	text_layer_set_text_color(date_layer, text_color);
+	text_layer_set_text_color(month_layer, text_color);
+	text_layer_set_text_color(temperature_layer, text_color);
+	text_layer_set_text_color(condition_layer, text_color);
+}
+
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
 	(void) context;
 
@@ -188,6 +210,13 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				wait_time = value;
 
 				break;
+
+			case COLOR_INVERT:
+				invert = value;
+				persist_write_int(COLOR_INVERT, invert);
+				colorize();
+
+				break;
 		}
 
 		t = dict_read_next(iter);
@@ -196,7 +225,6 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 static void window_load(Window *window) {
 	window_layer = window_get_root_layer(window);
-	window_set_background_color(window, background_color);
 
 	font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_50));
 	font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_32));
@@ -205,7 +233,6 @@ static void window_load(Window *window) {
 
 	int top = 5;
 	time_layer = text_layer_create(GRect(0, top, PWIDTH, 100));
-	text_layer_set_text_color(time_layer, text_color);
 	text_layer_set_background_color(time_layer, GColorClear);
 	text_layer_set_font(time_layer, font_time);
 	text_layer_set_text_alignment(time_layer, GTextAlignmentCenter);
@@ -216,32 +243,30 @@ static void window_load(Window *window) {
 	layer_add_child(window_layer, battery_layer);
 
 	date_layer = text_layer_create(GRect(0, top + 60, PWIDTH, 100));
-	text_layer_set_text_color(date_layer, text_color);
 	text_layer_set_background_color(date_layer, GColorClear);
 	text_layer_set_font(date_layer, font_date);
 	text_layer_set_text_alignment(date_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(date_layer));
 
 	month_layer = text_layer_create(GRect(0, top + 96, PWIDTH, 28));
-	text_layer_set_text_color(month_layer, text_color);
 	text_layer_set_background_color(month_layer, GColorClear);
 	text_layer_set_font(month_layer, font_month);
 	text_layer_set_text_alignment(month_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(month_layer));
 
 	temperature_layer = text_layer_create(GRect(0, top + 120, HALFPWIDTH, 50));
-	text_layer_set_text_color(temperature_layer, text_color);
 	text_layer_set_background_color(temperature_layer, GColorClear);
 	text_layer_set_font(temperature_layer, font_date);
 	text_layer_set_text_alignment(temperature_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(temperature_layer));
 
 	condition_layer = text_layer_create(GRect(HALFPWIDTH + 1, top + 120, HALFPWIDTH, 50));
-	text_layer_set_text_color(condition_layer, text_color);
 	text_layer_set_background_color(condition_layer, GColorClear);
 	text_layer_set_font(condition_layer, font_weather);
 	text_layer_set_text_alignment(condition_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(condition_layer));
+
+	colorize();
 }
 
 static void window_unload(Window *window) {
@@ -254,9 +279,8 @@ static void window_unload(Window *window) {
 }
 
 static void init(void) {
-	if (invert == 1) {
-		text_color = GColorWhite;
-		background_color = GColorBlack;
+	if (persist_exists(COLOR_INVERT)) {
+		invert = persist_read_int(COLOR_INVERT);
 	}
 
 	window = window_create();

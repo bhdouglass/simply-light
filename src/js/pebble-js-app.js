@@ -1,9 +1,13 @@
+var version = 1.2;
 var config = {
 	temperature_units: 'imperial',
-	refresh_time: 60,
+	refresh_time: 30,
 	wait_time: 1,
 	location: '',
+	color_invert: 0,
 };
+
+var config_ints = ['refresh_time', 'wait_time', 'color_invert'];
 
 Pebble.addEventListener('ready', function(e) {
 	console.log('starting js');
@@ -21,8 +25,9 @@ Pebble.addEventListener('appmessage', function(e) {
 });
 
 Pebble.addEventListener('showConfiguration', function(e) {
-	Pebble.openURL('http://bhdouglass.com/pebble/simply-light-config.html#' + encodeURIComponent(JSON.stringify(config)));
-	console.log('http://bhdouglass.com/pebble/simply-light-config.html#' + encodeURIComponent(JSON.stringify(config)));
+	var url = 'http://bhdouglass.com/pebble/simply-light-config.html?version=' + version + '#' + encodeURIComponent(JSON.stringify(config));
+	Pebble.openURL(url);
+	console.log(url);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
@@ -42,13 +47,19 @@ function loadConfig() {
 	for (key in config) {
 		var value = window.localStorage.getItem(key);
 		if (value !== null) {
-			config[key] = value;
+			if (config_ints.indexOf(key) >= 0) {
+				config[key] = parseInt(value);
+			}
+			else {
+				config[key] = value;
+			}
 		}
 	}
 
 	Pebble.sendAppMessage({
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
+		color_invert: config.color_invert,
 	});
 }
 
@@ -60,6 +71,7 @@ function saveConfig() {
 	Pebble.sendAppMessage({
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
+		color_invert: config.color_invert,
 	});
 }
 
