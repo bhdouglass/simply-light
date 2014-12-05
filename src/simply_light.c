@@ -34,6 +34,7 @@ int refresh_time = 30;
 int wait_time = 1;
 
 int invert = 0;
+int night_auto_switch = 0;
 GColor text_color = GColorBlack;
 GColor background_color = GColorWhite;
 
@@ -50,6 +51,7 @@ enum {
 	COLOR_INVERT = 4,
 	SUNRISE = 5,
 	SUNSET = 6,
+	NIGHT_AUTO_SWITCH = 7,
 	FETCH_WEATHER = 10,
 };
 
@@ -67,6 +69,45 @@ static void update_battery_layer(Layer *layer, GContext *ctx) {
 static void handle_battery(BatteryChargeState charge_state) {
 	battery_state = charge_state;
 	layer_mark_dirty(battery_layer);
+}
+
+static void colorize() {
+	if (night_auto_switch == 0) {
+		if (invert == 1) {
+			text_color = GColorWhite;
+			background_color = GColorBlack;
+		}
+		else {
+			text_color = GColorBlack;
+			background_color = GColorWhite;
+		}
+	}
+	else {
+		if (is_day == 1 && invert == 0) {
+			text_color = GColorBlack;
+			background_color = GColorWhite;
+		}
+		else if (is_day == 1 && invert == 1) {
+			text_color = GColorWhite;
+			background_color = GColorBlack;
+		}
+		else if (is_day == 0 && invert == 0) {
+			text_color = GColorWhite;
+			background_color = GColorBlack;
+		}
+		else if (is_day == 0 && invert == 1) {
+			text_color = GColorBlack;
+			background_color = GColorWhite;
+		}
+	}
+
+	window_set_background_color(window, background_color);
+	text_layer_set_text_color(time_layer, text_color);
+	layer_mark_dirty(battery_layer);
+	text_layer_set_text_color(date_layer, text_color);
+	text_layer_set_text_color(month_layer, text_color);
+	text_layer_set_text_color(temperature_layer, text_color);
+	text_layer_set_text_color(condition_layer, text_color);
 }
 
 static void set_day_night() {
@@ -87,6 +128,7 @@ static void set_day_night() {
 
 	if (old_is_day != is_day) {
 		set_condition(condition, is_day, condition_text);
+		colorize();
 	}
 }
 
@@ -130,25 +172,6 @@ static void handle_timer(void *data) {
 	app_message_outbox_send();
 
 	timer = app_timer_register(refresh_time * 60000, handle_timer, NULL);
-}
-
-static void colorize() {
-	if (invert == 1) {
-		text_color = GColorWhite;
-		background_color = GColorBlack;
-	}
-	else {
-		text_color = GColorBlack;
-		background_color = GColorWhite;
-	}
-
-	window_set_background_color(window, background_color);
-	text_layer_set_text_color(time_layer, text_color);
-	layer_mark_dirty(battery_layer);
-	text_layer_set_text_color(date_layer, text_color);
-	text_layer_set_text_color(month_layer, text_color);
-	text_layer_set_text_color(temperature_layer, text_color);
-	text_layer_set_text_color(condition_layer, text_color);
 }
 
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
@@ -201,9 +224,12 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 			case COLOR_INVERT:
 				invert = value;
 				persist_write_int(COLOR_INVERT, invert);
-				colorize();
 
 				break;
+
+			case NIGHT_AUTO_SWITCH:
+				night_auto_switch = value;
+				persist_write_int(NIGHT_AUTO_SWITCH, night_auto_switch);
 
 			case SUNRISE:
 				sunrise = value;
@@ -217,6 +243,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 		t = dict_read_next(iter);
 	}
 
+	colorize();
 	set_day_night();
 }
 
@@ -275,10 +302,18 @@ static void window_unload(Window *window) {
 	text_layer_destroy(condition_layer);
 }
 
-static void init(void) {
+static void load_config(void) {
 	if (persist_exists(COLOR_INVERT)) {
 		invert = persist_read_int(COLOR_INVERT);
 	}
+
+	if (persist_exists(NIGHT_AUTO_SWITCH)) {
+		night_auto_switch = persist_read_int(NIGHT_AUTO_SWITCH);
+	}
+}
+
+static void init(void) {
+	load_config();
 
 	window = window_create();
 	battery_state = battery_state_service_peek();

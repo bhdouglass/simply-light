@@ -5,9 +5,10 @@ var config = {
 	wait_time: 1,
 	location: '',
 	color_invert: 0,
+	night_auto_switch: 0,
 };
 
-var config_ints = ['refresh_time', 'wait_time', 'color_invert'];
+var config_ints = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch'];
 
 Pebble.addEventListener('ready', function(e) {
 	console.log('starting js');
@@ -60,6 +61,7 @@ function loadConfig() {
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
 		color_invert: config.color_invert,
+		night_auto_switch: config.night_auto_switch,
 	});
 }
 
@@ -72,6 +74,7 @@ function saveConfig() {
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
 		color_invert: config.color_invert,
+		night_auto_switch: config.night_auto_switch,
 	});
 }
 

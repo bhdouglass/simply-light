@@ -17,6 +17,7 @@
 		"color_invert": 4,
 		"sunrise": 5,
 		"sunset": 6,
+		"night_auto_switch": 7,
 		"fetch_weather": 10
 	},
 	"resources": {
