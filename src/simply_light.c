@@ -1,5 +1,6 @@
 #include <pebble.h>
 
+#include "appinfo.h"
 #include "weather.h"
 
 #define PWIDTH 144
@@ -42,18 +43,6 @@ int condition = -999;
 int sunrise = -1;
 int sunset = -1;
 int is_day = -1;
-
-enum {
-	TEMPERATURE = 0,
-	CONDITION = 1,
-	REFRESH_TIME = 2,
-	WAIT_TIME = 3,
-	COLOR_INVERT = 4,
-	SUNRISE = 5,
-	SUNSET = 6,
-	NIGHT_AUTO_SWITCH = 7,
-	FETCH_WEATHER = 10,
-};
 
 static void update_battery_layer(Layer *layer, GContext *ctx) {
 	int width = battery_state.charge_percent * CHARGEUNIT;
@@ -158,7 +147,7 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void handle_timer(void *data) {
-	Tuplet value = TupletInteger(FETCH_WEATHER, 1);
+	Tuplet value = TupletInteger(APP_KEY_FETCH_WEATHER, 1);
 
 	DictionaryIterator *iter;
 	app_message_outbox_begin(&iter);
@@ -182,7 +171,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 		int key = t->key;
 		int value = t->value->int32;
 		switch(key) {
-			case TEMPERATURE:
+			case APP_KEY_TEMPERATURE:
 				if (value == -999) {
 					strncpy(temperature_text, " ", sizeof(temperature_text));
 
@@ -196,7 +185,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 				break;
 
-			case CONDITION:
+			case APP_KEY_CONDITION:
 				condition = value;
 				set_condition(value, is_day, condition_text);
 				text_layer_set_text(condition_layer, condition_text);
@@ -208,7 +197,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 				break;
 
-			case REFRESH_TIME:
+			case APP_KEY_REFRESH_TIME:
 				refresh_time = value;
 
 				app_timer_cancel(timer);
@@ -216,26 +205,26 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 				break;
 
-			case WAIT_TIME:
+			case APP_KEY_WAIT_TIME:
 				wait_time = value;
 
 				break;
 
-			case COLOR_INVERT:
+			case APP_KEY_COLOR_INVERT:
 				invert = value;
-				persist_write_int(COLOR_INVERT, invert);
+				persist_write_int(APP_KEY_COLOR_INVERT, invert);
 
 				break;
 
-			case NIGHT_AUTO_SWITCH:
+			case APP_KEY_NIGHT_AUTO_SWITCH:
 				night_auto_switch = value;
-				persist_write_int(NIGHT_AUTO_SWITCH, night_auto_switch);
+				persist_write_int(APP_KEY_NIGHT_AUTO_SWITCH, night_auto_switch);
 
-			case SUNRISE:
+			case APP_KEY_SUNRISE:
 				sunrise = value;
 				break;
 
-			case SUNSET:
+			case APP_KEY_SUNSET:
 				sunset = value;
 				break;
 		}
@@ -303,12 +292,12 @@ static void window_unload(Window *window) {
 }
 
 static void load_config(void) {
-	if (persist_exists(COLOR_INVERT)) {
-		invert = persist_read_int(COLOR_INVERT);
+	if (persist_exists(APP_KEY_COLOR_INVERT)) {
+		invert = persist_read_int(APP_KEY_COLOR_INVERT);
 	}
 
-	if (persist_exists(NIGHT_AUTO_SWITCH)) {
-		night_auto_switch = persist_read_int(NIGHT_AUTO_SWITCH);
+	if (persist_exists(APP_KEY_NIGHT_AUTO_SWITCH)) {
+		night_auto_switch = persist_read_int(APP_KEY_NIGHT_AUTO_SWITCH);
 	}
 }
 

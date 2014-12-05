@@ -2,4 +2,8 @@ build
 .lock-waf_linux2_build
 .kdev
 *.kdev4
+
+#Generated files
 src/js/pebble-js-app.js
+src/js/appinfo.js
+src/appinfo.h

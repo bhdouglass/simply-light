@@ -1,4 +1,3 @@
-var version = 1.3;
 var config = {
 	temperature_units: 'imperial',
 	refresh_time: 30,
@@ -8,7 +7,7 @@ var config = {
 	night_auto_switch: 0,
 };
 
-var config_ints = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch'];
+var configInts = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch'];
 
 Pebble.addEventListener('ready', function(e) {
 	console.log('starting js');
@@ -26,7 +25,7 @@ Pebble.addEventListener('appmessage', function(e) {
 });
 
 Pebble.addEventListener('showConfiguration', function(e) {
-	var url = 'http://bhdouglass.com/pebble/simply-light-config.html?version=' + version + '#' + encodeURIComponent(JSON.stringify(config));
+	var url = 'http://bhdouglass.com/pebble/simply-light-config.html?version=' + appinfo.versionCode + '#' + encodeURIComponent(JSON.stringify(config));
 	Pebble.openURL(url);
 	console.log(url);
 });
@@ -48,7 +47,7 @@ function loadConfig() {
 	for (var key in config) {
 		var value = window.localStorage.getItem(key);
 		if (value !== null) {
-			if (config_ints.indexOf(key) >= 0) {
+			if (configInts.indexOf(key) >= 0) {
 				config[key] = parseInt(value);
 			}
 			else {
