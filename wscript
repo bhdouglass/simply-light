@@ -11,7 +11,9 @@ built_js = '../src/js/pebble-js-app.js'
 js_libs = []
 js_sources = [
 	'../src/js/appinfo.js',
-	'../src/js/main.js',
+	'../src/js/config.js',
+	'../src/js/weather.js',
+	'../src/js/listeners.js',
 ]
 
 def concatenate_js(task):
