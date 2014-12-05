@@ -1,24 +1,41 @@
+#Improvements based on this code - http://matthewtole.com/blog/2014/07/22/simplify-your-pebble-development-with-wscript/
 
-#
-# This file is the default set of rules to compile a Pebble project.
-#
-# Feel free to customize this to your needs.
-#
+from sh import uglifyjs
+from sh import jshint
 
 top = '.'
 out = 'build'
 
+built_js = '../src/js/pebble-js-app.js'
+js_libs = []
+js_sources = [
+	'../src/js/main.js',
+]
+
+def concatenate_js(task):
+	inputs = (input.abspath() for input in task.inputs)
+	uglifyjs(*inputs, o=task.outputs[0].abspath())
+
+def js_jshint(task):
+	inputs = (input.abspath() for input in task.inputs)
+	jshint(*inputs, config='jshintrc')
+
 def options(ctx):
-    ctx.load('pebble_sdk')
+	ctx.load('pebble_sdk')
 
 def configure(ctx):
-    ctx.load('pebble_sdk')
+	ctx.load('pebble_sdk')
 
 def build(ctx):
-    ctx.load('pebble_sdk')
+	ctx.load('pebble_sdk')
 
-    ctx.pbl_program(source=ctx.path.ant_glob('src/**/*.c'),
-                    target='pebble-app.elf')
+	#Custom build functions
+	ctx(rule=js_jshint, source=js_sources)
+	ctx(rule=concatenate_js, source=' '.join(js_libs + js_sources), target=built_js)
 
-    ctx.pbl_bundle(elf='pebble-app.elf',
-                   js=ctx.path.ant_glob('src/js/**/*.js'))
+	#Default build functions
+	ctx.pbl_program(source=ctx.path.ant_glob('src/**/*.c'),
+					target='pebble-app.elf')
+
+	ctx.pbl_bundle(elf='pebble-app.elf',
+				js=ctx.path.ant_glob('src/js/**/*.js'))

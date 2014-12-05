@@ -45,7 +45,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
 });
 
 function loadConfig() {
-	for (key in config) {
+	for (var key in config) {
 		var value = window.localStorage.getItem(key);
 		if (value !== null) {
 			if (config_ints.indexOf(key) >= 0) {
@@ -66,7 +66,7 @@ function loadConfig() {
 }
 
 function saveConfig() {
-	for (key in config) {
+	for (var key in config) {
 		window.localStorage.setItem(key, config[key]);
 	}
 
@@ -92,13 +92,13 @@ function get(url, callback, errCallback) {
 					errCallback(req);
 				}
 			}
-		}
+		};
 	}
 
 	if (errCallback) {
 		req.onerror = function(e) {
 			errCallback(req);
-		}
+		};
 	}
 
 	req.send();

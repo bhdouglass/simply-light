@@ -2,3 +2,4 @@ build
 .lock-waf_linux2_build
 .kdev
 *.kdev4
+src/js/pebble-js-app.js
