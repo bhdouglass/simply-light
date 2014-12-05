@@ -8,7 +8,9 @@ top = '.'
 out = 'build'
 
 built_js = '../src/js/pebble-js-app.js'
-js_libs = []
+js_libs = [
+	'../src/js/libs/http.js'
+]
 js_sources = [
 	'../src/js/appinfo.js',
 	'../src/js/config.js',

@@ -1,30 +1,3 @@
-function get(url, callback, errCallback) {
-	var req = new XMLHttpRequest();
-	req.open('GET', url);
-
-	if (callback) {
-		req.onload = function(e) {
-			if (req.readyState === 4) {
-				if (req.status == 200) {
-					callback(req.responseText);
-				}
-				else if (errCallback) {
-					errCallback(req);
-				}
-			}
-		};
-	}
-
-	if (errCallback) {
-		req.onerror = function(e) {
-			errCallback(req);
-		};
-	}
-
-	req.send();
-	return req;
-}
-
 function fetchLocation(callback, errCallback) {
 	console.log('fetching location');
 	window.navigator.geolocation.getCurrentPosition(function(pos) { //Success
@@ -59,7 +32,8 @@ function fetchWeatherHelper(pos) {
 	}
 
 	console.log(url);
-	get(url, function(response) { //Success
+	var request = new Http.Get(url, true);
+	request.start().then(function(response) {
 		var json = JSON.parse(response);
 
 		var temperature = Math.round(json.main.temp);
@@ -79,8 +53,8 @@ function fetchWeatherHelper(pos) {
 			sunset: sunset
 		});
 
-	}, function(err) { //Error
-		console.warn('Error while getting weather: ' + err.status);
+	}).fail(function(err, errCode) {
+		console.warn('Error while getting weather: ' + errCode);
 
 		Pebble.sendAppMessage({
 			temperature: -999,
