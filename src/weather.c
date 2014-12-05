@@ -8,7 +8,6 @@ void set_condition(int id, int is_day, char *condition_text) {
 	int size = sizeof(condition_text);
 	strncpy(condition_text, " ", size);
 
-	//TODO: day/night/neutral icons
 	if (id >= 200 && id < 300) { //thunderstorm
 		if (is_day == 1) {
 			strncpy(condition_text, "\uf010", size);

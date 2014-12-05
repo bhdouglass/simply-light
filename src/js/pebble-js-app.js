@@ -157,7 +157,6 @@ function fetchWeatherHelper(pos) {
 			condition: condition,
 			sunrise: sunrise,
 			sunset: sunset
-			//TODO: send back day/night based on sunrise/sunset
 		});
 
 	}, function(err) { //Error
