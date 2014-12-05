@@ -35,14 +35,136 @@ int invert = 0;
 GColor text_color = GColorBlack;
 GColor background_color = GColorWhite;
 
+int condition_value = -999;
+int sunrise = -1;
+int sunset = -1;
+int is_day = -1;
+
 enum {
 	TEMPERATURE = 0,
 	CONDITION = 1,
 	REFRESH_TIME = 2,
 	WAIT_TIME = 3,
 	COLOR_INVERT = 4,
+	SUNRISE = 5,
+	SUNSET = 6,
 	FETCH_WEATHER = 10,
 };
+
+//IDs from http://openweathermap.org/weather-conditions
+//Icons from http://erikflowers.github.io/weather-icons/
+static void condition(int id) {
+	condition_value = id;
+	strncpy(condition_text, " ", sizeof(condition_text));
+
+	//TODO: day/night/neutral icons
+	if (id >= 200 && id < 300) { //thunderstorm
+		if (is_day == 1) {
+			strncpy(condition_text, "\uf010", sizeof(condition_text));
+		}
+		else if (is_day == 0) {
+			strncpy(condition_text, "\uf03b", sizeof(condition_text));
+		}
+		else {
+			strncpy(condition_text, "\uf01e", sizeof(condition_text));
+		}
+	}
+	else if (id >= 300 && id < 400) { //Drizzle
+		if (is_day == 1) {
+			strncpy(condition_text, "\uf00b", sizeof(condition_text));
+		}
+		else if (is_day == 0) {
+			strncpy(condition_text, "\uf039", sizeof(condition_text));
+		}
+		else {
+			strncpy(condition_text, "\uf01c", sizeof(condition_text));
+		}
+	}
+	else if (id >= 500 && id < 600) { //Rain
+		if (is_day == 1) {
+			strncpy(condition_text, "\uf008", sizeof(condition_text));
+		}
+		else if (is_day == 0) {
+			strncpy(condition_text, "\uf036", sizeof(condition_text));
+		}
+		else {
+			strncpy(condition_text, "\uf019", sizeof(condition_text));
+		}
+	}
+	else if (id >= 600 && id < 700) { //Snow
+		if (is_day == 1) {
+			strncpy(condition_text, "\uf00a", sizeof(condition_text));
+		}
+		else if (is_day == 0) {
+			strncpy(condition_text, "\uf038", sizeof(condition_text));
+		}
+		else {
+			strncpy(condition_text, "\uf01b", sizeof(condition_text));
+		}
+	}
+	else if (id >= 700 && id < 800) { //Atmosphere (mist, fog, etc)
+		if (is_day == 1) {
+			strncpy(condition_text, "\uf003", sizeof(condition_text));
+		}
+		else if (is_day == 0) {
+			strncpy(condition_text, "\uf04a", sizeof(condition_text));
+		}
+		else {
+			strncpy(condition_text, "\uf014", sizeof(condition_text));
+		}
+	}
+	else if (id == 800 || id == 951) { //Clear/Calm
+		if (is_day == 0) {
+			strncpy(condition_text, "\uf02e", sizeof(condition_text));
+		}
+		else {
+			strncpy(condition_text, "\uf00d", sizeof(condition_text));
+		}
+	}
+	else if (id >= 800 && id < 900) { //Clouds
+		if (is_day == 1) {
+			strncpy(condition_text, "\uf002", sizeof(condition_text));
+		}
+		else if (is_day == 0) {
+			strncpy(condition_text, "\uf031", sizeof(condition_text));
+		}
+		else {
+			strncpy(condition_text, "\uf013", sizeof(condition_text));
+		}
+	}
+	else if (id == 900) { //Tornado
+		strncpy(condition_text, "\uf056", sizeof(condition_text));
+	}
+	else if (id == 901 || id == 902 || id == 962) { //Hurricane
+		strncpy(condition_text, "\uf073", sizeof(condition_text));
+	}
+	else if (id == 903) { //Extreme cold
+		strncpy(condition_text, "\uf076", sizeof(condition_text));
+	}
+	else if (id == 904) { //Extreme heat
+		strncpy(condition_text, "\uf072", sizeof(condition_text));
+	}
+	else if (id == 906) { //Hail
+		if (is_day == 1) {
+			strncpy(condition_text, "\uf004", sizeof(condition_text));
+		}
+		else if (is_day == 0) {
+			strncpy(condition_text, "\uf032", sizeof(condition_text));
+		}
+		else {
+			strncpy(condition_text, "\uf015", sizeof(condition_text));
+		}
+	}
+	else if (id >= 907 && id < 957) { //Wind
+		strncpy(condition_text, "\uf021", sizeof(condition_text));
+	}
+	else if (id == 905 || (id >= 957 && id < 1000)) { //Extreme Wind
+		strncpy(condition_text, "\uf050", sizeof(condition_text));
+	}
+	else { //Error or refreshing
+		strncpy(condition_text, "\uf03e", sizeof(condition_text));
+	}
+}
 
 static void update_battery_layer(Layer *layer, GContext *ctx) {
 	int width = battery_state.charge_percent * CHARGEUNIT;
@@ -58,6 +180,27 @@ static void update_battery_layer(Layer *layer, GContext *ctx) {
 static void handle_battery(BatteryChargeState charge_state) {
 	battery_state = charge_state;
 	layer_mark_dirty(battery_layer);
+}
+
+static void set_day_night() {
+	int old_is_day = is_day;
+	if (sunrise > 0 && sunset > 0) {
+		int now = time(NULL);
+
+		if (sunrise < now && now < sunset) {
+			is_day = 1;
+		}
+		else {
+			is_day = 0;
+		}
+	}
+	else {
+		is_day = -1;
+	}
+
+	if (old_is_day != is_day) {
+		condition(condition_value);
+	}
 }
 
 static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
@@ -81,55 +224,8 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 		strftime(month_text, sizeof(month_text), "%B", tick_time);
 		text_layer_set_text(month_layer, month_text);
 	}
-}
 
-//IDs from http://openweathermap.org/weather-conditions
-//Icons from http://erikflowers.github.io/weather-icons/
-static void condition(int id) {
-	strncpy(condition_text, " ", sizeof(condition_text));
-
-	if (id >= 200 && id < 300) { //thunderstorm
-		strncpy(condition_text, "\uf01e", sizeof(condition_text));
-	}
-	else if (id >= 300 && id < 400) { //Drizzle
-		strncpy(condition_text, "\uf01c", sizeof(condition_text));
-	}
-	else if (id >= 500 && id < 600) { //Rain
-		strncpy(condition_text, "\uf019", sizeof(condition_text));
-	}
-	else if (id >= 600 && id < 700) { //Snow
-		strncpy(condition_text, "\uf01b", sizeof(condition_text));
-	}
-	else if (id >= 700 && id < 800) { //Atmosphere (mist, fog, etc)
-		strncpy(condition_text, "\uf014", sizeof(condition_text));
-	}
-	else if (id == 800 || id == 951) { //Clear/Calm
-		strncpy(condition_text, "\uf00d", sizeof(condition_text));
-	}
-	else if (id >= 800 && id < 900) { //Clouds
-		strncpy(condition_text, "\uf013", sizeof(condition_text));
-	}
-	else if (id == 900) { //Tornado
-		strncpy(condition_text, "\uf056", sizeof(condition_text));
-	}
-	else if (id == 901 || id == 902 || id == 962) { //Hurricane
-		strncpy(condition_text, "\uf073", sizeof(condition_text));
-	}
-	else if (id == 903) { //Extreme cold
-		strncpy(condition_text, "\uf076", sizeof(condition_text));
-	}
-	else if (id == 904) { //Extreme heat
-		strncpy(condition_text, "\uf072", sizeof(condition_text));
-	}
-	else if (id == 906) { //Hail
-		strncpy(condition_text, "\uf015", sizeof(condition_text));
-	}
-	else if (id >= 907 && id < 957) { //Wind
-		strncpy(condition_text, "\uf021", sizeof(condition_text));
-	}
-	else if (id == 905 || (id >= 957 && id < 1000)) { //Extreme Wind
-		strncpy(condition_text, "\uf050", sizeof(condition_text));
-	}
+	set_day_night();
 }
 
 static void handle_timer(void *data) {
@@ -153,12 +249,10 @@ static void colorize() {
 	if (invert == 1) {
 		text_color = GColorWhite;
 		background_color = GColorBlack;
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "invert");
 	}
 	else {
 		text_color = GColorBlack;
 		background_color = GColorWhite;
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "normal");
 	}
 
 	window_set_background_color(window, background_color);
@@ -196,6 +290,11 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				condition(value);
 				text_layer_set_text(condition_layer, condition_text);
 
+				if (value == -999) {
+					app_timer_cancel(timer);
+					timer = app_timer_register(wait_time * 60000, handle_timer, NULL);
+				}
+
 				break;
 
 			case REFRESH_TIME:
@@ -217,10 +316,20 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				colorize();
 
 				break;
+
+			case SUNRISE:
+				sunrise = value;
+				break;
+
+			case SUNSET:
+				sunset = value;
+				break;
 		}
 
 		t = dict_read_next(iter);
 	}
+
+	set_day_night();
 }
 
 static void window_load(Window *window) {

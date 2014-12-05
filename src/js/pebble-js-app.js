@@ -1,4 +1,4 @@
-var version = 1.2;
+var version = 1.3;
 var config = {
 	temperature_units: 'imperial',
 	refresh_time: 30,
@@ -142,6 +142,8 @@ function fetchWeatherHelper(pos) {
 		var temperature = Math.round(json.main.temp);
 		var location = json.name;
 		var condition = json.weather[0].id; //TODO check if more conditions
+		var sunrise = json.sys.sunrise;
+		var sunset = json.sys.sunset;
 
 		console.log('temp: ' + temperature);
 		console.log('cond: ' + condition + ' - ' + json.weather.length);
@@ -150,6 +152,8 @@ function fetchWeatherHelper(pos) {
 		Pebble.sendAppMessage({
 			temperature: temperature,
 			condition: condition,
+			sunrise: sunrise,
+			sunset: sunset
 			//TODO: send back day/night based on sunrise/sunset
 		});
 
@@ -158,7 +162,7 @@ function fetchWeatherHelper(pos) {
 
 		Pebble.sendAppMessage({
 			temperature: -999,
-			condition: 0,
+			condition: -999,
 		});
 	});
 }
@@ -173,7 +177,7 @@ function fetchWeather() {
 		fetchLocation(fetchWeatherHelper, function(err) {
 			Pebble.sendAppMessage({
 				temperature: -999,
-				condition: 0,
+				condition: -999,
 			});
 		});
 	}
