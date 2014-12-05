@@ -1,5 +1,7 @@
 #include <pebble.h>
 
+#include "weather.h"
+
 #define PWIDTH 144
 #define HALFPWIDTH 72
 #define PHEIGHT 168
@@ -35,7 +37,7 @@ int invert = 0;
 GColor text_color = GColorBlack;
 GColor background_color = GColorWhite;
 
-int condition_value = -999;
+int condition = -999;
 int sunrise = -1;
 int sunset = -1;
 int is_day = -1;
@@ -50,121 +52,6 @@ enum {
 	SUNSET = 6,
 	FETCH_WEATHER = 10,
 };
-
-//IDs from http://openweathermap.org/weather-conditions
-//Icons from http://erikflowers.github.io/weather-icons/
-static void condition(int id) {
-	condition_value = id;
-	strncpy(condition_text, " ", sizeof(condition_text));
-
-	//TODO: day/night/neutral icons
-	if (id >= 200 && id < 300) { //thunderstorm
-		if (is_day == 1) {
-			strncpy(condition_text, "\uf010", sizeof(condition_text));
-		}
-		else if (is_day == 0) {
-			strncpy(condition_text, "\uf03b", sizeof(condition_text));
-		}
-		else {
-			strncpy(condition_text, "\uf01e", sizeof(condition_text));
-		}
-	}
-	else if (id >= 300 && id < 400) { //Drizzle
-		if (is_day == 1) {
-			strncpy(condition_text, "\uf00b", sizeof(condition_text));
-		}
-		else if (is_day == 0) {
-			strncpy(condition_text, "\uf039", sizeof(condition_text));
-		}
-		else {
-			strncpy(condition_text, "\uf01c", sizeof(condition_text));
-		}
-	}
-	else if (id >= 500 && id < 600) { //Rain
-		if (is_day == 1) {
-			strncpy(condition_text, "\uf008", sizeof(condition_text));
-		}
-		else if (is_day == 0) {
-			strncpy(condition_text, "\uf036", sizeof(condition_text));
-		}
-		else {
-			strncpy(condition_text, "\uf019", sizeof(condition_text));
-		}
-	}
-	else if (id >= 600 && id < 700) { //Snow
-		if (is_day == 1) {
-			strncpy(condition_text, "\uf00a", sizeof(condition_text));
-		}
-		else if (is_day == 0) {
-			strncpy(condition_text, "\uf038", sizeof(condition_text));
-		}
-		else {
-			strncpy(condition_text, "\uf01b", sizeof(condition_text));
-		}
-	}
-	else if (id >= 700 && id < 800) { //Atmosphere (mist, fog, etc)
-		if (is_day == 1) {
-			strncpy(condition_text, "\uf003", sizeof(condition_text));
-		}
-		else if (is_day == 0) {
-			strncpy(condition_text, "\uf04a", sizeof(condition_text));
-		}
-		else {
-			strncpy(condition_text, "\uf014", sizeof(condition_text));
-		}
-	}
-	else if (id == 800 || id == 951) { //Clear/Calm
-		if (is_day == 0) {
-			strncpy(condition_text, "\uf02e", sizeof(condition_text));
-		}
-		else {
-			strncpy(condition_text, "\uf00d", sizeof(condition_text));
-		}
-	}
-	else if (id >= 800 && id < 900) { //Clouds
-		if (is_day == 1) {
-			strncpy(condition_text, "\uf002", sizeof(condition_text));
-		}
-		else if (is_day == 0) {
-			strncpy(condition_text, "\uf031", sizeof(condition_text));
-		}
-		else {
-			strncpy(condition_text, "\uf013", sizeof(condition_text));
-		}
-	}
-	else if (id == 900) { //Tornado
-		strncpy(condition_text, "\uf056", sizeof(condition_text));
-	}
-	else if (id == 901 || id == 902 || id == 962) { //Hurricane
-		strncpy(condition_text, "\uf073", sizeof(condition_text));
-	}
-	else if (id == 903) { //Extreme cold
-		strncpy(condition_text, "\uf076", sizeof(condition_text));
-	}
-	else if (id == 904) { //Extreme heat
-		strncpy(condition_text, "\uf072", sizeof(condition_text));
-	}
-	else if (id == 906) { //Hail
-		if (is_day == 1) {
-			strncpy(condition_text, "\uf004", sizeof(condition_text));
-		}
-		else if (is_day == 0) {
-			strncpy(condition_text, "\uf032", sizeof(condition_text));
-		}
-		else {
-			strncpy(condition_text, "\uf015", sizeof(condition_text));
-		}
-	}
-	else if (id >= 907 && id < 957) { //Wind
-		strncpy(condition_text, "\uf021", sizeof(condition_text));
-	}
-	else if (id == 905 || (id >= 957 && id < 1000)) { //Extreme Wind
-		strncpy(condition_text, "\uf050", sizeof(condition_text));
-	}
-	else { //Error or refreshing
-		strncpy(condition_text, "\uf03e", sizeof(condition_text));
-	}
-}
 
 static void update_battery_layer(Layer *layer, GContext *ctx) {
 	int width = battery_state.charge_percent * CHARGEUNIT;
@@ -199,7 +86,7 @@ static void set_day_night() {
 	}
 
 	if (old_is_day != is_day) {
-		condition(condition_value);
+		set_condition(condition, is_day, condition_text);
 	}
 }
 
@@ -287,7 +174,8 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				break;
 
 			case CONDITION:
-				condition(value);
+				condition = value;
+				set_condition(value, is_day, condition_text);
 				text_layer_set_text(condition_layer, condition_text);
 
 				if (value == -999) {
@@ -395,6 +283,7 @@ static void init(void) {
 	window = window_create();
 	battery_state = battery_state_service_peek();
 
+	set_condition(-999, is_day, condition_text);
 	window_set_window_handlers(window, (WindowHandlers) {
 		.load = window_load,
 		.unload = window_unload,
@@ -414,7 +303,7 @@ static void init(void) {
 	app_message_register_inbox_received(msg_received_handler);
 	app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 
-	timer = app_timer_register(refresh_time * 60000, handle_timer, NULL);
+	timer = app_timer_register(wait_time * 60000, handle_timer, NULL);
 }
 
 static void deinit(void) {
