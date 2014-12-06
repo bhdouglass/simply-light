@@ -23,6 +23,12 @@
 	"resources": {
 		"media": [
 			{
+				"menuIcon": true,
+				"type": "png",
+				"name": "IMAGE_MENU_ICON",
+				"file": "images/menu_icon.png"
+			},
+			{
 				"name": "DROIDSANS_BOLD_50",
 				"file": "fonts/DroidSans-Bold.ttf",
 				"characterRegex": "[0-9:]",
