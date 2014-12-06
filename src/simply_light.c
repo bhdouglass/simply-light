@@ -195,8 +195,6 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 			case APP_KEY_CONDITION:
 				condition = value;
-				set_condition(value, is_day, condition_text);
-				text_layer_set_text(condition_layer, condition_text);
 
 				if (value == -999) {
 					/*sunrise = -1;
@@ -250,6 +248,8 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 	set_day_night();
 	colorize();
+	set_condition(condition, is_day, condition_text);
+	text_layer_set_text(condition_layer, condition_text);
 }
 
 static void window_load(Window *window) {
@@ -295,7 +295,10 @@ static void window_load(Window *window) {
 	text_layer_set_text_alignment(condition_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(condition_layer));
 
+	set_day_night();
 	colorize();
+	set_condition(-999, is_day, condition_text);
+	text_layer_set_text(condition_layer, condition_text);
 }
 
 static void window_unload(Window *window) {
@@ -331,7 +334,6 @@ static void init(void) {
 	window = window_create();
 	battery_state = battery_state_service_peek();
 
-	set_condition(-999, is_day, condition_text);
 	window_set_window_handlers(window, (WindowHandlers) {
 		.load = window_load,
 		.unload = window_unload,
