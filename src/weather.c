@@ -32,7 +32,7 @@ void set_condition(int id, int is_day, char *condition_text) {
 	}
 	else if (id >= 500 && id < 600) { //Rain
 		if (is_day == 1) {
-			strncpy(condition_text, "\uf008", size);
+			strncpy(condition_text, "\uf019", size); //For some reason the day rain doesn't show up on the watch
 		}
 		else if (is_day == 0) {
 			strncpy(condition_text, "\uf036", size);

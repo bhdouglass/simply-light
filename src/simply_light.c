@@ -102,9 +102,11 @@ static void colorize() {
 static void set_day_night() {
 	int old_is_day = is_day;
 	if (sunrise > 0 && sunset > 0) {
-		int now = time(NULL);
+		time_t now = time(NULL);
+		struct tm *local = localtime(&now);
+		int minutes = local->tm_hour * 60 + local->tm_min;
 
-		if (sunrise < now && now < sunset) {
+		if (sunrise <= minutes && minutes < sunset) {
 			is_day = 1;
 		}
 		else {
@@ -173,6 +175,12 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 		switch(key) {
 			case APP_KEY_TEMPERATURE:
 				if (value == -999) {
+					/*sunrise = -1;
+					persist_write_int(APP_KEY_SUNRISE, sunrise);
+
+					sunset = -1;
+					persist_write_int(APP_KEY_SUNSET, sunset);*/
+
 					strncpy(temperature_text, " ", sizeof(temperature_text));
 
 					app_timer_cancel(timer);
@@ -191,6 +199,12 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				text_layer_set_text(condition_layer, condition_text);
 
 				if (value == -999) {
+					/*sunrise = -1;
+					persist_write_int(APP_KEY_SUNRISE, sunrise);
+
+					sunset = -1;
+					persist_write_int(APP_KEY_SUNSET, sunset);*/
+
 					app_timer_cancel(timer);
 					timer = app_timer_register(wait_time * 60000, handle_timer, NULL);
 				}
@@ -222,18 +236,20 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 			case APP_KEY_SUNRISE:
 				sunrise = value;
+				persist_write_int(APP_KEY_SUNRISE, sunrise);
 				break;
 
 			case APP_KEY_SUNSET:
 				sunset = value;
+				persist_write_int(APP_KEY_SUNSET, sunset);
 				break;
 		}
 
 		t = dict_read_next(iter);
 	}
 
-	colorize();
 	set_day_night();
+	colorize();
 }
 
 static void window_load(Window *window) {
@@ -298,6 +314,14 @@ static void load_config(void) {
 
 	if (persist_exists(APP_KEY_NIGHT_AUTO_SWITCH)) {
 		night_auto_switch = persist_read_int(APP_KEY_NIGHT_AUTO_SWITCH);
+	}
+
+	if (persist_exists(APP_KEY_SUNRISE)) {
+		sunrise = persist_read_int(APP_KEY_SUNRISE);
+	}
+
+	if (persist_exists(APP_KEY_SUNSET)) {
+		sunset = persist_read_int(APP_KEY_SUNSET);
 	}
 }
 

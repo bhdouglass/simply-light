@@ -1,3 +1,30 @@
+function get(url, callback, errCallback) {
+	var req = new XMLHttpRequest();
+	req.open('GET', url);
+
+	if (callback) {
+		req.onload = function(e) {
+			if (req.readyState === 4) {
+				if (req.status == 200) {
+					callback(req.responseText);
+				}
+				else if (errCallback) {
+					errCallback(req);
+				}
+			}
+		};
+	}
+
+	if (errCallback) {
+		req.onerror = function(e) {
+			errCallback(req);
+		};
+	}
+
+	req.send();
+	return req;
+}
+
 function fetchLocation(callback, errCallback) {
 	console.log('fetching location');
 	window.navigator.geolocation.getCurrentPosition(function(pos) { //Success
@@ -32,19 +59,23 @@ function fetchWeatherHelper(pos) {
 	}
 
 	console.log(url);
-	var request = new Http.Get(url, true);
-	request.start().then(function(response) {
+	get(url, function(response) {
 		var json = JSON.parse(response);
 
 		var temperature = Math.round(json.main.temp);
 		var location = json.name;
 		var condition = json.weather[0].id; //TODO check if more conditions
-		var sunrise = json.sys.sunrise;
-		var sunset = json.sys.sunset;
 
-		console.log('temp: ' + temperature);
-		console.log('cond: ' + condition + ' - ' + json.weather.length);
-		console.log('loc:  ' + location);
+		var sunrise_date = new Date(json.sys.sunrise * 1000);
+		var sunset_date = new Date(json.sys.sunset * 1000);
+		var sunrise = sunrise_date.getHours() * 60 + sunrise_date.getMinutes();
+		var sunset = sunset_date.getHours() * 60 + sunset_date.getMinutes();
+
+		console.log('temp:    ' + temperature);
+		console.log('cond:    ' + condition + ' - ' + json.weather.length);
+		console.log('loc:     ' + location);
+		console.log('sunrise: ' + sunrise);
+		console.log('sunset:  ' + sunset);
 
 		Pebble.sendAppMessage({
 			temperature: temperature,
@@ -53,8 +84,8 @@ function fetchWeatherHelper(pos) {
 			sunset: sunset
 		});
 
-	}).fail(function(err, errCode) {
-		console.warn('Error while getting weather: ' + errCode);
+	}, function(err) {
+		console.warn('Error while getting weather: ' + err.status);
 
 		Pebble.sendAppMessage({
 			temperature: -999,
