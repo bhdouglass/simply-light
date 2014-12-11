@@ -5,9 +5,10 @@ var config = {
 	location: '',
 	color_invert: 0,
 	night_auto_switch: 0,
+	show_am_pm: 0,
 };
 
-var configInts = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch'];
+var configInts = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm'];
 
 function loadConfig() {
 	for (var key in config) {
@@ -27,6 +28,7 @@ function loadConfig() {
 		wait_time: config.wait_time,
 		color_invert: config.color_invert,
 		night_auto_switch: config.night_auto_switch,
+		show_am_pm: config.show_am_pm,
 	});
 }
 
@@ -40,5 +42,6 @@ function saveConfig() {
 		wait_time: config.wait_time,
 		color_invert: config.color_invert,
 		night_auto_switch: config.night_auto_switch,
+		show_am_pm: config.show_am_pm,
 	});
 }

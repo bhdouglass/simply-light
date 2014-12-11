@@ -6,7 +6,7 @@
 //Icons from http://erikflowers.github.io/weather-icons/
 void set_condition(int id, int is_day, char *condition_text) {
 	int size = sizeof(condition_text);
-	strncpy(condition_text, " ", size);
+	//strncpy(condition_text, " ", size);
 
 	if (id >= 200 && id < 300) { //thunderstorm
 		if (is_day == 1) {
@@ -32,7 +32,7 @@ void set_condition(int id, int is_day, char *condition_text) {
 	}
 	else if (id >= 500 && id < 600) { //Rain
 		if (is_day == 1) {
-			strncpy(condition_text, "\uf019", size); //For some reason the day rain doesn't show up on the watch
+			strncpy(condition_text, "\uf008", size);
 		}
 		else if (is_day == 0) {
 			strncpy(condition_text, "\uf036", size);

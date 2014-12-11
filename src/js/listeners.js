@@ -1,5 +1,5 @@
 Pebble.addEventListener('ready', function(e) {
-	console.log('starting js');
+	console.log('starting js, v' + appinfo.versionCode);
 
 	loadConfig();
 	console.log(JSON.stringify(config));
