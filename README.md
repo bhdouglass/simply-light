@@ -1,5 +1,7 @@
 # Simply Light #
 
+[ ![Codeship Status for bhdouglass/simply-light](https://codeship.com/projects/4381e650-63ea-0132-862e-32c060907738/status?branch=master)](https://codeship.com/projects/52458)
+
 A simple Pebble watchface with time, weather, and battery status.
 
 Weather icons from <http://erikflowers.github.io/weather-icons/>.
