@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Brian Douglass">
+		<link rel="shortcut icon" href="/favicon.png">
+
+		<title>Simply Light Config</title>
+
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+		<!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.1.6/css/ripples.min.css" />-->
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.1.6/css/material.min.css" />
+		<link rel="stylesheet" href="main.css" />
+
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular.min.js"></script>
+		<!--<script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>-->
+		<!--<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.1.6/js/material.min.js"></script>-->
+		<script src="app.js?v=1.4"></script>
+	</head>
+
+	<body ng-controller="indexCtrl">
+		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand">
+						<i class="fa fa-clock-o"></i>
+						Simply Light Config (v{{version}})
+					</a>
+				</div>
+				<div class="navbar-collapse collapse navbar-right">
+					<ul class="nav navbar-nav">
+						<li><a href="#weather">Weather</a></li>
+						<li><a href="#watchface">Watchface</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="container main">
+			<div class="row" ng-show="version < latestVersion">
+				<div class="col-sm-12 centered">
+					<div class="alert alert-dismissable alert-warning clickable"  data-dismiss="alert">
+						<h4>You're running an outdated version of Simply Light, update to v{{latestVersion}} for the latest and greatest features!</h4>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<h1><a id="weather">Weather</a></h1>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group">
+					<label for="temperature_units" class="col-sm-2 control-label">Weather Units</label>
+					<div class="col-sm-10">
+						<select id="temperature_units" class="form-control" ng-model="config.temperature_units" ng-options="o.value as o.label for o in temperature_units"></select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group" ng-class="{'has-error': errors.refresh_time}">
+					<label for="refresh_time" class="col-sm-2 control-label">Refresh Weather Every</label>
+					<div class="col-sm-10">
+						<div class="input-group">
+							<input type="number" class="form-control" id="refresh_time" ng-model="config.refresh_time" min="1" />
+							<div class="input-group-addon">minutes</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group" ng-class="{'has-error': errors.wait_time}">
+					<label for="wait_time" class="col-sm-2 control-label">Time to Wait After Weather Error</label>
+					<div class="col-sm-10">
+						<div class="input-group">
+							<input type="number" class="form-control" id="wait_time" ng-model="config.wait_time" min="1" />
+							<div class="input-group-addon">minutes</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group">
+					<label for="location" class="col-sm-2 control-label">Location</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="location" placeholder="Leave blank to get location from device" ng-model="config.location" />
+					</div>
+				</div>
+			</div>
+
+			<div ng-show="version >= 1.2">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="divider"></div>
+						<h1><a id="watchface">Watchface</a></h1>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group">
+						<label for="color_invert" class="col-sm-2 control-label">Watchface Colors</label>
+						<div class="col-sm-10">
+							<select id="color_invert" class="form-control" ng-model="config.color_invert" ng-options="o.value as o.label for o in color_invert"></select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="version >= 1.3">
+					<div class="form-group">
+						<label for="night_auto_switch" class="col-sm-2 control-label">Auto Invert Colors At Night</label>
+						<div class="col-sm-10">
+							<select id="night_auto_switch" class="form-control" ng-model="config.night_auto_switch" ng-options="o.value as o.label for o in night_auto_switch"></select>
+							<p class="small-note pull-right">
+								*Sunset data is based on your location
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="version >= 1.4">
+					<div class="form-group">
+						<label for="show_am_pm" class="col-sm-2 control-label">Show AM/PM</label>
+						<div class="col-sm-10">
+							<select id="show_am_pm" class="form-control" ng-model="config.show_am_pm" ng-options="o.value as o.label for o in show_am_pm"></select>
+							<p class="small-note pull-right">
+								*Only when using a 12 hour clock
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<a id="cancel" class="btn btn-danger btn-fab btn-raised" ng-click="cancel()" ng-disabled="saving">
+			<i class="fa fa-close"></i>
+		</a>
+
+		<a id="save" class="btn btn-success btn-fab btn-raised" ng-click="save()" ng-disabled="saving">
+			<i class="fa" ng-class="{'fa-save': !saving, 'fa-spin fa-spinner': saving}"></i>
+		</a>
+	</body>
+</html>

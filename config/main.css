@@ -1,0 +1,46 @@
+.main {
+	margin-top: 40px;
+	margin-bottom: 70px;
+}
+
+@media (min-width: 992px) {
+	.main {
+		margin-top: 50px;
+	}
+}
+
+.row {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#save {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+}
+
+#cancel {
+	position: fixed;
+	bottom: 10px;
+	right: 75px;
+}
+
+.divider {
+	margin-top: 10px;
+	margin-bottom: -5px;	
+	border-bottom: 1px solid rgba(0,0,0,.1);
+	width: 100%;
+}
+
+.small-note {
+	font-size: 12px;
+}
+
+.centered {
+	text-align: center;
+}
+
+.clickable {
+	cursor: pointer;
+}
