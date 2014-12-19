@@ -17,7 +17,7 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.3/angular.min.js"></script>
-		<script src="app.js?v=1.4"></script>
+		<script src="app.js?v=1.5"></script>
 	</head>
 
 	<body ng-controller="indexCtrl">
@@ -144,7 +144,7 @@
 
 				<div class="row" ng-show="version >= 1.5">
 					<div class="form-group">
-						<label for="hide_battery" class="col-sm-2 control-label">Hide Battery</label>
+						<label for="hide_battery" class="col-sm-2 control-label">Show Battery Status</label>
 						<div class="col-sm-10">
 							<select id="hide_battery" class="form-control" ng-model="config.hide_battery" ng-options="o.value as o.label for o in hide_battery"></select>
 						</div>

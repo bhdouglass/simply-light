@@ -56,10 +56,10 @@ app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
 
 	$scope.hide_battery = [
 		{
-			label: 'Show battery line',
+			label: 'Show battery status line',
 			value: 0
 		}, {
-			label: 'Hide battery line',
+			label: 'Hide battery status line',
 			value: 1
 		}
 	];
