@@ -10,7 +10,7 @@ app.config(function($locationProvider) {
 app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
 	$scope.saving = false;
 	$scope.version = 1.1;
-	$scope.latestVersion = 1.4;
+	$scope.latestVersion = 1.5;
 	$scope.temperature_units = [
 		{
 			label: 'Fahrenheit',
@@ -54,6 +54,16 @@ app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
 		}
 	];
 
+	$scope.hide_battery = [
+		{
+			label: 'Show battery line',
+			value: 0
+		}, {
+			label: 'Hide battery line',
+			value: 1
+		}
+	];
+
 	$scope.config_ints = ['refresh_time', 'wait_time'];
 
 	$scope.config = {
@@ -64,6 +74,7 @@ app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
 		color_invert: 0,
 		night_auto_switch: 0,
 		show_am_pm: 0,
+		hide_battery: 0,
 	};
 
 	$scope.errors = {

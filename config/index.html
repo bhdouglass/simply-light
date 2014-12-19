@@ -141,6 +141,15 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="row" ng-show="version >= 1.5">
+					<div class="form-group">
+						<label for="hide_battery" class="col-sm-2 control-label">Hide Battery</label>
+						<div class="col-sm-10">
+							<select id="hide_battery" class="form-control" ng-model="config.hide_battery" ng-options="o.value as o.label for o in hide_battery"></select>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 

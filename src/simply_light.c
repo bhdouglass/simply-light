@@ -39,6 +39,7 @@ static AppTimer *timer;
 int refresh_time = 30;
 int wait_time = 1;
 int show_am_pm = 0;
+int hide_battery = 0;
 
 int invert = 0;
 int night_auto_switch = 0;
@@ -103,6 +104,14 @@ static void colorize() {
 	text_layer_set_text_color(month_layer, text_color);
 	text_layer_set_text_color(temperature_layer, text_color);
 	text_layer_set_text_color(condition_layer, text_color);
+	text_layer_set_text_color(am_pm_layer, text_color);
+
+	if (hide_battery == 1) {
+		layer_set_hidden((Layer *)battery_layer, true);
+	}
+	else {
+		layer_set_hidden((Layer *)battery_layer, false);
+	}
 }
 
 static void set_day_night() {
@@ -279,6 +288,11 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				persist_write_int(APP_KEY_SHOW_AM_PM, show_am_pm);
 				set_am_pm();
 				break;
+
+			case APP_KEY_HIDE_BATTERY:
+				hide_battery = value;
+				persist_write_int(APP_KEY_HIDE_BATTERY, hide_battery);
+				break;
 		}
 
 		t = dict_read_next(iter);
@@ -375,6 +389,10 @@ static void load_config(void) {
 
 	if (persist_exists(APP_KEY_SHOW_AM_PM)) {
 		show_am_pm = persist_read_int(APP_KEY_SHOW_AM_PM);
+	}
+
+	if (persist_exists(APP_KEY_HIDE_BATTERY)) {
+		hide_battery = persist_read_int(APP_KEY_HIDE_BATTERY);
 	}
 }
 

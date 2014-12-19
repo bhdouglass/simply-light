@@ -6,9 +6,10 @@ var config = {
 	color_invert: 0,
 	night_auto_switch: 0,
 	show_am_pm: 0,
+	hide_battery: 0,
 };
 
-var configInts = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm'];
+var configInts = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm', 'hide_battery'];
 
 function loadConfig() {
 	for (var key in config) {
@@ -29,6 +30,7 @@ function loadConfig() {
 		color_invert: config.color_invert,
 		night_auto_switch: config.night_auto_switch,
 		show_am_pm: config.show_am_pm,
+		hide_battery: config.hide_battery,
 	});
 }
 
@@ -43,5 +45,6 @@ function saveConfig() {
 		color_invert: config.color_invert,
 		night_auto_switch: config.night_auto_switch,
 		show_am_pm: config.show_am_pm,
+		hide_battery: config.hide_battery,
 	});
 }
