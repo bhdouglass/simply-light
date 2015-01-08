@@ -71,7 +71,7 @@ void set_condition(int id, int is_day, char *condition_text) {
 			strncpy(condition_text, "\uf00d", size);
 		}
 	}
-	else if (id >= 800 && id < 900) { //Clouds
+	else if (id > 800 && id < 900) { //Clouds
 		if (is_day == 1) {
 			strncpy(condition_text, "\uf002", size);
 		}

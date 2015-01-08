@@ -7,9 +7,10 @@ var config = {
 	night_auto_switch: 0,
 	show_am_pm: 0,
 	hide_battery: 0,
+	weather_provider: 0,
 };
 
-var configInts = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm', 'hide_battery'];
+var configInts = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm', 'hide_battery', 'weather_provider'];
 
 function loadConfig() {
 	for (var key in config) {

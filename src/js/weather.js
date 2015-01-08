@@ -45,7 +45,83 @@ function fetchLocation(callback, errCallback) {
 	});
 }
 
-function fetchWeatherHelper(pos) {
+function convertYahooTime(string) {
+	string = string.toLowerCase();
+	var time = string.replace('am', '').replace('pm', '').replace(' ', '');
+	var split = string.split(':');
+	var hours = parseInt(split[0]);
+	var minutes = parseInt(split[1]);
+
+	if (string.indexOf('pm') >= 0) {
+		hours += 12;
+	}
+
+	return (hours * 60) + minutes;
+}
+
+function yahooWeather(pos) {
+	var geo = '';
+	/*if (config.location) {
+		geo = 'select woeid from geo.places where text="' + config.location + '"';
+	}
+	else {*/
+		geo = 'select woeid from geo.placefinder where text="' + pos.coords.latitude + ',' + pos.coords.longitude + '" and gflags="R"';
+	//}
+
+	var unit = 'c';
+	if (config.temperature_units == 'imperial') {
+		unit = 'f';
+	}
+
+	var select = 'select * from weather.forecast where woeid in (' + geo + ') and u="' + unit + '"';
+	console.log(select);
+	var url = 'https://query.yahooapis.com/v1/public/yql?format=json&q=' + encodeURIComponent(select);
+	console.log(url);
+
+	get(url, function(response) {
+		var json = JSON.parse(response);
+		var data = {};
+		if (Array.isArray(json.query.results)) {
+			data = json.query.results[0].channel;
+		}
+		else {
+			data = json.query.results.channel;
+		}
+
+		var title = data.title;
+		var temperature = Math.round(data.item.condition.temp);
+		var condition = yahooConditionToOpenWeatherMap(data.item.condition.code);
+		var sunrise = convertYahooTime(data.astronomy.sunrise);
+		var sunset = convertYahooTime(data.astronomy.sunset);
+
+		if (config.temperature_units == 'kelvin') {
+			temperature += 273.15;
+		}
+
+		console.log('temp:    ' + temperature);
+		console.log('cond:    ' + condition);
+		console.log('title:   ' + title);
+		console.log('sunrise: ' + sunrise);
+		console.log('sunset:  ' + sunset);
+
+		Pebble.sendAppMessage({
+			temperature: temperature,
+			condition: condition,
+			sunrise: sunrise,
+			sunset: sunset
+		});
+
+	}, function(err) {
+		console.warn('Error while getting weather: ' + err.status);
+
+		Pebble.sendAppMessage({
+			temperature: -999,
+			condition: -999,
+		});
+	});
+}
+
+function openWeatherMapWeather(pos) {
 	var url = 'http://api.openweathermap.org/data/2.5/weather?';
 	if (config.location) {
 		url += 'q=' + config.location;
@@ -94,10 +170,19 @@ function fetchWeatherHelper(pos) {
 	});
 }
 
+function fetchWeatherHelper(pos) {
+	if (config.weather_provider === 0) {
+		openWeatherMapWeather(pos);
+	}
+	else {
+		yahooWeather(pos);
+	}
+}
+
 function fetchWeather() {
 	console.log('fetching weather');
 
-	if (config.location) {
+	if (config.location && config.weather_provider != 1) {
 		fetchWeatherHelper();
 	}
 	else {

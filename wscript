@@ -15,6 +15,7 @@ js_sources = [
 	'../src/js/config.js',
 	'../src/js/weather.js',
 	'../src/js/listeners.js',
+	'../src/js/conditions.js'
 ]
 
 def concatenate_js(task):
