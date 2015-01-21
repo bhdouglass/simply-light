@@ -9,6 +9,7 @@ out = 'build'
 
 built_js = '../src/js/pebble-js-app.js'
 js_libs = [
+	'../src/js/libs/js-message-queue.min.js',
 ]
 js_sources = [
 	'../src/js/appinfo.js',

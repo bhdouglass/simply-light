@@ -25,6 +25,10 @@ Get it on your Pebble - <https://apps.getpebble.com/applications/5472c040c13ebf3
 	* `pebble install --phone <ip address>`
 	* Optionally specify `--logs` to view the pebble console log
 
+## Third Party Libraries ##
+
+* [js-message-queue](https://github.com/smallstoneapps/js-message-queue)
+
 # Simply Light Config Page #
 
 The config page is hosted at <http://bhdouglass.com/pebble/simply-light-config.html>.

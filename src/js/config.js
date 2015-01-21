@@ -16,6 +16,14 @@ var configInts = [
 	'hide_battery', 'weather_provider', 'feels_like'
 ];
 
+function ack(e) {
+	console.log('Successfully delivered message with transactionId=' + e.data.transactionId);
+}
+
+function nack(e) {
+	console.log('Unable to deliver message with transactionId=' + e.data.transactionId + ', error is: ' + e.error.message);
+}
+
 function loadConfig() {
 	for (var key in config) {
 		var value = window.localStorage.getItem(key);
@@ -29,14 +37,14 @@ function loadConfig() {
 		}
 	}
 
-	Pebble.sendAppMessage({
+	MessageQueue.sendAppMessage({
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
 		color_invert: config.color_invert,
 		night_auto_switch: config.night_auto_switch,
 		show_am_pm: config.show_am_pm,
 		hide_battery: config.hide_battery,
-	});
+	}, ack, nack);
 }
 
 function saveConfig() {
@@ -44,12 +52,12 @@ function saveConfig() {
 		window.localStorage.setItem(key, config[key]);
 	}
 
-	Pebble.sendAppMessage({
+	MessageQueue.sendAppMessage({
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
 		color_invert: config.color_invert,
 		night_auto_switch: config.night_auto_switch,
 		show_am_pm: config.show_am_pm,
 		hide_battery: config.hide_battery,
-	});
+	}, ack, nack);
 }

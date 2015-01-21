@@ -184,20 +184,20 @@ function yahooWeather(pos) {
 			console.log('heat index: ' + temperature);
 		}
 
-		Pebble.sendAppMessage({
+		MessageQueue.sendAppMessage({
 			temperature: temperature,
 			condition: condition,
 			sunrise: sunrise,
 			sunset: sunset
-		});
+		}, ack, nack);
 
 	}, function(err) {
 		console.warn('Error while getting weather: ' + err.status);
 
-		Pebble.sendAppMessage({
+		MessageQueue.sendAppMessage({
 			temperature: -999,
 			condition: -999,
-		});
+		}, ack, nack);
 	});
 }
 
@@ -242,20 +242,20 @@ function openWeatherMapWeather(pos) {
 			console.log('heat index: ' + temperature);
 		}
 
-		Pebble.sendAppMessage({
+		MessageQueue.sendAppMessage({
 			temperature: temperature,
 			condition: condition,
 			sunrise: sunrise,
 			sunset: sunset
-		});
+		}, ack, nack);
 
 	}, function(err) {
 		console.warn('Error while getting weather: ' + err.status);
 
-		Pebble.sendAppMessage({
+		MessageQueue.sendAppMessage({
 			temperature: -999,
 			condition: -999,
-		});
+		}, ack, nack);
 	});
 }
 
@@ -276,10 +276,10 @@ function fetchWeather() {
 	}
 	else {
 		fetchLocation(fetchWeatherHelper, function(err) {
-			Pebble.sendAppMessage({
+			MessageQueue.sendAppMessage({
 				temperature: -999,
 				condition: -999,
-			});
+			}, ack, nack);
 		});
 	}
 }
