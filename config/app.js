@@ -10,7 +10,7 @@ app.config(function($locationProvider) {
 app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
 	$scope.saving = false;
 	$scope.version = 1.1;
-	$scope.latestVersion = 1.6;
+	$scope.latestVersion = 1.7;
 	$scope.temperature_units = [
 		{
 			label: 'Fahrenheit',
@@ -74,6 +74,19 @@ app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
 		}
 	];
 
+	$scope.feels_like = [
+		{
+			label: 'Normal Temperature',
+			value: 0
+		}, {
+			label: 'Wind Chill',
+			value: 1
+		}, {
+			label: 'Heat Index',
+			value: 2
+		}
+	];
+
 	$scope.config_ints = ['refresh_time', 'wait_time'];
 
 	$scope.config = {
@@ -86,6 +99,7 @@ app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
 		show_am_pm: 0,
 		hide_battery: 0,
 		weather_provider: 0,
+		feels_like: 0,
 	};
 
 	$scope.errors = {

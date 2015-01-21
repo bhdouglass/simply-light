@@ -3,8 +3,8 @@
 	"shortName": "Simply Light",
 	"longName": "Simply Light",
 	"companyName": "Brian Douglass",
-	"versionCode": 1.6,
-	"versionLabel": "1.6",
+	"versionCode": 1.7,
+	"versionLabel": "1.7",
 	"capabilities": [ "configurable" ],
 	"watchapp": {
 		"watchface": true

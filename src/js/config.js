@@ -8,9 +8,13 @@ var config = {
 	show_am_pm: 0,
 	hide_battery: 0,
 	weather_provider: 0,
+	feels_like: 0,
 };
 
-var configInts = ['refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm', 'hide_battery', 'weather_provider'];
+var configInts = [
+	'refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm',
+	'hide_battery', 'weather_provider', 'feels_like'
+];
 
 function loadConfig() {
 	for (var key in config) {

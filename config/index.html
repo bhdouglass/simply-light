@@ -77,6 +77,15 @@
 				</div>
 			</div>
 
+			<div class="row" ng-show="version >= 1.7">
+				<div class="form-group">
+					<label for="feels_like" class="col-sm-2 control-label">"Feels Like" Temperature</label>
+					<div class="col-sm-10">
+						<select id="feels_like" class="form-control" ng-model="config.feels_like" ng-options="o.value as o.label for o in feels_like"></select>
+					</div>
+				</div>
+			</div>
+
 			<div class="row">
 				<div class="form-group" ng-class="{'has-error': errors.refresh_time}">
 					<label for="refresh_time" class="col-sm-2 control-label">Refresh Weather Every</label>
