@@ -44,3 +44,7 @@
 .clickable {
 	cursor: pointer;
 }
+
+.ng-cloak {
+  display: none !important;
+}

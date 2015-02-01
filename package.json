@@ -1,0 +1,30 @@
+{
+  "name": "simply-light",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bhdouglass/simply-light.git"
+  },
+  "author": "Brian Douglass",
+  "license": "GPL3",
+  "bugs": {
+    "url": "https://github.com/bhdouglass/simply-light/issues"
+  },
+  "homepage": "https://github.com/bhdouglass/simply-light",
+  "devDependencies": {
+    "grunt": "^0.4.1",
+    "grunt-contrib-connect": "^0.7.1",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-cssmin": "^0.11.0",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-contrib-htmlmin": "^0.3.0",
+    "grunt-newer": "^0.7.0",
+    "jshint-stylish": "^0.2.0",
+    "load-grunt-tasks": "^0.4.0",
+    "time-grunt": "^0.3.1"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}

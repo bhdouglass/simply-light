@@ -1,13 +1,13 @@
 var app = angular.module('app', []);
 
-app.config(function($locationProvider) {
+app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.html5Mode({
 		enabled: true,
 		requireBase: false
 	});
-});
+}]);
 
-app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
+app.controller('indexCtrl', ['$scope', '$http', '$location', '$timeout', function($scope, $http, $location, $timeout) {
 	$scope.saving = false;
 	$scope.version = 1.1;
 	$scope.latestVersion = 1.7;
@@ -181,4 +181,4 @@ app.controller('indexCtrl', function ($scope, $http, $location, $timeout) {
 
 	console.log('version: ' + $scope.version);
 	console.log('lastest version: ' + $scope.latestVersion);
-});
+}]);
