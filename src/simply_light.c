@@ -34,6 +34,7 @@ GFont font_weather;
 GFont font_am_pm;
 
 BatteryChargeState battery_state;
+bool bt_connected = true;
 
 static AppTimer *timer;
 int refresh_time = 30;
@@ -51,6 +52,33 @@ int sunrise = -1;
 int sunset = -1;
 int is_day = -1;
 
+static void handle_timer(void *data) {
+	if (bt_connected) {
+		Tuplet value = TupletInteger(APP_KEY_FETCH_WEATHER, 1);
+
+		DictionaryIterator *iter;
+		app_message_outbox_begin(&iter);
+
+		if (iter == NULL) {
+			return;
+		}
+
+		dict_write_tuplet(iter, &value);
+		dict_write_end(iter);
+		app_message_outbox_send();
+
+		app_timer_cancel(timer);
+		timer = app_timer_register(refresh_time * 60000, handle_timer, NULL);
+	}
+	else {
+		strncpy(temperature_text, " ", sizeof(temperature_text));
+		text_layer_set_text(temperature_layer, temperature_text);
+
+		set_condition(-999, is_day, condition_text);
+		text_layer_set_text(condition_layer, condition_text);
+	}
+}
+
 static void update_battery_layer(Layer *layer, GContext *ctx) {
 	int width = battery_state.charge_percent * CHARGEUNIT;
 	int offset = (PWIDTH - width) / 2;
@@ -65,6 +93,16 @@ static void update_battery_layer(Layer *layer, GContext *ctx) {
 static void handle_battery(BatteryChargeState charge_state) {
 	battery_state = charge_state;
 	layer_mark_dirty(battery_layer);
+}
+
+static void handle_bluetooth(bool connected) {
+	bt_connected = connected;
+	if (connected) {
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "connected");
+
+		app_timer_cancel(timer);
+		timer = app_timer_register(1000, handle_timer, NULL);
+	}
 }
 
 static void colorize() {
@@ -187,23 +225,6 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 	}
 
 	set_day_night();
-}
-
-static void handle_timer(void *data) {
-	Tuplet value = TupletInteger(APP_KEY_FETCH_WEATHER, 1);
-
-	DictionaryIterator *iter;
-	app_message_outbox_begin(&iter);
-
-	if (iter == NULL) {
-		return;
-	}
-
-	dict_write_tuplet(iter, &value);
-	dict_write_end(iter);
-	app_message_outbox_send();
-
-	timer = app_timer_register(refresh_time * 60000, handle_timer, NULL);
 }
 
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
@@ -415,8 +436,11 @@ static void init(void) {
 	handle_tick(local, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT);
 	free(local);
 
+	bt_connected = bluetooth_connection_service_peek();
+
 	tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
 	battery_state_service_subscribe(&handle_battery);
+	bluetooth_connection_service_subscribe(&handle_bluetooth);
 
 	app_message_register_inbox_received(msg_received_handler);
 	app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
@@ -428,6 +452,7 @@ static void deinit(void) {
 	window_destroy(window);
 	tick_timer_service_unsubscribe();
 	battery_state_service_unsubscribe();
+	bluetooth_connection_service_unsubscribe();
 
 	fonts_unload_custom_font(font_time);
 	fonts_unload_custom_font(font_date);
