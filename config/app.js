@@ -10,7 +10,7 @@ app.config(['$locationProvider', function($locationProvider) {
 app.controller('indexCtrl', ['$scope', '$http', '$location', '$timeout', function($scope, $http, $location, $timeout) {
 	$scope.saving = false;
 	$scope.version = 1.1;
-	$scope.latestVersion = 1.7;
+	$scope.latestVersion = 1.8;
 	$scope.temperature_units = [
 		{
 			label: 'Fahrenheit',

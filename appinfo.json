@@ -3,8 +3,8 @@
 	"shortName": "Simply Light",
 	"longName": "Simply Light",
 	"companyName": "Brian Douglass",
-	"versionCode": 1.7,
-	"versionLabel": "1.7",
+	"versionCode": 1.8,
+	"versionLabel": "1.8",
 	"capabilities": [ "configurable" ],
 	"watchapp": {
 		"watchface": true
@@ -39,13 +39,11 @@
 			{
 				"name": "DROIDSANS_32",
 				"file": "fonts/DroidSans.ttf",
-				"characterRegex": "[A-Za-z0-9 \u00b0-]",
 				"type": "font"
 			},
 			{
 				"name": "DROIDSANS_MONO_20",
 				"file": "fonts/DroidSansMono.ttf",
-				"characterRegex": "[A-Za-z]",
 				"type": "font"
 			},
 			{

@@ -418,6 +418,7 @@ static void load_config(void) {
 }
 
 static void init(void) {
+	setlocale(LC_ALL, "");
 	load_config();
 
 	window = window_create();
