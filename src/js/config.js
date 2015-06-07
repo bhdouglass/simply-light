@@ -9,11 +9,12 @@ var config = {
 	hide_battery: 0,
 	weather_provider: 0,
 	feels_like: 0,
+	vibrate_bluetooth: 0,
 };
 
 var configInts = [
 	'refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm',
-	'hide_battery', 'weather_provider', 'feels_like'
+	'hide_battery', 'weather_provider', 'feels_like', 'vibrate_bluetooth'
 ];
 
 function ack(e) {
@@ -44,6 +45,7 @@ function loadConfig() {
 		night_auto_switch: config.night_auto_switch,
 		show_am_pm: config.show_am_pm,
 		hide_battery: config.hide_battery,
+		vibrate_bluetooth: config.vibrate_bluetooth,
 	}, ack, nack);
 }
 
@@ -59,5 +61,6 @@ function saveConfig() {
 		night_auto_switch: config.night_auto_switch,
 		show_am_pm: config.show_am_pm,
 		hide_battery: config.hide_battery,
+		vibrate_bluetooth: config.vibrate_bluetooth,
 	}, ack, nack);
 }

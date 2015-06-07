@@ -87,6 +87,16 @@ app.controller('indexCtrl', ['$scope', '$http', '$location', '$timeout', functio
 		}
 	];
 
+	$scope.vibrate_bluetooth = [
+		{
+			label: 'Don\'t vibrate on bluetooth disconnect',
+			value: 0
+		}, {
+			label: 'Vibrate on bluetooth disconnect',
+			value: 1
+		}
+	];
+
 	$scope.config_ints = ['refresh_time', 'wait_time'];
 
 	$scope.config = {
@@ -100,6 +110,7 @@ app.controller('indexCtrl', ['$scope', '$http', '$location', '$timeout', functio
 		hide_battery: 0,
 		weather_provider: 0,
 		feels_like: 0,
+		vibrate_bluetooth: 0,
 	};
 
 	$scope.errors = {

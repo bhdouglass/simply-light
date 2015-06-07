@@ -41,6 +41,7 @@ int refresh_time = 30;
 int wait_time = 1;
 int show_am_pm = 0;
 int hide_battery = 0;
+int vibrate_bluetooth = 0;
 
 int invert = 0;
 int night_auto_switch = 0;
@@ -102,6 +103,12 @@ static void handle_bluetooth(bool connected) {
 
 		app_timer_cancel(timer);
 		timer = app_timer_register(1000, handle_timer, NULL);
+	}
+	else {
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "disconnected");
+		if (vibrate_bluetooth == 1) {
+			vibes_short_pulse();
+		}
 	}
 }
 
@@ -314,6 +321,11 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				hide_battery = value;
 				persist_write_int(APP_KEY_HIDE_BATTERY, hide_battery);
 				break;
+
+			case APP_KEY_VIBRATE_BLUETOOTH:
+				vibrate_bluetooth = value;
+				persist_write_int(APP_KEY_VIBRATE_BLUETOOTH, vibrate_bluetooth);
+				break;
 		}
 
 		t = dict_read_next(iter);
@@ -414,6 +426,10 @@ static void load_config(void) {
 
 	if (persist_exists(APP_KEY_HIDE_BATTERY)) {
 		hide_battery = persist_read_int(APP_KEY_HIDE_BATTERY);
+	}
+
+	if (persist_exists(APP_KEY_VIBRATE_BLUETOOTH)) {
+		vibrate_bluetooth = persist_read_int(APP_KEY_VIBRATE_BLUETOOTH);
 	}
 }
 

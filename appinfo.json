@@ -22,7 +22,8 @@
     "night_auto_switch": 7,
     "show_am_pm": 8,
     "hide_battery": 9,
-    "fetch_weather": 10
+    "fetch_weather": 10,
+    "vibrate_bluetooth": 11
   },
   "resources": {
     "media": [
