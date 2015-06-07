@@ -6,7 +6,7 @@ A simple Pebble watchface with time, weather, and battery status.
 
 Weather icons from <http://erikflowers.github.io/weather-icons/>.
 
-Weather data from <http://openweathermap.org/>.
+Weather data from <http://openweathermap.org/> or <https://query.yahooapis.com/v1/public/yql>.
 
 Get it on your Pebble - <https://apps.getpebble.com/applications/5472c040c13ebf3ddf000045>.
 
@@ -15,15 +15,12 @@ Get it on your Pebble - <https://apps.getpebble.com/applications/5472c040c13ebf3
 * Download the source code
 	* `git clone https://github.com/bhdouglass/simply-light.git`
 * Install build dependencies
-	* Install [UglifyJS](http://lisperator.net/uglifyjs/)
-		* `npm install uglify-js -g`
-	* Install [JSHint](http://jshint.com/)
-		* `npm install jshint -g`
-* Build watchface
-	* `pebble build`
-* Install watchface
-	* `pebble install --phone <ip address>`
-	* Optionally specify `--logs` to view the pebble console log
+	* `npm install -g gulp`
+	* `npm install`
+* Build the watchface
+	* `gulp build-pebble`
+* Install the watchface
+	* `gulp install-pebble`
 
 ## Third Party Libraries ##
 
@@ -31,14 +28,16 @@ Get it on your Pebble - <https://apps.getpebble.com/applications/5472c040c13ebf3
 
 # Simply Light Config Page #
 
-The config page is hosted at <http://bhdouglass.com/pebble/simply-light-config.html>.
+The config page is hosted at <http://simply-light.bhdouglass.com>.
 
-The source for the config page is located at
-<https://github.com/bhdouglass/bhdouglass.com/tree/master/src/pebble>.
+* Test the config page locally
+	* `gulp serve`
+* Build the config page for deployment
+	* `gulp build-config`
 
 ## License ##
 
-Copyright (C) 2014 [Brian Douglass](http://bhdouglass.com/)
+Copyright (C) 2015 [Brian Douglass](http://bhdouglass.com/)
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License version 3, as published by the Free

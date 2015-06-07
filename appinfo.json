@@ -1,63 +1,70 @@
 {
-	"uuid": "04a6e68a-42d6-4738-87b2-1c80a994dee4",
-	"shortName": "Simply Light",
-	"longName": "Simply Light",
-	"companyName": "Brian Douglass",
-	"versionCode": 1.8,
-	"versionLabel": "1.8",
-	"capabilities": [ "configurable" ],
-	"watchapp": {
-		"watchface": true
-	},
-	"appKeys": {
-		"temperature": 0,
-		"condition": 1,
-		"refresh_time": 2,
-		"wait_time": 3,
-		"color_invert": 4,
-		"sunrise": 5,
-		"sunset": 6,
-		"night_auto_switch": 7,
-		"show_am_pm": 8,
-		"hide_battery": 9,
-		"fetch_weather": 10
-	},
-	"resources": {
-		"media": [
-			{
-				"menuIcon": true,
-				"type": "png",
-				"name": "IMAGE_MENU_ICON",
-				"file": "images/menu_icon.png"
-			},
-			{
-				"name": "DROIDSANS_BOLD_50",
-				"file": "fonts/DroidSans-Bold.ttf",
-				"characterRegex": "[0-9:]",
-				"type": "font"
-			},
-			{
-				"name": "DROIDSANS_32",
-				"file": "fonts/DroidSans.ttf",
-				"type": "font"
-			},
-			{
-				"name": "DROIDSANS_MONO_20",
-				"file": "fonts/DroidSansMono.ttf",
-				"type": "font"
-			},
-			{
-				"name": "DROIDSANS_MONO_16",
-				"file": "fonts/DroidSansMono.ttf",
-				"characterRegex": "[APM]",
-				"type": "font"
-			},
-			{
-				"name": "WEATHER_30",
-				"file": "fonts/weathericons.ttf",
-				"characterRegex": "[\uf002\uf003\uf004\uf008\uf00a\uf00b\uf00d\uf010\uf013\uf014\uf015\uf019\uf01b\uf01c\uf01e\uf021\uf02e\uf031\uf032\uf036\uf038\uf039\uf03b\uf03e\uf04a\uf050\uf056\uf072\uf073\uf076]",
-				"type": "font"
-			}
-		]
-	}
+  "uuid": "04a6e68a-42d6-4738-87b2-1c80a994dee4",
+  "shortName": "Simply Light",
+  "longName": "Simply Light",
+  "companyName": "Brian Douglass",
+  "versionCode": 1.8,
+  "versionLabel": "1.8",
+  "capabilities": [
+    "configurable"
+  ],
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {
+    "temperature": 0,
+    "condition": 1,
+    "refresh_time": 2,
+    "wait_time": 3,
+    "color_invert": 4,
+    "sunrise": 5,
+    "sunset": 6,
+    "night_auto_switch": 7,
+    "show_am_pm": 8,
+    "hide_battery": 9,
+    "fetch_weather": 10
+  },
+  "resources": {
+    "media": [
+      {
+        "menuIcon": true,
+        "type": "png",
+        "name": "IMAGE_MENU_ICON",
+        "file": "images/menu_icon.png"
+      },
+      {
+        "name": "DROIDSANS_BOLD_50",
+        "file": "fonts/DroidSans-Bold.ttf",
+        "characterRegex": "[0-9:]",
+        "type": "font"
+      },
+      {
+        "name": "DROIDSANS_32",
+        "file": "fonts/DroidSans.ttf",
+        "type": "font"
+      },
+      {
+        "name": "DROIDSANS_MONO_20",
+        "file": "fonts/DroidSansMono.ttf",
+        "type": "font"
+      },
+      {
+        "name": "DROIDSANS_MONO_16",
+        "file": "fonts/DroidSansMono.ttf",
+        "characterRegex": "[APM]",
+        "type": "font"
+      },
+      {
+        "name": "WEATHER_30",
+        "file": "fonts/weathericons.ttf",
+        "characterRegex": "[\uf002\uf003\uf004\uf008\uf00a\uf00b\uf00d\uf010\uf013\uf014\uf015\uf019\uf01b\uf01c\uf01e\uf021\uf02e\uf031\uf032\uf036\uf038\uf039\uf03b\uf03e\uf04a\uf050\uf056\uf072\uf073\uf076]",
+        "type": "font"
+      }
+    ]
+  },
+  "targetPlatforms": [
+    "aplite",
+    "basalt"
+  ],
+  "sdkVersion": "3"
 }

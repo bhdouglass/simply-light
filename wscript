@@ -1,78 +1,41 @@
-#Based on http://matthewtole.com/blog/2014/07/22/simplify-your-pebble-development-with-wscript/
 
-import json
-from sh import uglifyjs
-from sh import jshint
+#
+# This file is the default set of rules to compile a Pebble project.
+#
+# Feel free to customize this to your needs.
+#
+
+import os.path
 
 top = '.'
 out = 'build'
 
-built_js = '../src/js/pebble-js-app.js'
-js_libs = [
-	'../src/js/libs/js-message-queue.min.js',
-]
-js_sources = [
-	'../src/js/appinfo.js',
-	'../src/js/config.js',
-	'../src/js/weather.js',
-	'../src/js/listeners.js',
-	'../src/js/conditions.js'
-]
-
-def concatenate_js(task):
-	inputs = (input.abspath() for input in task.inputs)
-	uglifyjs(*inputs, o=task.outputs[0].abspath())
-
-def js_jshint(task):
-	inputs = (input.abspath() for input in task.inputs)
-	jshint(*inputs, config='jshintrc')
-
-def generate_appinfo_js(task):
-	src = task.inputs[0].abspath()
-	target = task.outputs[0].abspath()
-	data = open(src).read().strip()
-
-	f = open(target, 'w')
-	f.write('/* Generated from appinfo.json */\n\n')
-	f.write('var appinfo = ')
-	f.write(data)
-	f.write(';')
-	f.close()
-
-def generate_appinfo_h(task):
-	src = task.inputs[0].abspath()
-	target = task.outputs[0].abspath()
-	appinfo = json.load(open(src))
-
-	f = open(target, 'w')
-	f.write('#pragma once\n\n')
-	f.write('/* Generated from appinfo.json */\n\n')
-	f.write('#define VERSION_LABEL "%s"\n' % appinfo["versionLabel"])
-	f.write('#define VERSION_CODE %d\n' % appinfo["versionCode"])
-	f.write('#define UUID "%s"\n\n' % appinfo["uuid"])
-
-	for key in appinfo['appKeys']:
-		f.write('#define APP_KEY_%s %d\n' % (key.upper(), appinfo['appKeys'][key]))
-
-	f.close()
-
 def options(ctx):
-	ctx.load('pebble_sdk')
+    ctx.load('pebble_sdk')
 
 def configure(ctx):
-	ctx.load('pebble_sdk')
+    ctx.load('pebble_sdk')
 
 def build(ctx):
-	ctx.load('pebble_sdk')
+    ctx.load('pebble_sdk')
 
-	#Generate app info files
-	ctx(rule=generate_appinfo_js, source='../appinfo.json', target='../src/js/appinfo.js')
-	ctx(rule=generate_appinfo_h, source='../appinfo.json', target='../src/appinfo.h')
+    build_worker = os.path.exists('worker_src')
+    binaries = []
 
-	#Check and combine js
-	ctx(rule=js_jshint, source=js_sources)
-	ctx(rule=concatenate_js, source=' '.join(js_libs + js_sources), target=built_js)
+    for p in ctx.env.TARGET_PLATFORMS:
+        ctx.set_env(ctx.all_envs[p])
+        ctx.set_group(ctx.env.PLATFORM_NAME)
+        app_elf='{}/pebble-app.elf'.format(ctx.env.BUILD_DIR)
+        ctx.pbl_program(source=ctx.path.ant_glob('src/**/*.c'),
+        target=app_elf)
 
-	#Default build functions
-	ctx.pbl_program(source=ctx.path.ant_glob('src/**/*.c'), target='pebble-app.elf')
-	ctx.pbl_bundle(elf='pebble-app.elf', js=ctx.path.ant_glob('src/js/**/*.js'))
+        if build_worker:
+            worker_elf='{}/pebble-worker.elf'.format(ctx.env.BUILD_DIR)
+            binaries.append({'platform': p, 'app_elf': app_elf, 'worker_elf': worker_elf})
+            ctx.pbl_worker(source=ctx.path.ant_glob('worker_src/**/*.c'),
+            target=worker_elf)
+        else:
+            binaries.append({'platform': p, 'app_elf': app_elf})
+
+    ctx.set_group('bundle')
+    ctx.pbl_bundle(binaries=binaries, js=ctx.path.ant_glob('src/js/**/*.js'))
