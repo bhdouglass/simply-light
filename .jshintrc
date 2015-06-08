@@ -1,0 +1,20 @@
+{
+  "globals": {
+    "Pebble": true,
+    "angular": true,
+    "colors": true
+  },
+  "browser": true,
+  "devel": true,
+  "freeze": true,
+  "evil": false,
+  "camelcase": false,
+  "curly": true,
+  "immed": true,
+  "indent": true,
+  "latedef": "nofunc",
+  "undef": false,
+  "unused": false,
+  "globalstrict": false,
+  "node": true
+}

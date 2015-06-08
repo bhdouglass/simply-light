@@ -16,7 +16,7 @@ var del = require('del');
 var minimist = require('minimist');
 
 var paths = {
-    jslint: ['src/js/*.js', '!src/js/appinfo.js', 'gulpfile.js', 'config/*.js'],
+    jslint: ['src/js/*.js', '!src/js/appinfo.js', 'gulpfile.js', 'config/*.js', '!config/colors.js'],
     pebble: {
         js: ['src/js/*.js', 'src/js/libs/*.js'],
         jsdist: 'dist/src/js/',
@@ -26,7 +26,7 @@ var paths = {
     },
     config: {
         html: 'config/*.html',
-        js: 'config/*.js',
+        js: ['config/*.js'],
         css: 'config/*.css',
         dist: 'dist/config/'
     }
@@ -76,9 +76,9 @@ function installCommand(config) {
     return command;
 }
 
-gulp.task('serve', function() {
+gulp.task('serve', ['build-config'], function() {
     connect.server({
-        root: 'config',
+        root: 'dist/config',
         port: 9000
     });
 
@@ -88,20 +88,11 @@ gulp.task('serve', function() {
         }));
 });
 
-gulp.task('serve-dist', ['build-config'], function() {
-    connect.server({
-        root: 'dist/config',
-        port: 9001
-    });
-
-    return gulp.src(paths.config.html)
-        .pipe(gopen('', {
-            url: 'http://localhost:9001?version=' + appinfo.versionLabel
-        }));
-});
-
 gulp.task('build-js', function() {
     return gulp.src(paths.config.js)
+        .pipe(template({
+            version: appinfo.versionLabel,
+        }))
         .pipe(sourcemaps.init())
         .pipe(concat('app.js'))
         .pipe(ngAnnotate())

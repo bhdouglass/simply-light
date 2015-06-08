@@ -135,6 +135,15 @@
 					</div>
 				</div>
 
+				<div class="row" ng-show="version >= 2.1">
+					<div class="form-group">
+						<label for="text_color" class="col-sm-2 control-label">Text Color</label>
+						<div class="col-sm-10">
+							<color-picker ng-model="textColor"></color-picker>
+						</div>
+					</div>
+				</div>
+
 				<div class="row">
 					<div class="form-group">
 						<label for="color_invert" class="col-sm-2 control-label">Watchface Colors</label>

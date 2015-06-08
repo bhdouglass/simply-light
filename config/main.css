@@ -28,7 +28,7 @@
 
 .divider {
 	margin-top: 10px;
-	margin-bottom: -5px;	
+	margin-bottom: -5px;
 	border-bottom: 1px solid rgba(0,0,0,.1);
 	width: 100%;
 }
@@ -47,4 +47,11 @@
 
 .ng-cloak {
   display: none !important;
+}
+
+.color {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	margin-bottom: -6px;
 }
