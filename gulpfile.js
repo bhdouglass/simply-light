@@ -13,6 +13,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var htmlmin = require('gulp-htmlmin');
 var minifyCSS = require('gulp-minify-css');
 var del = require('del');
+var minimist = require('minimist');
 
 var paths = {
     jslint: ['src/js/*.js', '!src/js/appinfo.js', 'gulpfile.js', 'config/*.js'],
@@ -30,6 +31,50 @@ var paths = {
         dist: 'dist/config/'
     }
 };
+
+var config = minimist(process.argv.slice(2), {
+    default: {
+        emulator: false,
+        color: false,
+        ip: '192.168.1.133',
+        logs: true,
+        debug: true,
+    },
+    boolean: ['emulator', 'color'],
+    alias: {
+        emulator: ['e', 'emu'],
+        color: 'c',
+        logs: 'l',
+        debug: 'd',
+    }
+});
+
+function installCommand(config) {
+    var command = 'pebble install';
+    if (config.emulator) {
+        command += ' --emulator';
+
+        if (config.color) {
+            command += ' basalt';
+        }
+        else {
+            command += ' aplite';
+        }
+    }
+    else {
+        command += ' --phone ' + config.ip;
+    }
+
+    if (config.logs) {
+        command += ' --logs';
+    }
+
+    if (config.debug) {
+        command += ' --debug';
+    }
+
+    return command;
+}
 
 gulp.task('serve', function() {
     connect.server({
@@ -123,4 +168,4 @@ gulp.task('build-pebble-resources', function() {
 
 gulp.task('build-config', ['lint', 'clean', 'build-html', 'build-js', 'build-css']);
 gulp.task('build-pebble', ['lint', 'clean', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd dist && pebble build']));
-gulp.task('install-pebble', ['build-pebble'], shell.task(['cd dist && pebble install --phone 192.168.1.133 --logs']));
+gulp.task('install-pebble', ['build-pebble'], shell.task(['cd dist && ' + installCommand(config)]));

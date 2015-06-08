@@ -10,7 +10,7 @@ app.config(['$locationProvider', function($locationProvider) {
 app.controller('indexCtrl', ['$scope', '$http', '$location', '$timeout', function($scope, $http, $location, $timeout) {
 	$scope.saving = false;
 	$scope.version = 1.1;
-	$scope.latestVersion = 1.9;
+	$scope.latestVersion = 2.0;
 	$scope.temperature_units = [
 		{
 			label: 'Fahrenheit',
@@ -97,6 +97,26 @@ app.controller('indexCtrl', ['$scope', '$http', '$location', '$timeout', functio
 		}
 	];
 
+	$scope.charging_icon = [
+		{
+			label: 'Don\'t show charging icon',
+			value: 0
+		}, {
+			label: 'Show icon when charging',
+			value: 1
+		}
+	];
+
+	$scope.bt_disconnect_icon = [
+		{
+			label: 'Don\'t show bluetooth disconnected icon',
+			value: 0
+		}, {
+			label: 'Show icon when bluetooth disconnected',
+			value: 1
+		}
+	];
+
 	$scope.config_ints = ['refresh_time', 'wait_time'];
 
 	$scope.config = {
@@ -111,6 +131,8 @@ app.controller('indexCtrl', ['$scope', '$http', '$location', '$timeout', functio
 		weather_provider: 0,
 		feels_like: 0,
 		vibrate_bluetooth: 0,
+		charging_icon: 1,
+		bt_disconnect_icon: 0,
 	};
 
 	$scope.errors = {

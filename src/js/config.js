@@ -10,11 +10,14 @@ var config = {
 	weather_provider: 0,
 	feels_like: 0,
 	vibrate_bluetooth: 0,
+	charging_icon: 1,
+	bt_disconnect_icon: 0,
 };
 
 var configInts = [
 	'refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm',
-	'hide_battery', 'weather_provider', 'feels_like', 'vibrate_bluetooth'
+	'hide_battery', 'weather_provider', 'feels_like', 'vibrate_bluetooth',
+	'charging_icon', 'bt_disconnect_icon'
 ];
 
 function ack(e) {
@@ -46,6 +49,8 @@ function loadConfig() {
 		show_am_pm: config.show_am_pm,
 		hide_battery: config.hide_battery,
 		vibrate_bluetooth: config.vibrate_bluetooth,
+		charging_icon: config.charging_icon,
+		bt_disconnect_icon: config.bt_disconnect_icon,
 	}, ack, nack);
 }
 
@@ -62,5 +67,7 @@ function saveConfig() {
 		show_am_pm: config.show_am_pm,
 		hide_battery: config.hide_battery,
 		vibrate_bluetooth: config.vibrate_bluetooth,
+		charging_icon: config.charging_icon,
+		bt_disconnect_icon: config.bt_disconnect_icon,
 	}, ack, nack);
 }

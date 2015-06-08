@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 1.9,
-  "versionLabel": "1.9",
+  "versionCode": 2.0,
+  "versionLabel": "2.0",
   "capabilities": [
     "configurable"
   ],
@@ -23,7 +23,9 @@
     "show_am_pm": 8,
     "hide_battery": 9,
     "fetch_weather": 10,
-    "vibrate_bluetooth": 11
+    "vibrate_bluetooth": 11,
+    "charging_icon": 12,
+    "bt_disconnect_icon": 13
   },
   "resources": {
     "media": [
@@ -59,6 +61,12 @@
         "name": "WEATHER_30",
         "file": "fonts/weathericons.ttf",
         "characterRegex": "[\uf002\uf003\uf004\uf008\uf00a\uf00b\uf00d\uf010\uf013\uf014\uf015\uf019\uf01b\uf01c\uf01e\uf021\uf02e\uf031\uf032\uf036\uf038\uf039\uf03b\uf03e\uf04a\uf050\uf056\uf072\uf073\uf076]",
+        "type": "font"
+      },
+      {
+        "name": "MATERIAL_30",
+        "file": "fonts/Material-Design-Iconic-Font.ttf",
+        "characterRegex": "[\uf136\uf12c]",
         "type": "font"
       }
     ]

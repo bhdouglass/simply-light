@@ -32,6 +32,7 @@ GFont font_time;
 GFont font_month;
 GFont font_weather;
 GFont font_am_pm;
+GFont font_icons;
 
 BatteryChargeState battery_state;
 bool bt_connected = true;
@@ -42,6 +43,8 @@ int wait_time = 1;
 int show_am_pm = 0;
 int hide_battery = 0;
 int vibrate_bluetooth = 0;
+int charging_icon = 1;
+int bt_disconnect_icon = 1;
 
 int invert = 0;
 int night_auto_switch = 0;
@@ -94,12 +97,28 @@ static void update_battery_layer(Layer *layer, GContext *ctx) {
 static void handle_battery(BatteryChargeState charge_state) {
 	battery_state = charge_state;
 	layer_mark_dirty(battery_layer);
+
+	if (battery_state.is_charging) {
+		if (charging_icon) {
+			int size = sizeof(condition_text);
+			text_layer_set_font(condition_layer, font_icons);
+			strncpy(condition_text, "\uf12c", size);
+		}
+	}
+	else {
+		text_layer_set_font(condition_layer, font_weather);
+		set_condition(condition, is_day, condition_text);
+	}
 }
 
 static void handle_bluetooth(bool connected) {
 	bt_connected = connected;
+
 	if (connected) {
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "connected");
+
+		text_layer_set_font(condition_layer, font_weather);
+		set_condition(condition, is_day, condition_text);
 
 		app_timer_cancel(timer);
 		timer = app_timer_register(1000, handle_timer, NULL);
@@ -108,6 +127,12 @@ static void handle_bluetooth(bool connected) {
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "disconnected");
 		if (vibrate_bluetooth == 1) {
 			vibes_short_pulse();
+		}
+
+		if (bt_disconnect_icon) {
+			int size = sizeof(condition_text);
+			text_layer_set_font(condition_layer, font_icons);
+			strncpy(condition_text, "\uf136", size);
 		}
 	}
 }
@@ -326,15 +351,28 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				vibrate_bluetooth = value;
 				persist_write_int(APP_KEY_VIBRATE_BLUETOOTH, vibrate_bluetooth);
 				break;
+
+			case APP_KEY_CHARGING_ICON:
+				charging_icon = value;
+				persist_write_int(APP_KEY_CHARGING_ICON, charging_icon);
+				break;
+
+			case APP_KEY_BT_DISCONNECT_ICON:
+				bt_disconnect_icon = value;
+				persist_write_int(APP_KEY_BT_DISCONNECT_ICON, bt_disconnect_icon);
+				break;
 		}
 
 		t = dict_read_next(iter);
 	}
 
+	text_layer_set_font(condition_layer, font_weather);
 	set_day_night();
 	colorize();
 	set_condition(condition, is_day, condition_text);
 	text_layer_set_text(condition_layer, condition_text);
+
+	handle_battery(battery_state);
 }
 
 static void window_load(Window *window) {
@@ -345,6 +383,7 @@ static void window_load(Window *window) {
 	font_month = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_20));
 	font_weather = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_WEATHER_30));
 	font_am_pm = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_16));
+	font_icons = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_MATERIAL_30));
 
 	time_layer = text_layer_create(GRect(0, top, PWIDTH, 100));
 	text_layer_set_background_color(time_layer, GColorClear);
@@ -431,6 +470,14 @@ static void load_config(void) {
 	if (persist_exists(APP_KEY_VIBRATE_BLUETOOTH)) {
 		vibrate_bluetooth = persist_read_int(APP_KEY_VIBRATE_BLUETOOTH);
 	}
+
+	if (persist_exists(APP_KEY_CHARGING_ICON)) {
+		charging_icon = persist_read_int(APP_KEY_CHARGING_ICON);
+	}
+
+	if (persist_exists(APP_KEY_BT_DISCONNECT_ICON)) {
+		bt_disconnect_icon = persist_read_int(APP_KEY_BT_DISCONNECT_ICON);
+	}
 }
 
 static void init(void) {
@@ -454,6 +501,11 @@ static void init(void) {
 	free(local);
 
 	bt_connected = bluetooth_connection_service_peek();
+	if (!bt_connected) {
+		handle_bluetooth(bt_connected);
+	}
+
+	handle_battery(battery_state);
 
 	tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
 	battery_state_service_subscribe(&handle_battery);
@@ -476,6 +528,7 @@ static void deinit(void) {
 	fonts_unload_custom_font(font_month);
 	fonts_unload_custom_font(font_weather);
 	fonts_unload_custom_font(font_am_pm);
+	fonts_unload_custom_font(font_icons);
 
 	app_timer_cancel(timer);
 }
