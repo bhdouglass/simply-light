@@ -457,7 +457,7 @@ static void window_load(Window *window) {
 	text_layer_set_text_alignment(am_pm_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(am_pm_layer));
 
-	battery_percent_layer = text_layer_create(GRect(0, top - 5, PWIDTH, 20));
+	battery_percent_layer = text_layer_create(GRect(3, top - 5, PWIDTH - 5, 20));
 	text_layer_set_background_color(battery_percent_layer, GColorClear);
 	text_layer_set_font(battery_percent_layer, font_battery);
 	text_layer_set_text_alignment(battery_percent_layer, GTextAlignmentRight);
