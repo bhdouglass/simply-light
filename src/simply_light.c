@@ -14,6 +14,7 @@ static char month_text[10];
 static char temperature_text[6];
 static char condition_text[5];
 static char am_pm_text[3];
+static char battery_percent_text[6];
 
 int top = 5;
 
@@ -26,6 +27,7 @@ static TextLayer *month_layer;
 static TextLayer *temperature_layer;
 static TextLayer *condition_layer;
 static TextLayer *am_pm_layer;
+static TextLayer *battery_percent_layer;
 
 GFont font_date;
 GFont font_time;
@@ -33,6 +35,7 @@ GFont font_month;
 GFont font_weather;
 GFont font_am_pm;
 GFont font_icons;
+GFont font_battery;
 
 BatteryChargeState battery_state;
 bool bt_connected = true;
@@ -45,6 +48,7 @@ int hide_battery = 0;
 int vibrate_bluetooth = 0;
 int charging_icon = 1;
 int bt_disconnect_icon = 1;
+int battery_percent = 0;
 
 int invert = 0;
 int night_auto_switch = 0;
@@ -97,6 +101,7 @@ static void update_battery_layer(Layer *layer, GContext *ctx) {
 static void handle_battery(BatteryChargeState charge_state) {
 	battery_state = charge_state;
 	layer_mark_dirty(battery_layer);
+	layer_mark_dirty((Layer *)battery_percent_layer);
 
 	if (battery_state.is_charging) {
 		if (charging_icon) {
@@ -104,11 +109,18 @@ static void handle_battery(BatteryChargeState charge_state) {
 			text_layer_set_font(condition_layer, font_icons);
 			strncpy(condition_text, "\uf12c", size);
 		}
+
+		snprintf(battery_percent_text, sizeof(battery_percent_text), "+%d%%", battery_state.charge_percent);
+		text_layer_set_text(battery_percent_layer, battery_percent_text);
 	}
 	else {
 		text_layer_set_font(condition_layer, font_weather);
 		set_condition(condition, is_day, condition_text);
+
+		snprintf(battery_percent_text, sizeof(battery_percent_text), "%d%%", battery_state.charge_percent);
+		text_layer_set_text(battery_percent_layer, battery_percent_text);
 	}
+	APP_LOG(APP_LOG_LEVEL_DEBUG, battery_percent_text);
 }
 
 static void handle_bluetooth(bool connected) {
@@ -175,12 +187,25 @@ static void colorize() {
 	text_layer_set_text_color(temperature_layer, text_color);
 	text_layer_set_text_color(condition_layer, text_color);
 	text_layer_set_text_color(am_pm_layer, text_color);
+	text_layer_set_text_color(battery_percent_layer, text_color);
 
 	if (hide_battery == 1) {
 		layer_set_hidden((Layer *)battery_layer, true);
 	}
 	else {
 		layer_set_hidden((Layer *)battery_layer, false);
+	}
+
+	if (battery_percent == 0) {
+		layer_set_hidden((Layer *)battery_percent_layer, true);
+	}
+	else if (battery_percent == 1) {
+		layer_set_hidden((Layer *)battery_percent_layer, false);
+		text_layer_set_text_alignment(battery_percent_layer, GTextAlignmentRight);
+	}
+	else {
+		layer_set_hidden((Layer *)battery_percent_layer, false);
+		text_layer_set_text_alignment(battery_percent_layer, GTextAlignmentLeft);
 	}
 }
 
@@ -257,6 +282,7 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 	}
 
 	set_day_night();
+	handle_battery(battery_state_service_peek());
 }
 
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
@@ -361,6 +387,11 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				bt_disconnect_icon = value;
 				persist_write_int(APP_KEY_BT_DISCONNECT_ICON, bt_disconnect_icon);
 				break;
+
+			case APP_KEY_BATTERY_PERCENT:
+				battery_percent = value;
+				persist_write_int(APP_KEY_BATTERY_PERCENT, battery_percent);
+				break;
 		}
 
 		t = dict_read_next(iter);
@@ -384,6 +415,7 @@ static void window_load(Window *window) {
 	font_weather = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_WEATHER_30));
 	font_am_pm = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_16));
 	font_icons = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_MATERIAL_30));
+	font_battery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_12));
 
 	time_layer = text_layer_create(GRect(0, top, PWIDTH, 100));
 	text_layer_set_background_color(time_layer, GColorClear);
@@ -425,6 +457,12 @@ static void window_load(Window *window) {
 	text_layer_set_text_alignment(am_pm_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(am_pm_layer));
 
+	battery_percent_layer = text_layer_create(GRect(0, top - 5, PWIDTH, 20));
+	text_layer_set_background_color(battery_percent_layer, GColorClear);
+	text_layer_set_font(battery_percent_layer, font_battery);
+	text_layer_set_text_alignment(battery_percent_layer, GTextAlignmentRight);
+	layer_add_child(window_layer, text_layer_get_layer(battery_percent_layer));
+
 	set_day_night();
 	colorize();
 	set_condition(-999, is_day, condition_text);
@@ -440,6 +478,7 @@ static void window_unload(Window *window) {
 	text_layer_destroy(temperature_layer);
 	text_layer_destroy(condition_layer);
 	text_layer_destroy(am_pm_layer);
+	text_layer_destroy(battery_percent_layer);
 }
 
 static void load_config(void) {
@@ -477,6 +516,10 @@ static void load_config(void) {
 
 	if (persist_exists(APP_KEY_BT_DISCONNECT_ICON)) {
 		bt_disconnect_icon = persist_read_int(APP_KEY_BT_DISCONNECT_ICON);
+	}
+
+	if (persist_exists(APP_KEY_BATTERY_PERCENT)) {
+		battery_percent = persist_read_int(APP_KEY_BATTERY_PERCENT);
 	}
 }
 
@@ -529,6 +572,7 @@ static void deinit(void) {
 	fonts_unload_custom_font(font_weather);
 	fonts_unload_custom_font(font_am_pm);
 	fonts_unload_custom_font(font_icons);
+	fonts_unload_custom_font(font_battery);
 
 	app_timer_cancel(timer);
 }

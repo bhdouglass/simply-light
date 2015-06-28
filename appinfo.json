@@ -25,7 +25,8 @@
     "fetch_weather": 10,
     "vibrate_bluetooth": 11,
     "charging_icon": 12,
-    "bt_disconnect_icon": 13
+    "bt_disconnect_icon": 13,
+    "battery_percent": 14
   },
   "resources": {
     "media": [
@@ -55,6 +56,12 @@
         "name": "DROIDSANS_MONO_16",
         "file": "fonts/DroidSansMono.ttf",
         "characterRegex": "[APM]",
+        "type": "font"
+      },
+      {
+        "name": "DROIDSANS_MONO_12",
+        "file": "fonts/DroidSansMono.ttf",
+        "characterRegex": "[0-9\\%+]",
         "type": "font"
       },
       {

@@ -110,6 +110,19 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		}
 	];
 
+	$scope.battery_percent = [
+		{
+			label: 'Don\'t show battery percent',
+			value: 0
+		}, {
+			label: 'Show battery percent in top right corner',
+			value: 1
+		}, {
+			label: 'Show battery percent in top left corner',
+			value: 2
+		}
+	];
+
 	$scope.config_ints = ['refresh_time', 'wait_time'];
 
 	$scope.config = {
@@ -126,6 +139,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		vibrate_bluetooth: 0,
 		charging_icon: 1,
 		bt_disconnect_icon: 0,
+		battery_percent: 0,
 	};
 
 	$scope.errors = {

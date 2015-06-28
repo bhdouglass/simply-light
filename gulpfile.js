@@ -36,9 +36,9 @@ var config = minimist(process.argv.slice(2), {
     default: {
         emulator: false,
         color: false,
-        ip: '192.168.1.133',
+        ip: '192.168.1.140',
         logs: true,
-        debug: true,
+        debug: false,
     },
     boolean: ['emulator', 'color'],
     alias: {
