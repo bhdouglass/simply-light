@@ -36,7 +36,7 @@ var config = minimist(process.argv.slice(2), {
     default: {
         emulator: false,
         color: false,
-        ip: '192.168.1.140',
+        ip: '192.168.1.143',
         logs: true,
         debug: false,
     },
@@ -96,7 +96,7 @@ gulp.task('build-js', function() {
         .pipe(sourcemaps.init())
         .pipe(concat('app.js'))
         .pipe(ngAnnotate())
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(paths.config.dist));
 });

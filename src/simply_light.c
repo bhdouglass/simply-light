@@ -415,7 +415,7 @@ static void window_load(Window *window) {
 	font_weather = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_WEATHER_30));
 	font_am_pm = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_16));
 	font_icons = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_MATERIAL_30));
-	font_battery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_12));
+	font_battery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_16));
 
 	time_layer = text_layer_create(GRect(0, top, PWIDTH, 100));
 	text_layer_set_background_color(time_layer, GColorClear);
