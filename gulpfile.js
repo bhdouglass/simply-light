@@ -26,8 +26,19 @@ var paths = {
     },
     config: {
         html: 'config/*.html',
-        js: ['config/*.js'],
-        css: 'config/*.css',
+        js: [
+            'config/bower_components/jquery/dist/jquery.min.js',
+            'config/bower_components/bootstrap/dist/js/bootstrap.min.js',
+            'config/bower_components/angular/angular.min.js',
+            'config/*.js',
+        ],
+        css: [
+            'config/bower_components/bootstrap/dist/css/bootstrap.min.css',
+            'config/bower_components/fontawesome/css/font-awesome.min.css',
+            'config/bower_components/bootstrap-material-design/dist/css/material.min.css',
+            'config/*.css',
+        ],
+        fonts: 'config/bower_components/fontawesome/fonts/*',
         dist: 'dist/config/'
     }
 };
@@ -36,7 +47,7 @@ var config = minimist(process.argv.slice(2), {
     default: {
         emulator: false,
         color: false,
-        ip: '192.168.1.143',
+        ip: '192.168.1.144',
         logs: true,
         debug: false,
     },
@@ -96,7 +107,7 @@ gulp.task('build-js', function() {
         .pipe(sourcemaps.init())
         .pipe(concat('app.js'))
         .pipe(ngAnnotate())
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(paths.config.dist));
 });
@@ -115,6 +126,11 @@ gulp.task('build-css', function() {
         .pipe(concat('main.css'))
         .pipe(minifyCSS())
         .pipe(gulp.dest(paths.config.dist));
+});
+
+gulp.task('build-fonts', function() {
+    return gulp.src(paths.config.fonts)
+        .pipe(gulp.dest(paths.config.dist + 'fonts'));
 });
 
 gulp.task('lint', function() {
@@ -157,6 +173,6 @@ gulp.task('build-pebble-resources', function() {
         .pipe(gulp.dest(paths.pebble.cdist));
 });
 
-gulp.task('build-config', ['lint', 'clean', 'build-html', 'build-js', 'build-css']);
+gulp.task('build-config', ['lint', 'clean', 'build-html', 'build-js', 'build-css', 'build-fonts']);
 gulp.task('build-pebble', ['lint', 'clean', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd dist && pebble build']));
 gulp.task('install-pebble', ['build-pebble'], shell.task(['cd dist && ' + installCommand(config)]));

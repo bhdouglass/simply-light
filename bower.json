@@ -1,0 +1,16 @@
+{
+  "name": "simply-light",
+  "version": "0.0.0",
+  "homepage": "https://github.com/bhdouglass/simply-light",
+  "authors": [
+    "Brian Douglass <bhdouglass@gmail.com>"
+  ],
+  "license": "GPL-3.0",
+  "dependencies": {
+    "angular": "~1.4.1",
+    "bootstrap-material-design": "0.1.6",
+    "bootstrap": "~3.3.5",
+    "fontawesome": "~4.3.0",
+    "jquery": "~2.1.4"
+  }
+}

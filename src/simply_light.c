@@ -120,7 +120,6 @@ static void handle_battery(BatteryChargeState charge_state) {
 		snprintf(battery_percent_text, sizeof(battery_percent_text), "%d%%", battery_state.charge_percent);
 		text_layer_set_text(battery_percent_layer, battery_percent_text);
 	}
-	APP_LOG(APP_LOG_LEVEL_DEBUG, battery_percent_text);
 }
 
 static void handle_bluetooth(bool connected) {

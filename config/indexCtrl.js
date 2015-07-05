@@ -196,29 +196,31 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		}
 	};
 
-	var hash = $location.hash();
-	if (hash) {
-		var config = JSON.parse(decodeURIComponent(hash));
-		console.log(config);
+	$timeout(function() {
+		var hash = $location.hash();
+		if (hash) {
+			var config = JSON.parse(decodeURIComponent(hash));
+			console.log(config);
 
-		angular.forEach(config, function(value, key) {
-			if ($scope.config[key] !== undefined) {
-				if ($scope.config_ints.indexOf(key) >= 0) {
-					$scope.config[key] = validateInt(value);
+			angular.forEach(config, function(value, key) {
+				if ($scope.config[key] !== undefined) {
+					if ($scope.config_ints.indexOf(key) >= 0) {
+						$scope.config[key] = validateInt(value);
+					}
+					else {
+						$scope.config[key] = value;
+					}
 				}
-				else {
-					$scope.config[key] = value;
-				}
-			}
-		});
-		console.log($scope.config);
-	}
+			});
+			console.log($scope.config);
+		}
 
-	var query = $location.search();
-	if (query.version) {
-		$scope.version = parseFloat(query.version);
-	}
+		var query = $location.search();
+		if (query.version) {
+			$scope.version = parseFloat(query.version);
+		}
 
-	console.log('version: ' + $scope.version);
-	console.log('lastest version: ' + $scope.latestVersion);
+		console.log('version: ' + $scope.version);
+		console.log('lastest version: ' + $scope.latestVersion);
+	});
 });
