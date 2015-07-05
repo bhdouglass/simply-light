@@ -124,7 +124,7 @@ gulp.task('build-html', function() {
 gulp.task('build-css', function() {
     return gulp.src(paths.config.css)
         .pipe(concat('main.css'))
-        .pipe(minifyCSS())
+        //.pipe(minifyCSS())
         .pipe(gulp.dest(paths.config.dist));
 });
 
