@@ -2,6 +2,7 @@
 
 #include "ui.h"
 #include "config.h"
+#include "weather.h"
 
 void ui_colorize() {
 	if (ui.state.is_day) {
@@ -25,9 +26,21 @@ void ui_colorize() {
 }
 
 void ui_weather_update() {
+	if (ui.state.battery.is_charging && config.charging_icon) {
+		text_layer_set_font(ui.layers.condition, ui.fonts.icons);
+		strncpy(ui.texts.condition, "\uf12c", sizeof(ui.texts.condition));
+	}
+	else if (!ui.state.bt_connected && config.bt_disconnect_icon) {
+		text_layer_set_font(ui.layers.condition, ui.fonts.icons);
+		strncpy(ui.texts.condition, "\uf136", sizeof(ui.texts.condition));
+	}
+	else {
+		text_layer_set_font(ui.layers.condition, ui.fonts.weather);
+		weather_set_condition(ui.state.condition, ui.state.is_day, ui.texts.condition);
+	}
+
 	text_layer_set_text(ui.layers.temperature, ui.texts.temperature);
 	text_layer_set_text(ui.layers.condition, ui.texts.condition);
-	text_layer_set_font(ui.layers.condition, ui.fonts.weather);
 }
 
 void ui_battery_update() {
@@ -67,6 +80,7 @@ void ui_time_update() {
 	text_layer_set_text(ui.layers.time, ui.texts.time);
 	text_layer_set_text(ui.layers.date, ui.texts.date);
 	text_layer_set_text(ui.layers.month, ui.texts.month);
+	text_layer_set_text(ui.layers.am_pm, ui.texts.am_pm);
 
 	//Update am/pm
 	if (config.show_am_pm == 1 && !clock_is_24h_style()) {

@@ -1,11 +1,10 @@
 #include <pebble.h>
 
 #include "appinfo.h"
-#include "weather.h"
 #include "ui.h"
 #include "config.h"
 
-static void check_refresh() {
+static bool check_refresh(bool do_refresh) {
 	bool refresh = false;
 	if (ui.state.elapsed_time >= config.refresh_time && !ui.state.request_failed) {
 		refresh = true;
@@ -14,7 +13,7 @@ static void check_refresh() {
 		refresh = true;
 	}
 
-	if (refresh) {
+	if (refresh && do_refresh) {
 		ui.state.elapsed_time = 0;
 		ui.state.request_failed = true;
 
@@ -23,13 +22,15 @@ static void check_refresh() {
 		app_message_outbox_begin(&iter);
 
 		if (iter == NULL) {
-			return;
+			return refresh;
 		}
 
 		dict_write_tuplet(iter, &value);
 		dict_write_end(iter);
 		app_message_outbox_send();
 	}
+
+	return refresh;
 }
 
 static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
@@ -47,7 +48,16 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 
 		ui.state.elapsed_time++;
 		if (ui.state.bt_connected) {
-			check_refresh();
+			check_refresh(true);
+		}
+		else {
+			//Bluetooth not connected and we need to refresh
+			bool refresh = check_refresh(false);
+			if (refresh) {
+				ui.state.condition = -999;
+				strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+				ui_weather_update();
+			}
 		}
 	}
 
@@ -64,27 +74,23 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 	ui_colorize();
 }
 
+static void handle_failed_message(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+	check_refresh(true);
+}
+
 static void handle_bluetooth(bool connected) {
 	ui.state.bt_connected = connected;
 
-	//TODO
 	if (ui.state.bt_connected) {
-		//text_layer_set_font(condition_layer, font_weather);
-		//set_condition(-999, is_day, condition_text);
-		check_refresh();
+		check_refresh(true);
 	}
 	else {
 		if (config.vibrate_bluetooth == 1) {
 			vibes_short_pulse();
 		}
-
-		//TODO
-		if (config.bt_disconnect_icon) {
-			/*int size = sizeof(condition_text);
-			text_layer_set_font(condition_layer, font_icons);
-			strncpy(condition_text, "\uf136", size);*/
-		}
 	}
+
+	ui_weather_update();
 }
 
 static void handle_battery(BatteryChargeState charge_state) {
@@ -98,19 +104,7 @@ static void handle_battery(BatteryChargeState charge_state) {
 	}
 
 	ui_battery_update();
-
-	//TODO battery icon
-	/*if (battery_state.is_charging) {
-		if (charging_icon) {
-			int size = sizeof(condition_text);
-			text_layer_set_font(condition_layer, font_icons);
-			strncpy(condition_text, "\uf12c", size);
-		}
-	}
-	else {
-		text_layer_set_font(condition_layer, font_weather);
-		set_condition(condition, is_day, condition_text);
-	}*/
+	ui_weather_update();
 }
 
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
@@ -136,7 +130,6 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 			case APP_KEY_CONDITION:
 				ui.state.condition = value;
-				weather_set_condition(ui.state.condition, ui.state.is_day, ui.texts.condition);
 				break;
 
 			case APP_KEY_REFRESH_TIME:
@@ -213,6 +206,8 @@ static void init(void) {
 
 	ui_init();
 
+	handle_battery(ui.state.battery);
+
 	time_t now = time(NULL);
 	struct tm *tick_time = localtime(&now);
 	handle_tick(tick_time, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT);
@@ -221,6 +216,7 @@ static void init(void) {
 	tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
 	battery_state_service_subscribe(&handle_battery);
 	bluetooth_connection_service_subscribe(&handle_bluetooth);
+	app_message_register_outbox_failed(&handle_failed_message);
 
 	app_message_register_inbox_received(msg_received_handler);
 	app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
@@ -232,6 +228,7 @@ static void deinit(void) {
 	tick_timer_service_unsubscribe();
 	battery_state_service_unsubscribe();
 	bluetooth_connection_service_unsubscribe();
+	app_message_deregister_callbacks();
 }
 
 int main(void) {
