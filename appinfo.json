@@ -26,7 +26,11 @@
     "vibrate_bluetooth": 11,
     "charging_icon": 12,
     "bt_disconnect_icon": 13,
-    "battery_percent": 14
+    "battery_percent": 14,
+    "day_text_color": 15,
+    "day_background_color": 16,
+    "night_text_color": 17,
+    "night_background_color": 18
   },
   "resources": {
     "media": [

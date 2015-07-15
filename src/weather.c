@@ -4,7 +4,7 @@
 
 //IDs from http://openweathermap.org/weather-conditions
 //Icons from http://erikflowers.github.io/weather-icons/
-void set_condition(int id, int is_day, char *condition_text) {
+void weather_set_condition(int id, int is_day, char *condition_text) {
 	int size = sizeof(condition_text);
 	//strncpy(condition_text, " ", size);
 
