@@ -4,7 +4,28 @@
 #include "ui.h"
 #include "config.h"
 
-static bool check_refresh(bool do_refresh) {
+//From https://github.com/smallstoneapps/message-queue/blob/master/message-queue.c#L222
+/*static char *translate_error(AppMessageResult result) {
+	switch (result) {
+		case APP_MSG_OK: return "APP_MSG_OK";
+		case APP_MSG_SEND_TIMEOUT: return "APP_MSG_SEND_TIMEOUT";
+		case APP_MSG_SEND_REJECTED: return "APP_MSG_SEND_REJECTED";
+		case APP_MSG_NOT_CONNECTED: return "APP_MSG_NOT_CONNECTED";
+		case APP_MSG_APP_NOT_RUNNING: return "APP_MSG_APP_NOT_RUNNING";
+		case APP_MSG_INVALID_ARGS: return "APP_MSG_INVALID_ARGS";
+		case APP_MSG_BUSY: return "APP_MSG_BUSY";
+		case APP_MSG_BUFFER_OVERFLOW: return "APP_MSG_BUFFER_OVERFLOW";
+		case APP_MSG_ALREADY_RELEASED: return "APP_MSG_ALREADY_RELEASED";
+		case APP_MSG_CALLBACK_ALREADY_REGISTERED: return "APP_MSG_CALLBACK_ALREADY_REGISTERED";
+		case APP_MSG_CALLBACK_NOT_REGISTERED: return "APP_MSG_CALLBACK_NOT_REGISTERED";
+		case APP_MSG_OUT_OF_MEMORY: return "APP_MSG_OUT_OF_MEMORY";
+		case APP_MSG_CLOSED: return "APP_MSG_CLOSED";
+		case APP_MSG_INTERNAL_ERROR: return "APP_MSG_INTERNAL_ERROR";
+		default: return "UNKNOWN ERROR";
+	}
+}*/
+
+static bool check_refresh(bool do_refresh, bool force_refresh) {
 	bool refresh = false;
 	if (ui.state.elapsed_time >= config.refresh_time && !ui.state.request_failed) {
 		refresh = true;
@@ -13,7 +34,7 @@ static bool check_refresh(bool do_refresh) {
 		refresh = true;
 	}
 
-	if (refresh && do_refresh) {
+	if ((refresh && do_refresh) || force_refresh) {
 		ui.state.elapsed_time = 0;
 		ui.state.request_failed = true;
 
@@ -27,7 +48,8 @@ static bool check_refresh(bool do_refresh) {
 
 		dict_write_tuplet(iter, &value);
 		dict_write_end(iter);
-		app_message_outbox_send();
+		AppMessageResult result = app_message_outbox_send();
+		//APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(result));
 	}
 
 	return refresh;
@@ -48,11 +70,11 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 
 		ui.state.elapsed_time++;
 		if (ui.state.bt_connected) {
-			check_refresh(true);
+			check_refresh(true, false);
 		}
 		else {
 			//Bluetooth not connected and we need to refresh
-			bool refresh = check_refresh(false);
+			bool refresh = check_refresh(false, false);
 			if (refresh) {
 				ui.state.condition = -999;
 				strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
@@ -75,14 +97,15 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void handle_failed_message(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
-	check_refresh(true);
+	//APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(reason));
+	check_refresh(true, true);
 }
 
 static void handle_bluetooth(bool connected) {
 	ui.state.bt_connected = connected;
 
 	if (ui.state.bt_connected) {
-		check_refresh(true);
+		check_refresh(true, true);
 	}
 	else {
 		if (config.vibrate_bluetooth == 1) {
