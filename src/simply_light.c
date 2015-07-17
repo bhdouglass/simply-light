@@ -105,7 +105,7 @@ static void handle_bluetooth(bool connected) {
 	ui.state.bt_connected = connected;
 
 	if (ui.state.bt_connected) {
-		check_refresh(true, true);
+		check_refresh(true, false);
 	}
 	else {
 		if (config.vibrate_bluetooth == 1) {

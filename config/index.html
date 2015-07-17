@@ -122,16 +122,7 @@
 					</div>
 				</div>
 
-				<!--<div class="row" ng-show="version >= 2.1">
-					<div class="form-group">
-						<label for="text_color" class="col-sm-2 control-label">Text Color</label>
-						<div class="col-sm-10">
-							<color-picker ng-model="textColor"></color-picker>
-						</div>
-					</div>
-				</div>-->
-
-				<div class="row">
+				<div class="row" ng-show="version < 2.4">
 					<div class="form-group">
 						<label for="color_invert" class="col-sm-2 control-label">Watchface Colors</label>
 						<div class="col-sm-10">
@@ -140,11 +131,50 @@
 					</div>
 				</div>
 
-				<div class="row" ng-show="version >= 1.3">
+				<div class="row" ng-show="version >= 1.3 && version < 2.4">
 					<div class="form-group">
 						<label for="night_auto_switch" class="col-sm-2 control-label">Auto Invert Colors At Night</label>
 						<div class="col-sm-10">
 							<select id="night_auto_switch" class="form-control" ng-model="config.night_auto_switch" ng-options="o.value as o.label for o in night_auto_switch"></select>
+							<p class="small-note pull-right">
+								*Sunset data is based on your location
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="version >= 2.4">
+					<div class="form-group">
+						<label for="text_color" class="col-sm-2 control-label">Day Text Color</label>
+						<div class="col-sm-10 color-picker-wrapper">
+							<color-picker ng-model="config.day_text_color" platform="aplite"></color-picker>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="version >= 2.4">
+					<div class="form-group">
+						<label for="text_color" class="col-sm-2 control-label">Day Background Color</label>
+						<div class="col-sm-10 color-picker-wrapper">
+							<color-picker ng-model="config.day_background_color" platform="aplite"></color-picker>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="version >= 2.4">
+					<div class="form-group">
+						<label for="text_color" class="col-sm-2 control-label">Night Text Color</label>
+						<div class="col-sm-10 color-picker-wrapper">
+							<color-picker ng-model="config.night_text_color" platform="aplite"></color-picker>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="version >= 2.4">
+					<div class="form-group">
+						<label for="text_color" class="col-sm-2 control-label">Night Background Color</label>
+						<div class="col-sm-10 color-picker-wrapper">
+							<color-picker ng-model="config.night_background_color" platform="aplite"></color-picker>
 							<p class="small-note pull-right">
 								*Sunset data is based on your location
 							</p>

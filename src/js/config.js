@@ -3,8 +3,6 @@ var config = {
 	refresh_time: 30,
 	wait_time: 1,
 	location: '',
-	//color_invert: 0,
-	//night_auto_switch: 0,
 	show_am_pm: 0,
 	hide_battery: 0,
 	weather_provider: 0,
@@ -50,14 +48,16 @@ function loadConfig() {
 	console.log(MessageQueue.sendAppMessage({
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
-		//color_invert: config.color_invert,
-		//night_auto_switch: config.night_auto_switch,
 		show_am_pm: config.show_am_pm,
 		hide_battery: config.hide_battery,
 		vibrate_bluetooth: config.vibrate_bluetooth,
 		charging_icon: config.charging_icon,
 		bt_disconnect_icon: config.bt_disconnect_icon,
-		battery_percent: config.battery_percent
+		battery_percent: config.battery_percent,
+		day_text_color: day_text_color,
+		day_background_color: day_background_color,
+		night_text_color: night_text_color,
+		night_background_color: night_background_color,
 	}, ack, nack));
 }
 
@@ -69,13 +69,15 @@ function saveConfig() {
 	MessageQueue.sendAppMessage({
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
-		//color_invert: config.color_invert,
-		//night_auto_switch: config.night_auto_switch,
 		show_am_pm: config.show_am_pm,
 		hide_battery: config.hide_battery,
 		vibrate_bluetooth: config.vibrate_bluetooth,
 		charging_icon: config.charging_icon,
 		bt_disconnect_icon: config.bt_disconnect_icon,
 		battery_percent: config.battery_percent,
+		day_text_color: day_text_color,
+		day_background_color: day_background_color,
+		night_text_color: night_text_color,
+		night_background_color: night_background_color,
 	}, ack, nack);
 }

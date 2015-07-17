@@ -7,6 +7,10 @@
 	.main {
 		margin-top: 50px;
 	}
+
+	.color-picker {
+		margin-top: -10px;
+	}
 }
 
 .row {
@@ -54,4 +58,10 @@
 	width: 24px;
 	height: 24px;
 	margin-bottom: -6px;
+}
+
+@media (max-width: 768px) {
+	.color-picker-wrapper {
+		text-align: center;
+	}
 }

@@ -140,7 +140,15 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		charging_icon: 1,
 		bt_disconnect_icon: 0,
 		battery_percent: 0,
+		day_text_color: 0,
+		day_background_color: 1,
+		night_text_color: 0,
+		night_background_color: 1,
 	};
+
+	$scope.$watch('config', function() {
+		console.log($scope.config);
+	});
 
 	$scope.errors = {
 		refresh_time: false,

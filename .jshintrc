@@ -2,7 +2,8 @@
   "globals": {
     "Pebble": true,
     "angular": true,
-    "colors": true
+    "aplite_colors": true,
+    "basalt_colors": true
   },
   "browser": true,
   "devel": true,

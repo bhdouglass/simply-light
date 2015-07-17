@@ -7,7 +7,7 @@ for (var color in colors) {
     newcolors.push({
         name: colors[color].name,
         hex: colors[color].html,
-        pebble: colors[color].c_identifier,
+        pebble: parseInt(colors[color].binary.substring(2), 2),
     });
 }
 
