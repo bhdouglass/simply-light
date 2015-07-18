@@ -210,6 +210,7 @@ void ui_init() {
 	ui.state.elapsed_time = 0;
 	ui.state.request_failed = true;
 	ui.texts.time_zero = false;
+	strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
 }
 
 void ui_deinit() {

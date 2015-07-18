@@ -4,23 +4,30 @@
 #include "config.h"
 
 GColor load_color(int color) {
-	#ifdef PBL_COLOR
-		GColor g;
-		g.argb = color;
-		return g;
-	#else
+	//#ifdef PBL_COLOR
+		//GColor g;
+		//g.argb = color;
+		//return g;
+	//#else
 		if (color == 0) {
 			return GColorBlack;
 		}
 		else {
 			return GColorWhite;
 		}
-	#endif
+	//#endif
 }
 
 int get_color(GColor color) {
 	#ifdef PBL_COLOR
-		return color.argb;
+		if (gcolor_equal(color, GColorBlack)) {
+			return 0;
+		}
+		else {
+			return 1;
+		}
+
+		//return color.argb;
 	#else
 		if (color == GColorBlack) {
 			return 0;
@@ -96,8 +103,6 @@ void load_config() {
 	if (persist_exists(APP_KEY_BATTERY_PERCENT)) {
 		config.battery_percent = persist_read_int(APP_KEY_BATTERY_PERCENT);
 	}
-
-	//TODO migrate to new color settings in js
 }
 
 void save_config() {

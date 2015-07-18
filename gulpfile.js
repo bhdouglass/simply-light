@@ -50,6 +50,7 @@ var config = minimist(process.argv.slice(2), {
         ip: '192.168.1.21',
         logs: true,
         debug: false,
+        config: 'http://simply-light.bhdouglass.com/',
     },
     boolean: ['emulator', 'color'],
     alias: {
@@ -90,7 +91,8 @@ function installCommand(config) {
 gulp.task('serve', ['build-config'], function() {
     connect.server({
         root: 'dist/config',
-        port: 9000
+        ip: '0.0.0.0',
+        port: 9000,
     });
 
     return gulp.src(paths.config.html)
@@ -124,7 +126,7 @@ gulp.task('build-html', function() {
 gulp.task('build-css', function() {
     return gulp.src(paths.config.css)
         .pipe(concat('main.css'))
-        //.pipe(minifyCSS())
+        .pipe(minifyCSS())
         .pipe(gulp.dest(paths.config.dist));
 });
 
@@ -148,7 +150,10 @@ gulp.task('build-pebble-js', function() {
     delete appinfo.resources;
 
     return gulp.src(paths.pebble.js)
-        .pipe(template({appinfo: JSON.stringify(appinfo)}))
+        .pipe(template({
+            appinfo: JSON.stringify(appinfo),
+            config_url: config.config,
+        }))
         .pipe(concat('pebble-js-app.js'))
         .pipe(uglify())
         .pipe(gulp.dest(paths.pebble.jsdist));
@@ -176,3 +181,4 @@ gulp.task('build-pebble-resources', function() {
 gulp.task('build-config', ['lint', 'clean', 'build-html', 'build-js', 'build-css', 'build-fonts']);
 gulp.task('build-pebble', ['lint', 'clean', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd dist && pebble build']));
 gulp.task('install-pebble', ['build-pebble'], shell.task(['cd dist && ' + installCommand(config)]));
+gulp.task('server-install', ['build-pebble']);

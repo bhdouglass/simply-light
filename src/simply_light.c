@@ -48,7 +48,8 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
 
 		dict_write_tuplet(iter, &value);
 		dict_write_end(iter);
-		AppMessageResult result = app_message_outbox_send();
+		app_message_outbox_send();
+		//AppMessageResult result = app_message_outbox_send();
 		//APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(result));
 	}
 
@@ -176,7 +177,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 				break;
 
 			case APP_KEY_NIGHT_BACKGROUND_COLOR:
-				config.day_text_color = load_color(value);
+				config.night_background_color = load_color(value);
 				break;
 
 			case APP_KEY_SUNRISE:

@@ -14,7 +14,7 @@ Pebble.addEventListener('appmessage', function(e) {
 });
 
 Pebble.addEventListener('showConfiguration', function(e) {
-	var url = 'http://simply-light.bhdouglass.com/?version=' + appinfo.versionCode + '#' + encodeURIComponent(JSON.stringify(config));
+	var url = '<%= config_url %>?version=' + appinfo.versionCode + '#' + encodeURIComponent(JSON.stringify(config));
 	Pebble.openURL(url);
 	console.log(url);
 });

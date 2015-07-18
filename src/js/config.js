@@ -45,7 +45,30 @@ function loadConfig() {
 		}
 	}
 
-	console.log(MessageQueue.sendAppMessage({
+	//Migrate old values
+	var color_invert = window.localStorage.getItem('color_invert');
+	if (color_invert !== null && color_invert !== undefined) {
+		if (color_invert) {
+			config.day_text_color = 1;
+			config.day_background_color = 0;
+			config.night_text_color = 1;
+			config.night_background_color = 0;
+		}
+
+		window.localStorage.removeItem('color_invert');
+	}
+
+	var night_auto_switch = window.localStorage.getItem('night_auto_switch');
+	if (night_auto_switch !== null && night_auto_switch !== undefined) {
+		if (night_auto_switch) {
+			config.night_text_color = config.night_text_color ? 0 : 1;
+			config.night_background_color = config.night_background_color ? 0 : 1;
+		}
+
+		window.localStorage.removeItem('night_auto_switch');
+	}
+
+	MessageQueue.sendAppMessage({
 		refresh_time: config.refresh_time,
 		wait_time: config.wait_time,
 		show_am_pm: config.show_am_pm,
@@ -54,11 +77,11 @@ function loadConfig() {
 		charging_icon: config.charging_icon,
 		bt_disconnect_icon: config.bt_disconnect_icon,
 		battery_percent: config.battery_percent,
-		day_text_color: day_text_color,
-		day_background_color: day_background_color,
-		night_text_color: night_text_color,
-		night_background_color: night_background_color,
-	}, ack, nack));
+		day_text_color: config.day_text_color,
+		day_background_color: config.day_background_color,
+		night_text_color: config.night_text_color,
+		night_background_color: config.night_background_color,
+	}, ack, nack);
 }
 
 function saveConfig() {
@@ -75,9 +98,9 @@ function saveConfig() {
 		charging_icon: config.charging_icon,
 		bt_disconnect_icon: config.bt_disconnect_icon,
 		battery_percent: config.battery_percent,
-		day_text_color: day_text_color,
-		day_background_color: day_background_color,
-		night_text_color: night_text_color,
-		night_background_color: night_background_color,
+		day_text_color: config.day_text_color,
+		day_background_color: config.day_background_color,
+		night_text_color: config.night_text_color,
+		night_background_color: config.night_background_color,
 	}, ack, nack);
 }
