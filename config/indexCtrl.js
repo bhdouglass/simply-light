@@ -146,10 +146,6 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		night_background_color: 1,
 	};
 
-	$scope.$watch('config', function() {
-		console.log($scope.config);
-	});
-
 	$scope.errors = {
 		refresh_time: false,
 		wait_time: false,

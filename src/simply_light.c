@@ -235,7 +235,10 @@ static void init(void) {
 	time_t now = time(NULL);
 	struct tm *tick_time = localtime(&now);
 	handle_tick(tick_time, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT);
-	free(tick_time);
+
+	#ifdef PBL_PLATFORM_APLITE
+		free(tick_time); //Causes a crash on Basalt >=3.3
+	#endif
 
 	tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
 	battery_state_service_subscribe(&handle_battery);
