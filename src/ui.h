@@ -42,7 +42,7 @@ struct Layers {
 };
 
 struct Texts {
-    char date[7];
+    char date[20];
     char time[6];
     bool time_zero;
     char month[10];

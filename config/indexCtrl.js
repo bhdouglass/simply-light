@@ -123,6 +123,16 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		}
 	];
 
+	$scope.language = [
+		{
+			label: 'Use Pebble\'s language settings',
+			value: 0
+		}, {
+			label: 'Hungarian',
+			value: 1
+		}
+	];
+
 	$scope.config_ints = ['refresh_time', 'wait_time'];
 
 	$scope.config = {
@@ -144,6 +154,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		day_background_color: 1,
 		night_text_color: 0,
 		night_background_color: 1,
+		language: 0,
 	};
 
 	$scope.errors = {

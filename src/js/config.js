@@ -15,13 +15,15 @@ var config = {
 	day_background_color: 1,
 	night_text_color: 0,
 	night_background_color: 1,
+	language: 0,
 };
 
 var configInts = [
 	'refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm',
 	'hide_battery', 'weather_provider', 'feels_like', 'vibrate_bluetooth',
 	'charging_icon', 'bt_disconnect_icon', 'battery_percent', 'day_text_color',
-	'day_background_color', 'night_text_color', 'night_background_color'
+	'day_background_color', 'night_text_color', 'night_background_color',
+	'language'
 ];
 
 function ack(e) {
@@ -81,6 +83,7 @@ function loadConfig() {
 		day_background_color: config.day_background_color,
 		night_text_color: config.night_text_color,
 		night_background_color: config.night_background_color,
+		language: config.language,
 	}, ack, nack);
 }
 
@@ -102,5 +105,6 @@ function saveConfig() {
 		day_background_color: config.day_background_color,
 		night_text_color: config.night_text_color,
 		night_background_color: config.night_background_color,
+		language: config.language,
 	}, ack, nack);
 }

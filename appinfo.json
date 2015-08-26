@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 2.5,
-  "versionLabel": "2.5",
+  "versionCode": 2.6,
+  "versionLabel": "2.6",
   "capabilities": [
     "configurable"
   ],
@@ -30,7 +30,8 @@
     "day_text_color": 15,
     "day_background_color": 16,
     "night_text_color": 17,
-    "night_background_color": 18
+    "night_background_color": 18,
+    "language": 19
   },
   "resources": {
     "media": [
@@ -59,7 +60,7 @@
       {
         "name": "DROIDSANS_MONO_16",
         "file": "fonts/DroidSansMono.ttf",
-        "characterRegex": "[APM]",
+        "characterRegex": "[APMDUE]",
         "type": "font"
       },
       {

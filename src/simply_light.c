@@ -3,6 +3,7 @@
 #include "appinfo.h"
 #include "ui.h"
 #include "config.h"
+#include "i18n.h"
 
 //From https://github.com/smallstoneapps/message-queue/blob/master/message-queue.c#L222
 /*static char *translate_error(AppMessageResult result) {
@@ -85,14 +86,14 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 	}
 
 	if (units_changed & DAY_UNIT) {
-		strftime(ui.texts.date, sizeof(ui.texts.date), "%a %e", tick_time);
+		tr_date(tick_time);
 	}
 
 	if (units_changed & MONTH_UNIT) {
-		strftime(ui.texts.month, sizeof(ui.texts.month), "%B", tick_time);
+		tr_month(tick_time);
 	}
 
-	strftime(ui.texts.am_pm, sizeof(ui.texts.am_pm), "%p", tick_time);
+	tr_am_pm(tick_time);
 	ui_time_update();
 	ui_colorize();
 }
@@ -211,15 +212,24 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 			case APP_KEY_BATTERY_PERCENT:
 				config.battery_percent = value;
 				break;
+
+			case APP_KEY_LANGUAGE:
+				config.language = value;
+				break;
 		}
 
 		t = dict_read_next(iter);
 	}
 
 	ui_weather_update();
-	ui_time_update();
+	//ui_time_update(); Called in handle_tick
 	ui_battery_update();
-	ui_colorize();
+	//ui_colorize(); Called in handle_tick
+
+	time_t now = time(NULL);
+	struct tm *tick_time = localtime(&now);
+	handle_tick(tick_time, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT);
+
 	save_config();
 }
 
