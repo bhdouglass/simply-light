@@ -60,6 +60,7 @@ struct UI {
     struct State  state;
 };
 
+void ui_align();
 void ui_colorize();
 void ui_weather_update();
 void ui_battery_update();

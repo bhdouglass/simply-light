@@ -18,6 +18,7 @@ struct Config {
     GColor text_color;
     GColor background_color;
     int language;
+    int layout;
 };
 
 GColor load_color(int color);

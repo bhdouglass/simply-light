@@ -133,6 +133,16 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		}
 	];
 
+	$scope.layout = [
+		{
+			label: 'Time, Battery Bar, Date, Month, Weather',
+			value: 0
+		}, {
+			label: 'Weather, Month, Date, Battery Bar, Time',
+			value: 1
+		}
+	];
+
 	$scope.config_ints = ['refresh_time', 'wait_time'];
 
 	$scope.config = {
@@ -155,6 +165,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		night_text_color: 0,
 		night_background_color: 1,
 		language: 0,
+		layout: 0,
 	};
 
 	$scope.errors = {

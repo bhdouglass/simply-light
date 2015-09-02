@@ -4,6 +4,29 @@
 #include "config.h"
 #include "weather.h"
 
+void ui_align() {
+	if (config.layout == 1) {
+		layer_set_frame((Layer *) ui.layers.time, GRect(0, PHEIGHT - 55, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.battery, GRect(0, PHEIGHT - 52 - 29, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.date, GRect(0, PHEIGHT - 32 - 60, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.month, GRect(0, PHEIGHT - 17 - 96, PWIDTH, 28));
+		layer_set_frame((Layer *) ui.layers.temperature, GRect(0, PHEIGHT - 27 - 124, HALFPWIDTH, 50));
+		layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, PHEIGHT - 27 - 121, HALFPWIDTH, 50));
+		//am_pm layer set in ui_time_update()
+		layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 5, PWIDTH - 5, 20));
+	}
+	else {
+		layer_set_frame((Layer *) ui.layers.time, GRect(0, MARGINTOP, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.battery, GRect(0, MARGINTOP + 29, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.date, GRect(0, MARGINTOP + 60, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.month, GRect(0, MARGINTOP + 96, PWIDTH, 28));
+		layer_set_frame((Layer *) ui.layers.temperature, GRect(0, MARGINTOP + 120, HALFPWIDTH, 50));
+		layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50));
+		//am_pm layer set in ui_time_update()
+		layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 5, PWIDTH - 5, 20));
+	}
+}
+
 void ui_colorize() {
 	if (ui.state.is_day) {
 		config.text_color = config.day_text_color;
@@ -86,11 +109,16 @@ void ui_time_update() {
 	if (config.show_am_pm == 1 && !clock_is_24h_style()) {
 		layer_set_hidden((Layer *) ui.layers.am_pm, false);
 
-		if (ui.texts.time_zero) {
-			layer_set_frame((Layer *) ui.layers.am_pm, GRect(-13, MARGINTOP, PWIDTH, 20));
+		if (config.layout == 1) {
+			layer_set_frame((Layer *) ui.layers.am_pm, GRect(0, MARGINTOP - 5, PWIDTH, 20));
 		}
 		else {
-			layer_set_frame((Layer *) ui.layers.am_pm, GRect(0, MARGINTOP, PWIDTH, 20));
+			if (ui.texts.time_zero) {
+				layer_set_frame((Layer *) ui.layers.am_pm, GRect(-13, MARGINTOP, PWIDTH, 20));
+			}
+			else {
+				layer_set_frame((Layer *) ui.layers.am_pm, GRect(0, MARGINTOP, PWIDTH, 20));
+			}
 		}
 	}
 	else {
@@ -163,6 +191,8 @@ void ui_window_load(Window *window) {
 	text_layer_set_font(ui.layers.battery_percent, ui.fonts.battery);
 	text_layer_set_text_alignment(ui.layers.battery_percent, GTextAlignmentRight);
 	layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.battery_percent));
+
+	ui_align();
 }
 
 void ui_window_unload(Window *window) {

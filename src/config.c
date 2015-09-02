@@ -56,6 +56,7 @@ void load_config() {
     config.text_color = GColorBlack;
     config.background_color = GColorWhite;
 	config.language = 0;
+	config.layout = 0;
 
 	if (persist_exists(APP_KEY_DAY_TEXT_COLOR)) {
 		config.day_text_color = load_color(persist_read_int(APP_KEY_DAY_TEXT_COLOR));
@@ -108,6 +109,10 @@ void load_config() {
 	if (persist_exists(APP_KEY_LANGUAGE)) {
 		config.language = persist_read_int(APP_KEY_LANGUAGE);
 	}
+
+	if (persist_exists(APP_KEY_LAYOUT)) {
+		config.layout = persist_read_int(APP_KEY_LAYOUT);
+	}
 }
 
 void save_config() {
@@ -124,4 +129,5 @@ void save_config() {
 	persist_write_int(APP_KEY_BT_DISCONNECT_ICON, config.bt_disconnect_icon);
 	persist_write_int(APP_KEY_BATTERY_PERCENT, config.battery_percent);
 	persist_write_int(APP_KEY_LANGUAGE, config.language);
+	persist_write_int(APP_KEY_LAYOUT, config.layout);
 }

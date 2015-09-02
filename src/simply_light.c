@@ -216,6 +216,10 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 			case APP_KEY_LANGUAGE:
 				config.language = value;
 				break;
+
+			case APP_KEY_LAYOUT:
+				config.layout = value;
+				break;
 		}
 
 		t = dict_read_next(iter);
@@ -225,6 +229,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 	//ui_time_update(); Called in handle_tick
 	ui_battery_update();
 	//ui_colorize(); Called in handle_tick
+	ui_align();
 
 	time_t now = time(NULL);
 	struct tm *tick_time = localtime(&now);

@@ -16,6 +16,7 @@ var config = {
 	night_text_color: 0,
 	night_background_color: 1,
 	language: 0,
+	layout: 0,
 };
 
 var configInts = [
@@ -23,7 +24,7 @@ var configInts = [
 	'hide_battery', 'weather_provider', 'feels_like', 'vibrate_bluetooth',
 	'charging_icon', 'bt_disconnect_icon', 'battery_percent', 'day_text_color',
 	'day_background_color', 'night_text_color', 'night_background_color',
-	'language'
+	'language', 'layout'
 ];
 
 function ack(e) {
@@ -84,6 +85,7 @@ function loadConfig() {
 		night_text_color: config.night_text_color,
 		night_background_color: config.night_background_color,
 		language: config.language,
+		layout: config.layout,
 	}, ack, nack);
 }
 
@@ -106,5 +108,6 @@ function saveConfig() {
 		night_text_color: config.night_text_color,
 		night_background_color: config.night_background_color,
 		language: config.language,
+		layout: config.layout,
 	}, ack, nack);
 }

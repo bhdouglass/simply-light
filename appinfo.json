@@ -31,7 +31,8 @@
     "day_background_color": 16,
     "night_text_color": 17,
     "night_background_color": 18,
-    "language": 19
+    "language": 19,
+    "layout": 20
   },
   "resources": {
     "media": [
