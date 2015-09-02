@@ -45,7 +45,7 @@ struct Texts {
     char date[20];
     char time[6];
     bool time_zero;
-    char month[10];
+    char month[20];
     char temperature[6];
     char condition[5];
     char am_pm[3];
