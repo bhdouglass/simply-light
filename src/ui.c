@@ -6,12 +6,12 @@
 
 void ui_align() {
 	if (config.layout == 1) {
-		layer_set_frame((Layer *) ui.layers.time, GRect(0, PHEIGHT - 55, PWIDTH, 100));
-		layer_set_frame((Layer *) ui.layers.battery, GRect(0, PHEIGHT - 52 - 29, PWIDTH, 100));
-		layer_set_frame((Layer *) ui.layers.date, GRect(0, PHEIGHT - 32 - 60, PWIDTH, 100));
-		layer_set_frame((Layer *) ui.layers.month, GRect(0, PHEIGHT - 17 - 96, PWIDTH, 28));
-		layer_set_frame((Layer *) ui.layers.temperature, GRect(0, PHEIGHT - 27 - 124, HALFPWIDTH, 50));
-		layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, PHEIGHT - 27 - 121, HALFPWIDTH, 50));
+		layer_set_frame((Layer *) ui.layers.time, GRect(0, PHEIGHT - 64, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.battery, GRect(0, PHEIGHT - 90, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.date, GRect(0, PHEIGHT - 101, PWIDTH, 100));
+		layer_set_frame((Layer *) ui.layers.month, GRect(0, PHEIGHT - 122, PWIDTH, 28));
+		layer_set_frame((Layer *) ui.layers.temperature, GRect(0, PHEIGHT - 157, HALFPWIDTH, 50));
+		layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, PHEIGHT - 154, HALFPWIDTH, 50));
 		//am_pm layer set in ui_time_update()
 		layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 5, PWIDTH - 5, 20));
 	}
