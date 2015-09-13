@@ -13,7 +13,7 @@ void ui_align() {
 		layer_set_frame((Layer *) ui.layers.temperature, GRect(0, PHEIGHT - 157, HALFPWIDTH, 50));
 		layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, PHEIGHT - 154, HALFPWIDTH, 50));
 		//am_pm layer set in ui_time_update()
-		layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 5, PWIDTH - 5, 20));
+		layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 7, PWIDTH - 5, 20));
 	}
 	else {
 		layer_set_frame((Layer *) ui.layers.time, GRect(0, MARGINTOP, PWIDTH, 100));
@@ -23,7 +23,7 @@ void ui_align() {
 		layer_set_frame((Layer *) ui.layers.temperature, GRect(0, MARGINTOP + 120, HALFPWIDTH, 50));
 		layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50));
 		//am_pm layer set in ui_time_update()
-		layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 5, PWIDTH - 5, 20));
+		layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 7, PWIDTH - 5, 20));
 	}
 }
 
@@ -214,7 +214,7 @@ void ui_init() {
 	fonts.weather = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_WEATHER_30));
 	fonts.am_pm = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_16));
 	fonts.icons = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_MATERIAL_30));
-	fonts.battery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_16));
+	fonts.battery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_20));
 
     struct Texts texts;
     struct Layers layers;

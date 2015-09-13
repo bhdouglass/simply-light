@@ -65,7 +65,7 @@
         "type": "font"
       },
       {
-        "name": "DROIDSANS_BOLD_16",
+        "name": "DROIDSANS_BOLD_20",
         "file": "fonts/DroidSans-Bold.ttf",
         "characterRegex": "[0-9\\%+]",
         "type": "font"
