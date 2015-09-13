@@ -62,6 +62,10 @@ void ui_weather_update() {
 		weather_set_condition(ui.state.condition, ui.state.is_day, ui.texts.condition);
 	}
 
+	//For pretty screenshots
+	//strncpy(ui.texts.temperature, "75\u00b0", sizeof(ui.texts.temperature));
+	//strncpy(ui.texts.condition, "\uf00d", sizeof(ui.texts.condition));
+
 	text_layer_set_text(ui.layers.temperature, ui.texts.temperature);
 	text_layer_set_text(ui.layers.condition, ui.texts.condition);
 }
@@ -93,6 +97,10 @@ void ui_battery_update() {
 
 void ui_battery_dirty(Layer *layer, GContext *ctx) {
 	int width = ui.state.battery.charge_percent * CHARGEUNIT;
+
+	//For pretty screenshots
+	//width = 70 * CHARGEUNIT;
+
 	int offset = (PWIDTH - width) / 2;
 
 	graphics_context_set_fill_color(ctx, config.text_color);
@@ -100,6 +108,11 @@ void ui_battery_dirty(Layer *layer, GContext *ctx) {
 }
 
 void ui_time_update() {
+	//For pretty screenshots
+	//strncpy(ui.texts.time, "12:00", sizeof(ui.texts.time));
+	//strncpy(ui.texts.date, "Csüt 28", sizeof(ui.texts.date));
+	//strncpy(ui.texts.month, "Május", sizeof(ui.texts.month));
+
 	text_layer_set_text(ui.layers.time, ui.texts.time);
 	text_layer_set_text(ui.layers.date, ui.texts.date);
 	text_layer_set_text(ui.layers.month, ui.texts.month);
