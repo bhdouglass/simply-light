@@ -128,6 +128,9 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 			label: 'Use Pebble\'s language settings',
 			value: 0
 		}, {
+			label: 'Bahasa Malaysia',
+			value: 2
+		}, {
 			label: 'Hungarian',
 			value: 1
 		}
