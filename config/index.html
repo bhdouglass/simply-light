@@ -1,301 +1,301 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="author" content="Brian Douglass">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Brian Douglass">
 
-		<title>Simply Light Config</title>
+        <title>Simply Light Config</title>
 
-		<link rel="stylesheet" href="main.css?v=<%= version %>" />
-		<script src="app.js?v=<%= version %>"></script>
-	</head>
+        <link rel="stylesheet" href="main.css?v=<%= version %>" />
+        <script src="app.js?v=<%= version %>"></script>
+    </head>
 
-	<body ng-controller="indexCtrl">
-		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand">
-						<i class="fa fa-clock-o"></i>
-						Simply Light <span class="ng-cloak">(v{{version}})</span>
-					</a>
-				</div>
-				<div class="navbar-collapse collapse navbar-right">
-					<ul class="nav navbar-nav">
-						<li><a href="#weather">Weather</a></li>
-						<li><a href="#watchface">Watchface</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
+    <body ng-controller="indexCtrl">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand">
+                        <i class="fa fa-clock-o"></i>
+                        Simply Light <span class="ng-cloak">(v{{version}})</span>
+                    </a>
+                </div>
+                <div class="navbar-collapse collapse navbar-right">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#weather">Weather</a></li>
+                        <li><a href="#watchface">Watchface</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-		<div class="container main ng-cloak">
-			<div class="row" ng-show="version < latestVersion">
-				<div class="col-sm-12 centered">
-					<div class="alert alert-dismissable alert-warning clickable"  data-dismiss="alert">
-						<h4>You're running an outdated version of Simply Light, update to v{{latestVersion}} for the latest and greatest features!</h4>
-					</div>
-				</div>
-			</div>
+        <div class="container main ng-cloak">
+            <div class="row" ng-show="version < latestVersion">
+                <div class="col-sm-12 centered">
+                    <div class="alert alert-dismissable alert-warning clickable"  data-dismiss="alert">
+                        <h4>You're running an outdated version of Simply Light, update to v{{latestVersion}} for the latest and greatest features!</h4>
+                    </div>
+                </div>
+            </div>
 
-			<div class="row">
-				<div class="col-sm-12">
-					<h1><a id="weather">Weather</a></h1>
-				</div>
-			</div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1><a id="weather">Weather</a></h1>
+                </div>
+            </div>
 
-			<div class="row">
-				<div class="form-group">
-					<label for="temperature_units" class="col-sm-2 control-label">Weather Units</label>
-					<div class="col-sm-10">
-						<select id="temperature_units" class="form-control" ng-model="config.temperature_units" ng-options="o.value as o.label for o in temperature_units"></select>
-					</div>
-				</div>
-			</div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="temperature_units" class="col-sm-2 control-label">Weather Units</label>
+                    <div class="col-sm-10">
+                        <select id="temperature_units" class="form-control" ng-model="config.temperature_units" ng-options="o.value as o.label for o in temperature_units"></select>
+                    </div>
+                </div>
+            </div>
 
-			<div class="row" ng-show="version >= 1.6">
-				<div class="form-group">
-					<label for="weather_provider" class="col-sm-2 control-label">Weather Provider</label>
-					<div class="col-sm-10">
-						<select id="weather_provider" class="form-control" ng-model="config.weather_provider" ng-options="o.value as o.label for o in weather_provider"></select>
-					</div>
-				</div>
-			</div>
+            <div class="row" ng-show="version >= 1.6">
+                <div class="form-group">
+                    <label for="weather_provider" class="col-sm-2 control-label">Weather Provider</label>
+                    <div class="col-sm-10">
+                        <select id="weather_provider" class="form-control" ng-model="config.weather_provider" ng-options="o.value as o.label for o in weather_provider"></select>
+                    </div>
+                </div>
+            </div>
 
-			<div class="row" ng-show="version >= 1.7">
-				<div class="form-group">
-					<label for="feels_like" class="col-sm-2 control-label">"Feels Like" Temperature</label>
-					<div class="col-sm-10">
-						<select id="feels_like" class="form-control" ng-model="config.feels_like" ng-options="o.value as o.label for o in feels_like"></select>
-					</div>
-				</div>
-			</div>
+            <div class="row" ng-show="version >= 1.7">
+                <div class="form-group">
+                    <label for="feels_like" class="col-sm-2 control-label">"Feels Like" Temperature</label>
+                    <div class="col-sm-10">
+                        <select id="feels_like" class="form-control" ng-model="config.feels_like" ng-options="o.value as o.label for o in feels_like"></select>
+                    </div>
+                </div>
+            </div>
 
-			<div class="row" ng-show="version >= 2.9">
-				<div class="form-group">
-					<label for="air_quality" class="col-sm-2 control-label">Air Quality</label>
-					<div class="col-sm-10">
-						<select id="air_quality" class="form-control" ng-model="config.air_quality" ng-options="o.value as o.label for o in air_quality"></select>
-					</div>
-				</div>
-			</div>
+            <div class="row" ng-show="version >= 2.9">
+                <div class="form-group">
+                    <label for="air_quality" class="col-sm-2 control-label">Air Quality</label>
+                    <div class="col-sm-10">
+                        <select id="air_quality" class="form-control" ng-model="config.air_quality" ng-options="o.value as o.label for o in air_quality"></select>
+                    </div>
+                </div>
+            </div>
 
-			<div class="row" ng-show="version >= 2.9 && config.air_quality == 1">
-				<div class="form-group" ng-class="{'has-error': errors.aq_refresh_time}">
-					<label for="aq_refresh_time" class="col-sm-2 control-label">Refresh Air Quality Index Every</label>
-					<div class="col-sm-10">
-						<div class="input-group">
-							<input type="number" class="form-control" id="aq_refresh_time" ng-model="config.aq_refresh_time" min="2" />
-							<div class="input-group-addon">hours</div>
-						</div>
-					</div>
-				</div>
-			</div>
+            <div class="row" ng-show="version >= 2.9 && config.air_quality == 1">
+                <div class="form-group" ng-class="{'has-error': errors.aq_refresh_time}">
+                    <label for="aq_refresh_time" class="col-sm-2 control-label">Refresh Air Quality Index Every</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="aq_refresh_time" ng-model="config.aq_refresh_time" min="2" />
+                            <div class="input-group-addon">hours</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-			<div class="row">
-				<div class="form-group" ng-class="{'has-error': errors.refresh_time}">
-					<label for="refresh_time" class="col-sm-2 control-label">Refresh Weather Every</label>
-					<div class="col-sm-10">
-						<div class="input-group">
-							<input type="number" class="form-control" id="refresh_time" ng-model="config.refresh_time" min="1" />
-							<div class="input-group-addon">minutes</div>
-						</div>
-					</div>
-				</div>
-			</div>
+            <div class="row">
+                <div class="form-group" ng-class="{'has-error': errors.refresh_time}">
+                    <label for="refresh_time" class="col-sm-2 control-label">Refresh Weather Every</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="refresh_time" ng-model="config.refresh_time" min="1" />
+                            <div class="input-group-addon">minutes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-			<div class="row">
-				<div class="form-group" ng-class="{'has-error': errors.wait_time}">
-					<label for="wait_time" class="col-sm-2 control-label">Time to Wait After Weather Error</label>
-					<div class="col-sm-10">
-						<div class="input-group">
-							<input type="number" class="form-control" id="wait_time" ng-model="config.wait_time" min="1" />
-							<div class="input-group-addon">minutes</div>
-						</div>
-					</div>
-				</div>
-			</div>
+            <div class="row">
+                <div class="form-group" ng-class="{'has-error': errors.wait_time}">
+                    <label for="wait_time" class="col-sm-2 control-label">Time to Wait After Weather Error</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="wait_time" ng-model="config.wait_time" min="1" />
+                            <div class="input-group-addon">minutes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-			<div class="row">
-				<div class="form-group">
-					<label for="location" class="col-sm-2 control-label">Location</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="location" placeholder="Leave blank to get location from device" ng-model="config.location" ng-disabled="config.weather_provider == 1" />
-						<p class="small-note pull-right" ng-show="config.weather_provider == 1">
-							*Location is currently unavailable for Yahoo Weather
-						</p>
-					</div>
-				</div>
-			</div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="location" class="col-sm-2 control-label">Location</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="location" placeholder="Leave blank to get location from device" ng-model="config.location" ng-disabled="config.weather_provider == 1" />
+                        <p class="small-note pull-right" ng-show="config.weather_provider == 1">
+                            *Location is currently unavailable for Yahoo Weather
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-			<div ng-show="version >= 1.2">
-				<div class="row">
-					<div class="col-sm-12">
-						<div class="divider"></div>
-						<h1><a id="watchface">Watchface</a></h1>
-					</div>
-				</div>
+            <div ng-show="version >= 1.2">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="divider"></div>
+                        <h1><a id="watchface">Watchface</a></h1>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version < 2.4">
-					<div class="form-group">
-						<label for="color_invert" class="col-sm-2 control-label">Watchface Colors</label>
-						<div class="col-sm-10">
-							<select id="color_invert" class="form-control" ng-model="config.color_invert" ng-options="o.value as o.label for o in color_invert"></select>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version < 2.4">
+                    <div class="form-group">
+                        <label for="color_invert" class="col-sm-2 control-label">Watchface Colors</label>
+                        <div class="col-sm-10">
+                            <select id="color_invert" class="form-control" ng-model="config.color_invert" ng-options="o.value as o.label for o in color_invert"></select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 1.3 && version < 2.4">
-					<div class="form-group">
-						<label for="night_auto_switch" class="col-sm-2 control-label">Auto Invert Colors At Night</label>
-						<div class="col-sm-10">
-							<select id="night_auto_switch" class="form-control" ng-model="config.night_auto_switch" ng-options="o.value as o.label for o in night_auto_switch"></select>
-							<p class="small-note pull-right">
-								*Sunset data is based on your location
-							</p>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 1.3 && version < 2.4">
+                    <div class="form-group">
+                        <label for="night_auto_switch" class="col-sm-2 control-label">Auto Invert Colors At Night</label>
+                        <div class="col-sm-10">
+                            <select id="night_auto_switch" class="form-control" ng-model="config.night_auto_switch" ng-options="o.value as o.label for o in night_auto_switch"></select>
+                            <p class="small-note pull-right">
+                                *Sunset data is based on your location
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.4">
-					<div class="form-group">
-						<label for="text_color" class="col-sm-2 control-label">Day Text Color</label>
-						<div class="col-sm-10 color-picker-wrapper">
-							<color-picker ng-model="config.day_text_color" platform="aplite"></color-picker>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 2.4">
+                    <div class="form-group">
+                        <label for="text_color" class="col-sm-2 control-label">Day Text Color</label>
+                        <div class="col-sm-10 color-picker-wrapper">
+                            <color-picker ng-model="config.day_text_color" platform="aplite"></color-picker>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.4">
-					<div class="form-group">
-						<label for="text_color" class="col-sm-2 control-label">Day Background Color</label>
-						<div class="col-sm-10 color-picker-wrapper">
-							<color-picker ng-model="config.day_background_color" platform="aplite"></color-picker>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 2.4">
+                    <div class="form-group">
+                        <label for="text_color" class="col-sm-2 control-label">Day Background Color</label>
+                        <div class="col-sm-10 color-picker-wrapper">
+                            <color-picker ng-model="config.day_background_color" platform="aplite"></color-picker>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.4">
-					<div class="form-group">
-						<label for="text_color" class="col-sm-2 control-label">Night Text Color</label>
-						<div class="col-sm-10 color-picker-wrapper">
-							<color-picker ng-model="config.night_text_color" platform="aplite"></color-picker>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 2.4">
+                    <div class="form-group">
+                        <label for="text_color" class="col-sm-2 control-label">Night Text Color</label>
+                        <div class="col-sm-10 color-picker-wrapper">
+                            <color-picker ng-model="config.night_text_color" platform="aplite"></color-picker>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.4">
-					<div class="form-group">
-						<label for="text_color" class="col-sm-2 control-label">Night Background Color</label>
-						<div class="col-sm-10 color-picker-wrapper">
-							<color-picker ng-model="config.night_background_color" platform="aplite"></color-picker>
-							<br/>
-							<p class="small-note pull-right">
-								*Sunset data is based on your location
-							</p>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 2.4">
+                    <div class="form-group">
+                        <label for="text_color" class="col-sm-2 control-label">Night Background Color</label>
+                        <div class="col-sm-10 color-picker-wrapper">
+                            <color-picker ng-model="config.night_background_color" platform="aplite"></color-picker>
+                            <br/>
+                            <p class="small-note pull-right">
+                                *Sunset data is based on your location
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.7">
-					<div class="form-group">
-						<label for="layout" class="col-sm-2 control-label">Layout</label>
-						<div class="col-sm-10">
-							<select id="layout" class="form-control" ng-model="config.layout" ng-options="o.value as o.label for o in layout"></select>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 2.7">
+                    <div class="form-group">
+                        <label for="layout" class="col-sm-2 control-label">Layout</label>
+                        <div class="col-sm-10">
+                            <select id="layout" class="form-control" ng-model="config.layout" ng-options="o.value as o.label for o in layout"></select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 1.4">
-					<div class="form-group">
-						<label for="show_am_pm" class="col-sm-2 control-label">Show AM/PM</label>
-						<div class="col-sm-10">
-							<select id="show_am_pm" class="form-control" ng-model="config.show_am_pm" ng-options="o.value as o.label for o in show_am_pm"></select>
-							<p class="small-note pull-right">
-								*Only when using a 12 hour clock
-							</p>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 1.4">
+                    <div class="form-group">
+                        <label for="show_am_pm" class="col-sm-2 control-label">Show AM/PM</label>
+                        <div class="col-sm-10">
+                            <select id="show_am_pm" class="form-control" ng-model="config.show_am_pm" ng-options="o.value as o.label for o in show_am_pm"></select>
+                            <p class="small-note pull-right">
+                                *Only when using a 12 hour clock
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.6">
-					<div class="form-group">
-						<label for="language" class="col-sm-2 control-label">Language</label>
-						<div class="col-sm-10">
-							<select id="language" class="form-control" ng-model="config.language" ng-options="o.value as o.label for o in language"></select>
-							<p class="small-note pull-right">
-								<a href="http://bhdouglass.com/" target="_blank">Contact the author if you want to help add more languages!</a>
-							</p>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 2.6">
+                    <div class="form-group">
+                        <label for="language" class="col-sm-2 control-label">Language</label>
+                        <div class="col-sm-10">
+                            <select id="language" class="form-control" ng-model="config.language" ng-options="o.value as o.label for o in language"></select>
+                            <p class="small-note pull-right">
+                                <a href="http://bhdouglass.com/" target="_blank">Contact the author if you want to help add more languages!</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 1.5">
-					<div class="form-group">
-						<label for="hide_battery" class="col-sm-2 control-label">Show Battery Status Bar</label>
-						<div class="col-sm-10">
-							<select id="hide_battery" class="form-control" ng-model="config.hide_battery" ng-options="o.value as o.label for o in hide_battery"></select>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 1.5">
+                    <div class="form-group">
+                        <label for="hide_battery" class="col-sm-2 control-label">Show Battery Status Bar</label>
+                        <div class="col-sm-10">
+                            <select id="hide_battery" class="form-control" ng-model="config.hide_battery" ng-options="o.value as o.label for o in hide_battery"></select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.1">
-					<div class="form-group">
-						<label for="battery_percent" class="col-sm-2 control-label">Show Battery Percent</label>
-						<div class="col-sm-10">
-							<select id="battery_percent" class="form-control" ng-model="config.battery_percent" ng-options="o.value as o.label for o in battery_percent"></select>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 2.1">
+                    <div class="form-group">
+                        <label for="battery_percent" class="col-sm-2 control-label">Show Battery Percent</label>
+                        <div class="col-sm-10">
+                            <select id="battery_percent" class="form-control" ng-model="config.battery_percent" ng-options="o.value as o.label for o in battery_percent"></select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.0">
-					<div class="form-group">
-						<label for="charging_icon" class="col-sm-2 control-label">Charging Icon</label>
-						<div class="col-sm-10">
-							<select id="charging_icon" class="form-control" ng-model="config.charging_icon" ng-options="o.value as o.label for o in charging_icon"></select>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 2.0">
+                    <div class="form-group">
+                        <label for="charging_icon" class="col-sm-2 control-label">Charging Icon</label>
+                        <div class="col-sm-10">
+                            <select id="charging_icon" class="form-control" ng-model="config.charging_icon" ng-options="o.value as o.label for o in charging_icon"></select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 1.9">
-					<div class="form-group">
-						<label for="vibrate_bluetooth" class="col-sm-2 control-label">Vibration</label>
-						<div class="col-sm-10">
-							<select id="vibrate_bluetooth" class="form-control" ng-model="config.vibrate_bluetooth" ng-options="o.value as o.label for o in vibrate_bluetooth"></select>
-						</div>
-					</div>
-				</div>
+                <div class="row" ng-show="version >= 1.9">
+                    <div class="form-group">
+                        <label for="vibrate_bluetooth" class="col-sm-2 control-label">Vibration</label>
+                        <div class="col-sm-10">
+                            <select id="vibrate_bluetooth" class="form-control" ng-model="config.vibrate_bluetooth" ng-options="o.value as o.label for o in vibrate_bluetooth"></select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="row" ng-show="version >= 2.0">
-					<div class="form-group">
-						<label for="bt_disconnect_icon" class="col-sm-2 control-label">Bluetooth Icon</label>
-						<div class="col-sm-10">
-							<select id="bt_disconnect_icon" class="form-control" ng-model="config.bt_disconnect_icon" ng-options="o.value as o.label for o in bt_disconnect_icon"></select>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+                <div class="row" ng-show="version >= 2.0">
+                    <div class="form-group">
+                        <label for="bt_disconnect_icon" class="col-sm-2 control-label">Bluetooth Icon</label>
+                        <div class="col-sm-10">
+                            <select id="bt_disconnect_icon" class="form-control" ng-model="config.bt_disconnect_icon" ng-options="o.value as o.label for o in bt_disconnect_icon"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-		<a id="cancel" class="btn btn-danger btn-fab btn-raised" ng-click="cancel()" ng-disabled="saving">
-			<i class="fa fa-close"></i>
-		</a>
+        <a id="cancel" class="btn btn-danger btn-fab btn-raised" ng-click="cancel()" ng-disabled="saving">
+            <i class="fa fa-close"></i>
+        </a>
 
-		<a id="save" class="btn btn-success btn-fab btn-raised" ng-click="save()" ng-disabled="saving">
-			<i class="fa" ng-class="{'fa-save': !saving, 'fa-spin fa-spinner': saving}"></i>
-		</a>
+        <a id="save" class="btn btn-success btn-fab btn-raised" ng-click="save()" ng-disabled="saving">
+            <i class="fa" ng-class="{'fa-save': !saving, 'fa-spin fa-spinner': saving}"></i>
+        </a>
 
-		<script src="//www.google-analytics.com/analytics.js"></script>
-		<script>
-			ga('create', 'UA-16555025-4', 'auto');
-			ga('send', 'pageview');
-		</script>
-	</body>
+        <script src="//www.google-analytics.com/analytics.js"></script>
+        <script>
+            ga('create', 'UA-16555025-4', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </body>
 </html>

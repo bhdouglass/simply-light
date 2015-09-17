@@ -1,52 +1,52 @@
 .main {
-	margin-top: 40px;
-	margin-bottom: 70px;
+    margin-top: 40px;
+    margin-bottom: 70px;
 }
 
 @media (min-width: 992px) {
-	.main {
-		margin-top: 50px;
-	}
+    .main {
+        margin-top: 50px;
+    }
 
-	.color-picker {
-		margin-top: -10px;
-	}
+    .color-picker {
+        margin-top: -10px;
+    }
 }
 
 .row {
-	margin-top: 10px;
-	margin-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #save {
-	position: fixed;
-	bottom: 10px;
-	right: 10px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
 }
 
 #cancel {
-	position: fixed;
-	bottom: 10px;
-	right: 75px;
+    position: fixed;
+    bottom: 10px;
+    right: 75px;
 }
 
 .divider {
-	margin-top: 10px;
-	margin-bottom: -5px;
-	border-bottom: 1px solid rgba(0,0,0,.1);
-	width: 100%;
+    margin-top: 10px;
+    margin-bottom: -5px;
+    border-bottom: 1px solid rgba(0,0,0,.1);
+    width: 100%;
 }
 
 .small-note {
-	font-size: 12px;
+    font-size: 12px;
 }
 
 .centered {
-	text-align: center;
+    text-align: center;
 }
 
 .clickable {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .ng-cloak {
@@ -54,14 +54,14 @@
 }
 
 .color {
-	display: inline-block;
-	width: 24px;
-	height: 24px;
-	margin-bottom: -6px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-bottom: -6px;
 }
 
 @media (max-width: 768px) {
-	.color-picker-wrapper {
-		text-align: center;
-	}
+    .color-picker-wrapper {
+        text-align: center;
+    }
 }
