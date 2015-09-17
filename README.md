@@ -11,6 +11,13 @@ Weather data from <http://openweathermap.org/> or <https://query.yahooapis.com/v
 
 Get it on your Pebble - <https://apps.getpebble.com/applications/5472c040c13ebf3ddf000045>.
 
+## Translations ##
+
+Translation have been made possible by the following people:
+
+* Bahasa Malaysia - Adrian C
+* Hungarian - Péter G.
+
 ## Build From Source ##
 
 * Download the source code
