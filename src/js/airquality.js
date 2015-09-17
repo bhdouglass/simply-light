@@ -38,7 +38,7 @@ function fetchAirQuality() {
         else {
             fetchLocation(fetchAirQualityHelper, function(err) {
                 MessageQueue.sendAppMessage({
-                    air_quality_index: -999,
+                    air_quality_index: -998,
                 }, ack, nack);
             });
         }

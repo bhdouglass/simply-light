@@ -257,8 +257,8 @@ function fetchWeather() {
     else {
         fetchLocation(fetchWeatherHelper, function(err) {
             MessageQueue.sendAppMessage({
-                temperature: -999,
-                condition: -999,
+                temperature: -998,
+                condition: -998,
             }, ack, nack);
         });
     }

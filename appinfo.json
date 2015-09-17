@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 2.9,
-  "versionLabel": "2.9",
+  "versionCode": 3.0,
+  "versionLabel": "3.0",
   "capabilities": [
     "configurable"
   ],
@@ -83,7 +83,7 @@
       {
         "name": "MATERIAL_30",
         "file": "fonts/Material-Design-Iconic-Font.ttf",
-        "characterRegex": "[\uf136\uf12c]",
+        "characterRegex": "[\uf114\uf27f\uf1aa]",
         "type": "font"
       }
     ]

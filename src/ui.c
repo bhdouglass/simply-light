@@ -51,11 +51,15 @@ void ui_colorize() {
 void ui_weather_update() {
     if (ui.state.battery.is_charging && config.charging_icon) {
         text_layer_set_font(ui.layers.condition, ui.fonts.icons);
-        strncpy(ui.texts.condition, "\uf12c", sizeof(ui.texts.condition));
+        strncpy(ui.texts.condition, "\uf114", sizeof(ui.texts.condition));
     }
     else if (!ui.state.bt_connected && config.bt_disconnect_icon) {
         text_layer_set_font(ui.layers.condition, ui.fonts.icons);
-        strncpy(ui.texts.condition, "\uf136", sizeof(ui.texts.condition));
+        strncpy(ui.texts.condition, "\uf27f", sizeof(ui.texts.condition));
+    }
+    else if (ui.state.condition == -998) {
+        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
+        strncpy(ui.texts.condition, "\uf1aa", sizeof(ui.texts.condition));
     }
     else {
         text_layer_set_font(ui.layers.condition, ui.fonts.weather);

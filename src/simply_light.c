@@ -180,7 +180,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
             case APP_KEY_TEMPERATURE:
                 if (config.air_quality == 0) {
                     ui.state.elapsed_time = 0;
-                    if (value == -999) {
+                    if (value == -999 || value == -998) {
                         strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
                         ui.state.request_failed = true;
                     }
@@ -199,7 +199,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
             case APP_KEY_AIR_QUALITY_INDEX:
                 if (config.air_quality == 1) {
                     ui.state.elapsed_time = 0;
-                    if (value == -999) {
+                    if (value == -999 || value == -998) {
                         strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
                         ui.state.request_failed = true;
                     }
