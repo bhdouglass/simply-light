@@ -48,7 +48,7 @@ var config = minimist(process.argv.slice(2), {
         emulator: false,
         color: false,
         ip: '192.168.1.21',
-        logs: true,
+        logs: false,
         debug: false,
         config: 'http://simply-light.bhdouglass.com/',
     },

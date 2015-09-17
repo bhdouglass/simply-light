@@ -146,7 +146,17 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		}
 	];
 
-	$scope.config_ints = ['refresh_time', 'wait_time'];
+	$scope.air_quality = [
+		{
+			label: 'Don\'t show air quality',
+			value: 0
+		}, {
+			label: 'Replace temperature with air quality index',
+			value: 1
+		}
+	];
+
+	$scope.config_ints = ['refresh_time', 'wait_time', 'aq_refresh_time'];
 
 	$scope.config = {
 		temperature_units: 'imperial',
@@ -169,12 +179,15 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 		night_background_color: 1,
 		language: 0,
 		layout: 0,
+		air_quality: 0,
+		aq_refresh_time: 3,
 	};
 
 	$scope.errors = {
 		refresh_time: false,
 		wait_time: false,
 		location: false,
+		aq_refresh_time: false,
 	};
 
 	function validateInt(value, error) {
@@ -192,7 +205,12 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 
 	angular.forEach($scope.config_ints, function(name) {
 		$scope.$watch('config.' + name, function() {
+			$scope.errors[name] = false;
 			validateInt($scope.config[name], $scope.errors[name]);
+
+			if (name == 'aq_refresh_time' && ($scope.config.aq_refresh_time < 2 || !$scope.config.aq_refresh_time)) {
+				$scope.errors.aq_refresh_time = true;
+			}
 		});
 	});
 

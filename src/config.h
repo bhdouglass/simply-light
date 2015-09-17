@@ -19,6 +19,8 @@ struct Config {
     GColor background_color;
     int language;
     int layout;
+    int air_quality;
+    int aq_refresh_time;
 };
 
 GColor load_color(int color);

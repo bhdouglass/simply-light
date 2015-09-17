@@ -26,6 +26,40 @@
 	}
 }*/
 
+static bool aq_check_refresh(bool do_refresh, bool force_refresh) {
+	bool refresh = false;
+
+	if (config.air_quality == 1) {
+		if (ui.state.elapsed_time >= (config.aq_refresh_time * 60) && !ui.state.request_failed) {
+			refresh = true;
+		}
+		else if (ui.state.elapsed_time >= config.wait_time && ui.state.request_failed) {
+			refresh = true;
+		}
+
+		if ((refresh && do_refresh) || force_refresh) {
+			ui.state.elapsed_time = 0;
+			ui.state.request_failed = true;
+
+			Tuplet value = TupletInteger(APP_KEY_FETCH_AIR_QUALITY, 1);
+			DictionaryIterator *iter;
+			app_message_outbox_begin(&iter);
+
+			if (iter == NULL) {
+				return refresh;
+			}
+
+			dict_write_tuplet(iter, &value);
+			dict_write_end(iter);
+			app_message_outbox_send();
+			//AppMessageResult result = app_message_outbox_send();
+			//APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(result));
+		}
+	}
+
+	return refresh;
+}
+
 static bool check_refresh(bool do_refresh, bool force_refresh) {
 	bool refresh = false;
 	if (ui.state.elapsed_time >= config.refresh_time && !ui.state.request_failed) {
@@ -73,6 +107,7 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 		ui.state.elapsed_time++;
 		if (ui.state.bt_connected) {
 			check_refresh(true, false);
+			aq_check_refresh(true, false);
 		}
 		else {
 			//Bluetooth not connected and we need to refresh
@@ -101,6 +136,7 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 static void handle_failed_message(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
 	//APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(reason));
 	check_refresh(true, true);
+	aq_check_refresh(true, true);
 }
 
 static void handle_bluetooth(bool connected) {
@@ -108,6 +144,7 @@ static void handle_bluetooth(bool connected) {
 
 	if (ui.state.bt_connected) {
 		check_refresh(true, false);
+		aq_check_refresh(true, true);
 	}
 	else {
 		if (config.vibrate_bluetooth == 1) {
@@ -141,14 +178,35 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 		int value = t->value->int32;
 		switch(key) {
 			case APP_KEY_TEMPERATURE:
-				ui.state.elapsed_time = 0;
-				if (value == -999) {
-					strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
-					ui.state.request_failed = true;
+				if (config.air_quality == 0) {
+					ui.state.elapsed_time = 0;
+					if (value == -999) {
+						strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+						ui.state.request_failed = true;
+					}
+					else {
+						snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", value);
+						ui.state.request_failed = false;
+					}
 				}
 				else {
-					snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", value);
+					//Prevent the weather from thrashing when using air quality
 					ui.state.request_failed = false;
+				}
+
+				break;
+
+			case APP_KEY_AIR_QUALITY_INDEX:
+				if (config.air_quality == 1) {
+					ui.state.elapsed_time = 0;
+					if (value == -999) {
+						strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+						ui.state.request_failed = true;
+					}
+					else {
+						snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d", value);
+						ui.state.request_failed = false;
+					}
 				}
 
 				break;
@@ -219,6 +277,14 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
 			case APP_KEY_LAYOUT:
 				config.layout = value;
+				break;
+
+			case APP_KEY_AIR_QUALITY:
+				config.air_quality = value;
+				break;
+
+			case APP_KEY_AQ_REFRESH_TIME:
+				config.aq_refresh_time = value;
 				break;
 		}
 

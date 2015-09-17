@@ -57,6 +57,8 @@ void load_config() {
     config.background_color = GColorWhite;
 	config.language = 0;
 	config.layout = 0;
+	config.air_quality = 0;
+	config.aq_refresh_time = 3;
 
 	if (persist_exists(APP_KEY_DAY_TEXT_COLOR)) {
 		config.day_text_color = load_color(persist_read_int(APP_KEY_DAY_TEXT_COLOR));
@@ -113,6 +115,14 @@ void load_config() {
 	if (persist_exists(APP_KEY_LAYOUT)) {
 		config.layout = persist_read_int(APP_KEY_LAYOUT);
 	}
+
+	if (persist_exists(APP_KEY_AIR_QUALITY)) {
+		config.air_quality = persist_read_int(APP_KEY_AIR_QUALITY);
+	}
+
+	if (persist_exists(APP_KEY_AQ_REFRESH_TIME)) {
+		config.aq_refresh_time = persist_read_int(APP_KEY_AQ_REFRESH_TIME);
+	}
 }
 
 void save_config() {
@@ -130,4 +140,6 @@ void save_config() {
 	persist_write_int(APP_KEY_BATTERY_PERCENT, config.battery_percent);
 	persist_write_int(APP_KEY_LANGUAGE, config.language);
 	persist_write_int(APP_KEY_LAYOUT, config.layout);
+	persist_write_int(APP_KEY_AIR_QUALITY, config.air_quality);
+	persist_write_int(APP_KEY_AQ_REFRESH_TIME, config.aq_refresh_time);
 }

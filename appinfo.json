@@ -32,7 +32,11 @@
     "night_text_color": 17,
     "night_background_color": 18,
     "language": 19,
-    "layout": 20
+    "layout": 20,
+    "air_quality": 21,
+    "aq_refresh_time": 22,
+    "fetch_air_quality": 23,
+    "air_quality_index": 24
   },
   "resources": {
     "media": [

@@ -78,6 +78,27 @@
 				</div>
 			</div>
 
+			<div class="row" ng-show="version >= 2.9">
+				<div class="form-group">
+					<label for="air_quality" class="col-sm-2 control-label">Air Quality</label>
+					<div class="col-sm-10">
+						<select id="air_quality" class="form-control" ng-model="config.air_quality" ng-options="o.value as o.label for o in air_quality"></select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" ng-show="version >= 2.9 && config.air_quality == 1">
+				<div class="form-group" ng-class="{'has-error': errors.aq_refresh_time}">
+					<label for="aq_refresh_time" class="col-sm-2 control-label">Refresh Air Quality Index Every</label>
+					<div class="col-sm-10">
+						<div class="input-group">
+							<input type="number" class="form-control" id="aq_refresh_time" ng-model="config.aq_refresh_time" min="2" />
+							<div class="input-group-addon">hours</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="row">
 				<div class="form-group" ng-class="{'has-error': errors.refresh_time}">
 					<label for="refresh_time" class="col-sm-2 control-label">Refresh Weather Every</label>

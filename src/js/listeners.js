@@ -4,12 +4,16 @@ Pebble.addEventListener('ready', function(e) {
 	loadConfig();
 	console.log(JSON.stringify(config));
 	fetchWeather();
+	fetchAirQuality();
 });
 
 Pebble.addEventListener('appmessage', function(e) {
 	console.log('Received message: ' + JSON.stringify(e));
 	if (e.payload.fetch_weather) {
 		fetchWeather();
+	}
+	else if (e.payload.fetch_air_quality) {
+		fetchAirQuality();
 	}
 });
 
@@ -29,5 +33,6 @@ Pebble.addEventListener('webviewclosed', function(e) {
 
 		saveConfig();
 		fetchWeather();
+		fetchAirQuality();
 	}
 });
