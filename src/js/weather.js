@@ -1,30 +1,3 @@
-function get(url, callback, errCallback) {
-    var req = new XMLHttpRequest();
-    req.open('GET', url);
-
-    if (callback) {
-        req.onload = function(e) {
-            if (req.readyState === 4) {
-                if (req.status == 200) {
-                    callback(req.responseText);
-                }
-                else if (errCallback) {
-                    errCallback(req);
-                }
-            }
-        };
-    }
-
-    if (errCallback) {
-        req.onerror = function(e) {
-            errCallback(req);
-        };
-    }
-
-    req.send();
-    return req;
-}
-
 //Formulas from http://en.wikipedia.org/wiki/Wind_chill#North_American_and_United_Kingdom_wind_chill_index
 function windChill(temperature, velocity) {
     var wind_chill = temperature;
@@ -106,7 +79,7 @@ function convertYahooTime(string) {
     return (hours * 60) + minutes;
 }
 
-function yahooWeather(pos) {
+function yahooWeather(pos, callback) {
     var geo = '';
     /*if (config.location) {
         geo = 'select woeid from geo.places where text="' + config.location + '"';
@@ -164,7 +137,7 @@ function yahooWeather(pos) {
             console.log('heat index: ' + temperature);
         }
 
-        MessageQueue.sendAppMessage({
+        callback(pos, {
             temperature: temperature,
             condition: condition,
             sunrise: sunrise,
@@ -174,14 +147,14 @@ function yahooWeather(pos) {
     }, function(err) {
         console.warn('Error while getting weather: ' + err.status);
 
-        MessageQueue.sendAppMessage({
+        callback(pos, {
             temperature: -999,
             condition: -999,
         }, ack, nack);
     });
 }
 
-function openWeatherMapWeather(pos) {
+function openWeatherMapWeather(pos, callback) {
     var url = 'http://api.openweathermap.org/data/2.5/weather?';
     if (config.location) {
         url += 'q=' + config.location;
@@ -222,7 +195,7 @@ function openWeatherMapWeather(pos) {
             console.log('heat index: ' + temperature);
         }
 
-        MessageQueue.sendAppMessage({
+        callback(pos, {
             temperature: temperature,
             condition: condition,
             sunrise: sunrise,
@@ -232,34 +205,18 @@ function openWeatherMapWeather(pos) {
     }, function(err) {
         console.warn('Error while getting weather: ' + err.status);
 
-        MessageQueue.sendAppMessage({
+        callback(pos, {
             temperature: -999,
             condition: -999,
         }, ack, nack);
     });
 }
 
-function fetchWeatherHelper(pos) {
+function fetchWeather(pos, callback) {
     if (config.weather_provider === 0) {
-        openWeatherMapWeather(pos);
+        openWeatherMapWeather(pos, callback);
     }
     else {
-        yahooWeather(pos);
-    }
-}
-
-function fetchWeather() {
-    console.log('fetching weather');
-
-    if (config.location && config.weather_provider != 1) {
-        fetchWeatherHelper();
-    }
-    else {
-        fetchLocation(fetchWeatherHelper, function(err) {
-            MessageQueue.sendAppMessage({
-                temperature: -998,
-                condition: -998,
-            }, ack, nack);
-        });
+        yahooWeather(pos, callback);
     }
 }

@@ -22,7 +22,7 @@
     "night_auto_switch": 7,
     "show_am_pm": 8,
     "hide_battery": 9,
-    "fetch_weather": 10,
+    "fetch": 10,
     "vibrate_bluetooth": 11,
     "charging_icon": 12,
     "bt_disconnect_icon": 13,
@@ -34,9 +34,7 @@
     "language": 19,
     "layout": 20,
     "air_quality": 21,
-    "aq_refresh_time": 22,
-    "fetch_air_quality": 23,
-    "air_quality_index": 24
+    "air_quality_index": 22
   },
   "resources": {
     "media": [

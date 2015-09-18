@@ -3,17 +3,12 @@ Pebble.addEventListener('ready', function(e) {
 
     loadConfig();
     console.log(JSON.stringify(config));
-    fetchWeather();
-    fetchAirQuality();
 });
 
 Pebble.addEventListener('appmessage', function(e) {
     console.log('Received message: ' + JSON.stringify(e));
-    if (e.payload.fetch_weather) {
-        fetchWeather();
-    }
-    else if (e.payload.fetch_air_quality) {
-        fetchAirQuality();
+    if (e.payload.fetch) {
+        fetch();
     }
 });
 
@@ -32,7 +27,37 @@ Pebble.addEventListener('webviewclosed', function(e) {
         console.log(JSON.stringify(config));
 
         saveConfig();
-        fetchWeather();
-        fetchAirQuality();
+        fetch();
     }
 });
+
+function fetch() {
+    if (config.location && config.weather_provider != 1 && config.air_quality === 0) {
+        fetchWeather(null, fetchWeatherCallback);
+    }
+    else {
+        fetchLocation(function(pos) {
+            fetchWeather(pos, fetchWeatherCallback);
+        }, function(err) {
+            MessageQueue.sendAppMessage({
+                temperature: -998,
+                condition: -998,
+                air_quality_index: -998,
+            }, ack, nack);
+        });
+    }
+}
+
+function fetchWeatherCallback(pos, data) {
+    data.air_quality_index = -999;
+    if (config.air_quality == 1) {
+        fetchAirQuality(pos, data, fetchAirQualityCallback);
+    }
+    else {
+        MessageQueue.sendAppMessage(data);
+    }
+}
+
+function fetchAirQualityCallback(pos, data) {
+    MessageQueue.sendAppMessage(data);
+}
