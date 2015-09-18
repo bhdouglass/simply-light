@@ -6,19 +6,17 @@ angular.module('app').directive('colorPicker', function() {
         scope: {},
         replace: true,
         require: 'ngModel',
-        template: '<div class="btn-group color-picker">' +
-            '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
-                '<span class="color" ng-style="style(model)" ng-if="model"></span> <span ng-bind="model ? model.name : \'Choose a color\'"></span> <span class="caret"></span>' +
-            '</button>' +
-            '<ul class="dropdown-menu" role="menu">' +
-                '<li ng-repeat="color in colors">' +
-                    '<a ng-click="setModel(color)">' +
-                        '<span class="color" ng-style="style(color)"></span> <span ng-bind="color.name"></span>' +
-                    '</a>' +
-                '</li>' +
-            '</ul>' +
+        template: '<div class="item-container-content">' +
+            '<label class="item">' +
+                '{{title}}' +
+                '<span class="color" ng-style="style(model)"></span>' +
+                '<select class="item-select" ng-model="model" ng-options="c.name for c in colors"></select>' +
+                '<div class="select-triangle"></div>' + //Not sure why this isn't automatic
+            '</label>' +
         '</div>',
         link: function($scope, $element, $attrs, ngModel) {
+            $scope.title = $attrs.title;
+
             if ($attrs.platform == 'aplite') {
                 $scope.colors = aplite_colors;
             }
@@ -62,6 +60,9 @@ angular.module('app').directive('colorPicker', function() {
 
                     if (color.name == 'White') {
                         style.border = 'black solid 1px';
+                    }
+                    else {
+                        style.border = color.hex + ' solid 1px';
                     }
                 }
 

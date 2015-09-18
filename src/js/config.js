@@ -18,15 +18,14 @@ var config = {
     language: 0,
     layout: 0,
     air_quality: 0,
-    aq_refresh_time: 3,
 };
 
 var configInts = [
-    'refresh_time', 'wait_time', 'color_invert', 'night_auto_switch', 'show_am_pm',
-    'hide_battery', 'weather_provider', 'feels_like', 'vibrate_bluetooth',
-    'charging_icon', 'bt_disconnect_icon', 'battery_percent', 'day_text_color',
-    'day_background_color', 'night_text_color', 'night_background_color',
-    'language', 'layout', 'air_quality', 'aq_refresh_time'
+    'refresh_time', 'wait_time', 'show_am_pm', 'hide_battery', 'weather_provider',
+    'feels_like', 'vibrate_bluetooth', 'charging_icon', 'bt_disconnect_icon',
+    'battery_percent', 'day_text_color', 'day_background_color',
+    'night_text_color', 'night_background_color', 'language', 'layout',
+    'air_quality'
 ];
 
 function ack(e) {
@@ -50,29 +49,6 @@ function loadConfig() {
         }
     }
 
-    //Migrate old values
-    var color_invert = window.localStorage.getItem('color_invert');
-    if (color_invert !== null && color_invert !== undefined) {
-        if (color_invert) {
-            config.day_text_color = 1;
-            config.day_background_color = 0;
-            config.night_text_color = 1;
-            config.night_background_color = 0;
-        }
-
-        window.localStorage.removeItem('color_invert');
-    }
-
-    var night_auto_switch = window.localStorage.getItem('night_auto_switch');
-    if (night_auto_switch !== null && night_auto_switch !== undefined) {
-        if (night_auto_switch) {
-            config.night_text_color = config.night_text_color ? 0 : 1;
-            config.night_background_color = config.night_background_color ? 0 : 1;
-        }
-
-        window.localStorage.removeItem('night_auto_switch');
-    }
-
     MessageQueue.sendAppMessage({
         refresh_time: config.refresh_time,
         wait_time: config.wait_time,
@@ -89,7 +65,6 @@ function loadConfig() {
         language: config.language,
         layout: config.layout,
         air_quality: config.air_quality,
-        aq_refresh_time: config.aq_refresh_time,
     }, ack, nack);
 }
 
@@ -114,6 +89,5 @@ function saveConfig() {
         language: config.language,
         layout: config.layout,
         air_quality: config.air_quality,
-        aq_refresh_time: config.aq_refresh_time,
     }, ack, nack);
 }

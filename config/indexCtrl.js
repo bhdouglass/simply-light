@@ -17,46 +17,6 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         }
     ];
 
-    $scope.color_invert = [
-        {
-            label: 'White Background with Black Text',
-            value: 0
-        }, {
-            label: 'Black Background with White Text',
-            value: 1
-        }
-    ];
-
-    $scope.night_auto_switch = [
-        {
-            label: 'Do no automatically invert colors',
-            value: 0
-        }, {
-            label: 'Automatically invert colors at night',
-            value: 1
-        }
-    ];
-
-    $scope.show_am_pm = [
-        {
-            label: 'Do not show AM/PM',
-            value: 0
-        }, {
-            label: 'Show AM/PM',
-            value: 1
-        }
-    ];
-
-    $scope.hide_battery = [
-        {
-            label: 'Show battery status line',
-            value: 0
-        }, {
-            label: 'Hide battery status line',
-            value: 1
-        }
-    ];
-
     $scope.weather_provider = [
         {
             label: 'OpenWeatherMap',
@@ -69,7 +29,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 
     $scope.feels_like = [
         {
-            label: 'Normal Temperature',
+            label: 'Normal',
             value: 0
         }, {
             label: 'Wind Chill',
@@ -80,52 +40,22 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         }
     ];
 
-    $scope.vibrate_bluetooth = [
-        {
-            label: 'Don\'t vibrate on bluetooth disconnect',
-            value: 0
-        }, {
-            label: 'Vibrate on bluetooth disconnect',
-            value: 1
-        }
-    ];
-
-    $scope.charging_icon = [
-        {
-            label: 'Don\'t show charging icon',
-            value: 0
-        }, {
-            label: 'Show icon when charging',
-            value: 1
-        }
-    ];
-
-    $scope.bt_disconnect_icon = [
-        {
-            label: 'Don\'t show bluetooth disconnected icon',
-            value: 0
-        }, {
-            label: 'Show icon when bluetooth disconnected',
-            value: 1
-        }
-    ];
-
     $scope.battery_percent = [
         {
-            label: 'Don\'t show battery percent',
+            label: 'Hide',
             value: 0
         }, {
-            label: 'Show battery percent in top right corner',
+            label: 'Top Right Corner',
             value: 1
         }, {
-            label: 'Show battery percent in top left corner',
+            label: 'Top Left Corner',
             value: 2
         }
     ];
 
     $scope.language = [
         {
-            label: 'Use Pebble\'s language settings',
+            label: 'Pebble\'s Settings',
             value: 0
         }, {
             label: 'Bahasa Malaysia',
@@ -138,40 +68,29 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 
     $scope.layout = [
         {
-            label: 'Time, Battery Bar, Date, Month, Weather',
+            label: 'Standard',
             value: 0
         }, {
-            label: 'Weather, Month, Date, Battery Bar, Time',
+            label: 'Reverse',
             value: 1
         }
     ];
 
-    $scope.air_quality = [
-        {
-            label: 'Don\'t show air quality',
-            value: 0
-        }, {
-            label: 'Replace temperature with air quality index',
-            value: 1
-        }
-    ];
-
-    $scope.config_ints = ['refresh_time', 'wait_time', 'aq_refresh_time'];
+    $scope.config_ints = ['refresh_time', 'wait_time'];
+    $scope.config_bools = ['air_quality', 'show_am_pm', 'hide_battery', 'charging_icon', 'bt_disconnect_icon', 'vibrate_bluetooth'];
 
     $scope.config = {
         temperature_units: 'imperial',
         refresh_time: 30,
         wait_time: 1,
         location: '',
-        color_invert: 0,
-        night_auto_switch: 0,
-        show_am_pm: 0,
-        hide_battery: 0,
+        show_am_pm: false,
+        hide_battery: false,
         weather_provider: 0,
         feels_like: 0,
-        vibrate_bluetooth: 0,
-        charging_icon: 1,
-        bt_disconnect_icon: 0,
+        vibrate_bluetooth: false,
+        charging_icon: true,
+        bt_disconnect_icon: false,
         battery_percent: 0,
         day_text_color: 0,
         day_background_color: 1,
@@ -179,25 +98,29 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         night_background_color: 1,
         language: 0,
         layout: 0,
-        air_quality: 0,
-        aq_refresh_time: 3,
+        air_quality: false,
     };
 
     $scope.errors = {
         refresh_time: false,
         wait_time: false,
         location: false,
-        aq_refresh_time: false,
     };
 
     function validateInt(value, error) {
-        if (parseInt(value) === value && parseInt(value) > 0) {
-            error = false;
+        if (parseInt(value) === value && parseInt(value) > 0 && value !== null && value !== undefined) {
             value = parseInt(value);
+
+            if (error) {
+                $scope.errors[error] = false;
+            }
         }
         else {
             value = 1;
-            error = true;
+
+            if (error) {
+                $scope.errors[error] = true;
+            }
         }
 
         return value;
@@ -206,11 +129,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     angular.forEach($scope.config_ints, function(name) {
         $scope.$watch('config.' + name, function() {
             $scope.errors[name] = false;
-            validateInt($scope.config[name], $scope.errors[name]);
-
-            if (name == 'aq_refresh_time' && ($scope.config.aq_refresh_time < 2 || !$scope.config.aq_refresh_time)) {
-                $scope.errors.aq_refresh_time = true;
-            }
+            validateInt($scope.config[name], name);
         });
     });
 
@@ -238,8 +157,13 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 
         $scope.saving = false;
         if (!error) {
-            console.log($scope.config);
-            window.location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify($scope.config));
+            var config = angular.copy($scope.config);
+            angular.forEach($scope.config_bools, function(key) {
+                config[key] = config[key] ? 1 : 0;
+            });
+
+            console.log(config);
+            window.location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(config));
         }
     };
 
@@ -253,6 +177,9 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                 if ($scope.config[key] !== undefined) {
                     if ($scope.config_ints.indexOf(key) >= 0) {
                         $scope.config[key] = validateInt(value);
+                    }
+                    else if ($scope.config_bools.indexOf(key) >= 0) {
+                        $scope.config[key] = !!value;
                     }
                     else {
                         $scope.config[key] = value;

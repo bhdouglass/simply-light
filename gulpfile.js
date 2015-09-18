@@ -19,27 +19,26 @@ var paths = {
     jslint: ['src/js/*.js', '!src/js/appinfo.js', 'gulpfile.js', 'config/*.js', '!config/colors.js'],
     pebble: {
         js: ['src/js/*.js', 'src/js/libs/*.js'],
-        jsdist: 'dist/src/js/',
+        jsdist: 'dist/pebble/src/js/',
         c: ['src/*.h', 'src/*.c', 'wscript', 'appinfo.json'],
         resources: 'resources/**/*',
-        cdist: 'dist/'
+        cdist: 'dist/pebble/'
     },
     config: {
         html: 'config/*.html',
         js: [
-            'config/bower_components/jquery/dist/jquery.min.js',
-            'config/bower_components/bootstrap/dist/js/bootstrap.min.js',
+            'config/bower_components/pebble-slate/dist/js/slate.min.js',
             'config/bower_components/angular/angular.min.js',
             'config/*.js',
         ],
         css: [
-            'config/bower_components/bootstrap/dist/css/bootstrap.min.css',
-            'config/bower_components/fontawesome/css/font-awesome.min.css',
-            'config/bower_components/bootstrap-material-design/dist/css/material.min.css',
+            'config/bower_components/pebble-slate/dist/css/slate.min.css',
             'config/*.css',
         ],
-        fonts: 'config/bower_components/fontawesome/fonts/*',
-        dist: 'dist/config/'
+        fonts: [
+            'config/bower_components/pebble-slate/dist/fonts/*',
+        ],
+        dist: 'dist/config/',
     }
 };
 
@@ -88,7 +87,7 @@ function installCommand(config) {
     return command;
 }
 
-gulp.task('serve', ['build-config'], function() {
+gulp.task('serve', ['build-config', 'watch-config'], function() {
     connect.server({
         root: 'dist/config',
         ip: '0.0.0.0',
@@ -135,6 +134,13 @@ gulp.task('build-fonts', function() {
         .pipe(gulp.dest(paths.config.dist + 'fonts'));
 });
 
+gulp.task('watch-config', function() {
+    gulp.watch(paths.config.js, ['lint', 'build-js']);
+    gulp.watch(paths.config.html, ['build-html']);
+    gulp.watch(paths.config.css, ['build-css']);
+    gulp.watch(paths.config.fonts, ['build-fonts']);
+});
+
 gulp.task('lint', function() {
     return gulp.src(paths.jslint)
         .pipe(jshint())
@@ -142,7 +148,11 @@ gulp.task('lint', function() {
         .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('clean', function() {
+gulp.task('clean-config', function() {
+    del.sync(paths.config.dist);
+});
+
+gulp.task('clean-pebble', function() {
     del.sync(paths.pebble.cdist);
 });
 
@@ -178,7 +188,7 @@ gulp.task('build-pebble-resources', function() {
         .pipe(gulp.dest(paths.pebble.cdist));
 });
 
-gulp.task('build-config', ['lint', 'clean', 'build-html', 'build-js', 'build-css', 'build-fonts']);
-gulp.task('build-pebble', ['lint', 'clean', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd dist && pebble build']));
-gulp.task('install-pebble', ['build-pebble'], shell.task(['cd dist && ' + installCommand(config)]));
+gulp.task('build-config', ['lint', 'clean-config', 'build-html', 'build-js', 'build-css', 'build-fonts']);
+gulp.task('build-pebble', ['lint', 'clean-pebble', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
+gulp.task('install-pebble', ['build-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && ' + installCommand(config)]));
 gulp.task('server-install', ['build-pebble']);
