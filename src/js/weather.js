@@ -141,7 +141,8 @@ function yahooWeather(pos, callback) {
             temperature: temperature,
             condition: condition,
             sunrise: sunrise,
-            sunset: sunset
+            sunset: sunset,
+            err: NO_ERROR,
         }, ack, nack);
 
     }, function(err) {
@@ -150,6 +151,7 @@ function yahooWeather(pos, callback) {
         callback(pos, {
             temperature: -999,
             condition: -999,
+            err: WEATHER_ERROR,
         }, ack, nack);
     });
 }
@@ -199,7 +201,8 @@ function openWeatherMapWeather(pos, callback) {
             temperature: temperature,
             condition: condition,
             sunrise: sunrise,
-            sunset: sunset
+            sunset: sunset,
+            err: NO_ERROR,
         }, ack, nack);
 
     }, function(err) {
@@ -208,6 +211,7 @@ function openWeatherMapWeather(pos, callback) {
         callback(pos, {
             temperature: -999,
             condition: -999,
+            err: WEATHER_ERROR,
         }, ack, nack);
     });
 }

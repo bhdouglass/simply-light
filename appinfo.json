@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 3.0,
-  "versionLabel": "3.0",
+  "versionCode": 3.1,
+  "versionLabel": "3.1",
   "capabilities": [
     "configurable"
   ],
@@ -34,7 +34,8 @@
     "language": 19,
     "layout": 20,
     "air_quality": 21,
-    "air_quality_index": 22
+    "air_quality_index": 22,
+    "err": 23
   },
   "resources": {
     "media": [
@@ -81,7 +82,7 @@
       {
         "name": "MATERIAL_30",
         "file": "fonts/Material-Design-Iconic-Font.ttf",
-        "characterRegex": "[\uf114\uf27f\uf1aa]",
+        "characterRegex": "[\uf114\uf27f\uf1aa\uf21b\uf368]",
         "type": "font"
       }
     ]

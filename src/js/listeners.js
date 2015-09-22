@@ -36,13 +36,15 @@ function fetch() {
         fetchWeather(null, fetchWeatherCallback);
     }
     else {
+        console.log('fetching location');
         fetchLocation(function(pos) {
             fetchWeather(pos, fetchWeatherCallback);
         }, function(err) {
             MessageQueue.sendAppMessage({
-                temperature: -998,
-                condition: -998,
-                air_quality_index: -998,
+                temperature: -999,
+                condition: -999,
+                air_quality_index: -999,
+                err: LOCATION_ERROR,
             }, ack, nack);
         });
     }

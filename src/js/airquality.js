@@ -10,12 +10,16 @@ function fetchAirQuality(pos, data, callback) {
         if (json.length > 0) {
             console.log('aqi: ' + json[0].v);
             console.log('loc: ' + json[0].nlo);
+            config.last_aqi_location = json[0].nlo;
+            saveSingleConfig('last_aqi_location');
 
             data.air_quality_index = parseInt(json[0].v);
+            data.err = NO_ERROR;
             callback(pos, data);
         }
         else {
             data.air_quality_index = -999;
+            data.err = AQI_ERROR;
             callback(pos, data);
         }
 
@@ -23,6 +27,7 @@ function fetchAirQuality(pos, data, callback) {
         console.warn('Error while getting air quality: ' + err.status);
 
         data.air_quality_index = -999;
+        data.err = AQI_ERROR;
         callback(pos, data);
     });
 }

@@ -1,0 +1,5 @@
+var NO_ERROR = 0;
+var FETCH_ERROR = 1;
+var WEATHER_ERROR = 2;
+var LOCATION_ERROR = 3;
+var AQI_ERROR = 4;

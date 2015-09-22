@@ -49,6 +49,23 @@ void ui_colorize() {
 }
 
 void ui_weather_update() {
+    if (config.air_quality == 1) {
+        if (ui.state.error == AQI_ERROR || ui.state.error == FETCH_ERROR || ui.state.air_quality_index == -999) {
+            strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+        }
+        else {
+            snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d", ui.state.air_quality_index);
+        }
+    }
+    else {
+        if (ui.state.error == WEATHER_ERROR || ui.state.error == FETCH_ERROR || ui.state.temperature == -999) {
+            strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+        }
+        else {
+            snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", ui.state.temperature);
+        }
+    }
+
     if (ui.state.battery.is_charging && config.charging_icon) {
         text_layer_set_font(ui.layers.condition, ui.fonts.icons);
         strncpy(ui.texts.condition, "\uf114", sizeof(ui.texts.condition));
@@ -57,9 +74,21 @@ void ui_weather_update() {
         text_layer_set_font(ui.layers.condition, ui.fonts.icons);
         strncpy(ui.texts.condition, "\uf27f", sizeof(ui.texts.condition));
     }
-    else if (ui.state.condition == -998) {
+    else if (ui.state.error == FETCH_ERROR) {
+        text_layer_set_font(ui.layers.condition, ui.fonts.weather);
+        strncpy(ui.texts.condition, "\uf03e", sizeof(ui.texts.condition));
+    }
+    else if (ui.state.error == WEATHER_ERROR) {
+        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
+        strncpy(ui.texts.condition, "\uf21b", sizeof(ui.texts.condition));
+    }
+    else if (ui.state.error == LOCATION_ERROR) {
         text_layer_set_font(ui.layers.condition, ui.fonts.icons);
         strncpy(ui.texts.condition, "\uf1aa", sizeof(ui.texts.condition));
+    }
+    else if (ui.state.error == AQI_ERROR) {
+        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
+        strncpy(ui.texts.condition, "\uf368", sizeof(ui.texts.condition));
     }
     else {
         text_layer_set_font(ui.layers.condition, ui.fonts.weather);
@@ -253,9 +282,11 @@ void ui_init() {
     ui.state.battery = battery_state_service_peek();
     ui.state.bt_connected = bluetooth_connection_service_peek();
     ui.state.condition = -999;
+    ui.state.temperature = -999;
+    ui.state.air_quality_index = -999;
     ui.state.is_day = 1;
     ui.state.elapsed_time = 0;
-    ui.state.request_failed = true;
+    ui.state.error = FETCH_ERROR;
     ui.texts.time_zero = false;
     strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
 }

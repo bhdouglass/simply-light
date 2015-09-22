@@ -28,16 +28,16 @@
 
 static bool check_refresh(bool do_refresh, bool force_refresh) {
     bool refresh = false;
-    if (ui.state.elapsed_time >= config.refresh_time && !ui.state.request_failed) {
+    if (ui.state.elapsed_time >= config.refresh_time && ui.state.error == NO_ERROR) {
         refresh = true;
     }
-    else if (ui.state.elapsed_time >= config.wait_time && ui.state.request_failed) {
+    else if (ui.state.elapsed_time >= config.wait_time && ui.state.error != NO_ERROR) {
         refresh = true;
     }
 
     if ((refresh && do_refresh) || force_refresh) {
         ui.state.elapsed_time = 0;
-        ui.state.request_failed = true;
+        ui.state.error = FETCH_ERROR;
 
         Tuplet value = TupletInteger(APP_KEY_FETCH, 1);
         DictionaryIterator *iter;
@@ -57,7 +57,7 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
     return refresh;
 }
 
-static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
+static void handle_tick_helper(struct tm *tick_time, TimeUnits units_changed) {
     if (units_changed & MINUTE_UNIT) {
         strftime(ui.texts.time, sizeof(ui.texts.time), clock_is_24h_style() ? "%H:%M" : "%I:%M", tick_time);
 
@@ -68,20 +68,6 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
         }
         else {
             ui.texts.time_zero = false;
-        }
-
-        ui.state.elapsed_time++;
-        if (ui.state.bt_connected) {
-            check_refresh(true, false);
-        }
-        else {
-            //Bluetooth not connected and we need to refresh
-            bool refresh = check_refresh(false, false);
-            if (refresh) {
-                ui.state.condition = -999;
-                strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
-                ui_weather_update();
-            }
         }
     }
 
@@ -98,9 +84,33 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
     ui_colorize();
 }
 
+static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
+    handle_tick_helper(tick_time, units_changed);
+
+    ui.state.elapsed_time++;
+    if (ui.state.bt_connected) {
+        check_refresh(true, false);
+    }
+    else {
+        //Bluetooth not connected and we need to refresh
+        bool refresh = check_refresh(false, false);
+        if (refresh) {
+            ui.state.condition = -999;
+            ui.state.temperature = -999;
+            ui.state.air_quality_index = -999;
+            ui.state.error = FETCH_ERROR;
+
+            ui_weather_update();
+        }
+    }
+}
+
 static void handle_failed_message(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(reason));
-    check_refresh(true, true);
+    ui.state.error = FETCH_ERROR;
+    if (ui.state.bt_connected) {
+        check_refresh(true, true);
+    }
 }
 
 static void handle_bluetooth(bool connected) {
@@ -140,33 +150,20 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
         int key = t->key;
         int value = t->value->int32;
         switch(key) {
+            case APP_KEY_ERR:
+                ui.state.error = value;
+
+                break;
+
             case APP_KEY_TEMPERATURE:
-                if (config.air_quality == 0) {
-                    ui.state.elapsed_time = 0;
-                    if (value == -999 || value == -998) {
-                        strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
-                        ui.state.request_failed = true;
-                    }
-                    else {
-                        snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", value);
-                        ui.state.request_failed = false;
-                    }
-                }
+                ui.state.temperature = value;
+                ui.state.elapsed_time = 0;
 
                 break;
 
             case APP_KEY_AIR_QUALITY_INDEX:
-                if (config.air_quality == 1) {
-                    ui.state.elapsed_time = 0;
-                    if (value == -999 || value == -998) {
-                        strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
-                        ui.state.request_failed = true;
-                    }
-                    else {
-                        snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d", value);
-                        ui.state.request_failed = false;
-                    }
-                }
+                ui.state.air_quality_index = value;
+                ui.state.elapsed_time = 0;
 
                 break;
 
@@ -247,14 +244,14 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
     }
 
     ui_weather_update();
-    //ui_time_update(); Called in handle_tick
+    //ui_time_update(); Called in handle_tick_helper
     ui_battery_update();
-    //ui_colorize(); Called in handle_tick
+    //ui_colorize(); Called in handle_tick_helper
     ui_align();
 
     time_t now = time(NULL);
     struct tm *tick_time = localtime(&now);
-    handle_tick(tick_time, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT);
+    handle_tick_helper(tick_time, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT);
 
     save_config();
 }

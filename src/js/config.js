@@ -18,6 +18,7 @@ var config = {
     language: 0,
     layout: 0,
     air_quality: 0,
+    last_aqi_location: null,
 };
 
 var configInts = [
@@ -70,7 +71,7 @@ function loadConfig() {
 
 function saveConfig() {
     for (var key in config) {
-        window.localStorage.setItem(key, config[key]);
+        saveSingleConfig(key);
     }
 
     MessageQueue.sendAppMessage({
@@ -90,4 +91,8 @@ function saveConfig() {
         layout: config.layout,
         air_quality: config.air_quality,
     }, ack, nack);
+}
+
+function saveSingleConfig(key) {
+    window.localStorage.setItem(key, config[key]);
 }

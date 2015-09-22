@@ -99,6 +99,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         language: 0,
         layout: 0,
         air_quality: false,
+        last_aqi_location: null,
     };
 
     $scope.errors = {
@@ -161,6 +162,8 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
             angular.forEach($scope.config_bools, function(key) {
                 config[key] = config[key] ? 1 : 0;
             });
+
+            delete config.last_aqi_location;
 
             console.log(config);
             window.location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(config));

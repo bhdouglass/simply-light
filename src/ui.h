@@ -10,13 +10,21 @@
 #define PHEIGHT 168
 #define CHARGEUNIT 1.44
 
+#define NO_ERROR 0
+#define FETCH_ERROR 1
+#define WEATHER_ERROR 2
+#define LOCATION_ERROR 3
+#define AQI_ERROR 4
+
 struct State {
     BatteryChargeState battery;
     bool               bt_connected;
     int                condition;
+    int                temperature;
+    int                air_quality_index;
     int                is_day;
     int                elapsed_time;
-    bool               request_failed;
+    int                error;
 };
 
 struct Fonts {

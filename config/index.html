@@ -53,8 +53,13 @@
                 </label>
             </div>
             <div class="item-container-footer" ng-show="version >= 2.9">
-                When enabled, the current air quality index replaces the temperature.
-                Air Quality information comes from <a href="http://aqicn.org/">aqicn.org</a>
+                <p>
+                    When enabled, the current air quality index replaces the temperature.
+                    Air Quality information comes from <a href="http://aqicn.org/">aqicn.org</a>
+                </p>
+                <p ng-if="config.last_aqi_location">
+                    Last AQI came from "{{config.last_aqi_location}}"
+                </p>
             </div>
 
             <div class="item-container" ng-show="version == 2.9 && config.air_quality == 1">
