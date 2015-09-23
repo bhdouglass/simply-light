@@ -22,6 +22,10 @@ var paths = {
         jsdist: 'dist/pebble/src/js/',
         c: ['src/*.h', 'src/*.c', 'wscript', 'appinfo.json'],
         resources: 'resources/**/*',
+        fonts: [
+            'config/bower_components/weather-icons/font/weathericons-regular-webfont.ttf',
+            'config/bower_components/material-design-iconic-font/dist/fonts/Material-Design-Iconic-Font.ttf',
+        ],
         cdist: 'dist/pebble/'
     },
     config: {
@@ -33,10 +37,16 @@ var paths = {
         ],
         css: [
             'config/bower_components/pebble-slate/dist/css/slate.min.css',
+            'config/bower_components/weather-icons/css/weather-icons.min.css',
+            'config/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css',
             'config/*.css',
         ],
         fonts: [
             'config/bower_components/pebble-slate/dist/fonts/*',
+            'config/bower_components/material-design-iconic-font/dist/fonts/*',
+        ],
+        font: [ //Avoids rewriting the css file
+            'config/bower_components/weather-icons/font/*',
         ],
         dist: 'dist/config/',
     }
@@ -134,6 +144,11 @@ gulp.task('build-fonts', function() {
         .pipe(gulp.dest(paths.config.dist + 'fonts'));
 });
 
+gulp.task('build-font', function() {
+    return gulp.src(paths.config.font)
+        .pipe(gulp.dest(paths.config.dist + 'font'));
+});
+
 gulp.task('watch-config', function() {
     gulp.watch(paths.config.js, ['lint', 'build-js']);
     gulp.watch(paths.config.html, ['build-html']);
@@ -188,7 +203,12 @@ gulp.task('build-pebble-resources', function() {
         .pipe(gulp.dest(paths.pebble.cdist));
 });
 
-gulp.task('build-config', ['lint', 'clean-config', 'build-html', 'build-js', 'build-css', 'build-fonts']);
-gulp.task('build-pebble', ['lint', 'clean-pebble', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
+gulp.task('build-pebble-fonts', function() {
+    return gulp.src(paths.pebble.fonts)
+        .pipe(gulp.dest(paths.pebble.cdist + 'resources/fonts/'));
+});
+
+gulp.task('build-config', ['lint', 'clean-config', 'build-html', 'build-js', 'build-css', 'build-fonts', 'build-font']);
+gulp.task('build-pebble', ['lint', 'clean-pebble', 'build-pebble-fonts', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
 gulp.task('install-pebble', ['build-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && ' + installCommand(config)]));
 gulp.task('server-install', ['build-pebble']);

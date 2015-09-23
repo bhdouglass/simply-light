@@ -8,6 +8,8 @@
   "license": "GPL-3.0",
   "dependencies": {
     "angular": "~1.4.1",
-    "pebble-slate": "~0.0.3"
+    "material-design-iconic-font": "~2.1.2",
+    "pebble-slate": "~0.0.3",
+    "weather-icons": "~2.0.10"
   }
 }
