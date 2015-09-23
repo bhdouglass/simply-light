@@ -110,7 +110,7 @@ function yahooWeather(pos, callback) {
 
         var title = data.title;
         var temperature = Math.round(data.item.condition.temp);
-        var condition = yahooConditionToOpenWeatherMap(data.item.condition.code);
+        var condition = yahooCondition(data.item.condition.code);
         var sunrise = convertYahooTime(data.astronomy.sunrise);
         var sunset = convertYahooTime(data.astronomy.sunset);
 
@@ -175,7 +175,7 @@ function openWeatherMapWeather(pos, callback) {
 
         var temperature = Math.round(json.main.temp);
         var location = json.name;
-        var condition = json.weather[0].id; //TODO check if more conditions
+        var condition = openWeatherMapCondition(json.weather[0].id);
 
         var sunrise_date = new Date(json.sys.sunrise * 1000);
         var sunset_date = new Date(json.sys.sunset * 1000);
