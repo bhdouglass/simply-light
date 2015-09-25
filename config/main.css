@@ -33,3 +33,7 @@
     float: right;
     margin-right: 80px;
 }
+
+#battery_percent {
+    width: 100px;
+}
