@@ -19,6 +19,7 @@ var config = {
     layout: 0,
     air_quality: 0,
     last_aqi_location: null,
+    aqi_degree: 0,
 };
 
 var configInts = [
@@ -26,7 +27,7 @@ var configInts = [
     'feels_like', 'vibrate_bluetooth', 'charging_icon', 'bt_disconnect_icon',
     'battery_percent', 'day_text_color', 'day_background_color',
     'night_text_color', 'night_background_color', 'language', 'layout',
-    'air_quality'
+    'air_quality', 'aqi_degree'
 ];
 
 function ack(e) {
@@ -66,6 +67,7 @@ function loadConfig() {
         language: config.language,
         layout: config.layout,
         air_quality: config.air_quality,
+        aqi_degree: config.aqi_degree,
     }, ack, nack);
 }
 
@@ -90,6 +92,7 @@ function saveConfig() {
         language: config.language,
         layout: config.layout,
         air_quality: config.air_quality,
+        aqi_degree: config.aqi_degree,
     }, ack, nack);
 }
 

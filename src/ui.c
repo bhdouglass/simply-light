@@ -14,6 +14,7 @@ void ui_align() {
         layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, PHEIGHT - 154, HALFPWIDTH, 50));
         //am_pm layer set in ui_time_update()
         layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 7, PWIDTH - 5, 20));
+        //air_quality_index layer set in ui_weather_update()
     }
     else {
         layer_set_frame((Layer *) ui.layers.time, GRect(0, MARGINTOP, PWIDTH, 100));
@@ -24,6 +25,7 @@ void ui_align() {
         layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50));
         //am_pm layer set in ui_time_update()
         layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 7, PWIDTH - 5, 20));
+        //air_quality_index layer set in ui_weather_update()
     }
 }
 
@@ -49,20 +51,72 @@ void ui_colorize() {
 }
 
 void ui_weather_update() {
-    if (config.air_quality == 1) {
-        if (ui.state.error == AQI_ERROR || ui.state.error == FETCH_ERROR || ui.state.air_quality_index == -999) {
-            strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
-        }
-        else {
-            snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d", ui.state.air_quality_index);
-        }
-    }
-    else {
+    if (config.aqi_degree == 1) {
+        layer_set_hidden((Layer *) ui.layers.air_quality_index, false);
+
         if (ui.state.error == WEATHER_ERROR || ui.state.error == FETCH_ERROR || ui.state.temperature == -999) {
             strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
         }
         else {
-            snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", ui.state.temperature);
+            snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d ", ui.state.temperature);
+        }
+
+        if (ui.state.error != NO_ERROR || ui.state.air_quality_index == -999) {
+            strncpy(ui.texts.air_quality_index, " ", sizeof(ui.texts.air_quality_index));
+            layer_set_hidden((Layer *) ui.layers.air_quality_index, true);
+        }
+        else {
+            snprintf(ui.texts.air_quality_index, sizeof(ui.texts.air_quality_index), "%d", ui.state.air_quality_index);
+        }
+
+        if (config.layout == 1) {
+            if (strlen(ui.texts.temperature) == 2) {
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(16, PHEIGHT - 157, HALFPWIDTH, 50));
+            }
+            else if (strlen(ui.texts.temperature) == 3) {
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(26, PHEIGHT - 157, HALFPWIDTH, 50));
+            }
+            else if (strlen(ui.texts.temperature) == 4) {
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(35, PHEIGHT - 157, HALFPWIDTH, 50));
+            }
+            else {
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(38, PHEIGHT - 157, HALFPWIDTH, 50));
+            }
+        }
+        else {
+            if (strlen(ui.texts.temperature) == 2) {
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(16, MARGINTOP + 120, HALFPWIDTH, 50));
+            }
+            else if (strlen(ui.texts.temperature) == 3) {
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(26, MARGINTOP + 120, HALFPWIDTH, 50));
+            }
+            else if (strlen(ui.texts.temperature) == 4) {
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(35, MARGINTOP + 120, HALFPWIDTH, 50));
+            }
+            else {
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(38, MARGINTOP + 120, HALFPWIDTH, 50));
+            }
+        }
+    }
+    else {
+        layer_set_hidden((Layer *) ui.layers.air_quality_index, true);
+        strncpy(ui.texts.air_quality_index, " ", sizeof(ui.texts.air_quality_index));
+
+        if (config.air_quality == 1) {
+            if (ui.state.error == AQI_ERROR || ui.state.error == FETCH_ERROR || ui.state.air_quality_index == -999) {
+                strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+            }
+            else {
+                snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d", ui.state.air_quality_index);
+            }
+        }
+        else {
+            if (ui.state.error == WEATHER_ERROR || ui.state.error == FETCH_ERROR || ui.state.temperature == -999) {
+                strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+            }
+            else {
+                snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", ui.state.temperature);
+            }
         }
     }
 
@@ -99,6 +153,7 @@ void ui_weather_update() {
     //strncpy(ui.texts.temperature, "75\u00b0", sizeof(ui.texts.temperature));
     //strncpy(ui.texts.condition, "\uf00d", sizeof(ui.texts.condition));
 
+    text_layer_set_text(ui.layers.air_quality_index, ui.texts.air_quality_index);
     text_layer_set_text(ui.layers.temperature, ui.texts.temperature);
     text_layer_set_text(ui.layers.condition, ui.texts.condition);
 }
@@ -220,6 +275,12 @@ void ui_window_load(Window *window) {
     text_layer_set_text_alignment(ui.layers.temperature, GTextAlignmentCenter);
     layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.temperature));
 
+    ui.layers.air_quality_index = text_layer_create(GRect(0, MARGINTOP + 120, HALFPWIDTH, 50));
+    text_layer_set_background_color(ui.layers.air_quality_index, GColorClear);
+    text_layer_set_font(ui.layers.air_quality_index, ui.fonts.air_quality_index);
+    text_layer_set_text_alignment(ui.layers.air_quality_index, GTextAlignmentCenter);
+    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.air_quality_index));
+
     ui.layers.condition = text_layer_create(GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50));
     text_layer_set_background_color(ui.layers.condition, GColorClear);
     text_layer_set_font(ui.layers.condition, ui.fonts.weather);
@@ -247,6 +308,7 @@ void ui_window_unload(Window *window) {
     text_layer_destroy(ui.layers.date);
     text_layer_destroy(ui.layers.month);
     text_layer_destroy(ui.layers.temperature);
+    text_layer_destroy(ui.layers.air_quality_index);
     text_layer_destroy(ui.layers.condition);
     text_layer_destroy(ui.layers.am_pm);
     text_layer_destroy(ui.layers.battery_percent);
@@ -258,6 +320,7 @@ void ui_init() {
     fonts.date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_32));
     fonts.month = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_20));
     fonts.weather = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_WEATHER_30));
+    fonts.air_quality_index = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_18));
     fonts.am_pm = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_16));
     fonts.icons = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_MATERIAL_30));
     fonts.battery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_20));
@@ -298,6 +361,7 @@ void ui_deinit() {
     fonts_unload_custom_font(ui.fonts.date);
     fonts_unload_custom_font(ui.fonts.month);
     fonts_unload_custom_font(ui.fonts.weather);
+    fonts_unload_custom_font(ui.fonts.air_quality_index);
     fonts_unload_custom_font(ui.fonts.am_pm);
     fonts_unload_custom_font(ui.fonts.icons);
     fonts_unload_custom_font(ui.fonts.battery);

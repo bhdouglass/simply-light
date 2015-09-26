@@ -61,6 +61,18 @@
                     Last AQI came from "{{config.last_aqi_location}}"
                 </p>
             </div>
+            <div class="item-container-content" ng-show="version >= 3.2">
+                <label class="item">
+                    AQI as degree icon
+                    <input type="checkbox" class="item-toggle" id="aqi_degree" ng-model="config.aqi_degree" />
+                </label>
+            </div>
+            <div class="item-container-footer" ng-show="version >= 3.2">
+                <p>
+                    When enabled, the current air quality index replaces the
+                    degree icon for the temperature.
+                </p>
+            </div>
 
             <div class="item-container" ng-show="version == 2.9 && config.air_quality == 1">
                 <div class="item-container-content">

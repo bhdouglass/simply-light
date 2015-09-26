@@ -77,7 +77,10 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     ];
 
     $scope.config_ints = ['refresh_time', 'wait_time'];
-    $scope.config_bools = ['air_quality', 'show_am_pm', 'hide_battery', 'charging_icon', 'bt_disconnect_icon', 'vibrate_bluetooth'];
+    $scope.config_bools = [
+        'air_quality', 'show_am_pm', 'hide_battery', 'charging_icon',
+        'bt_disconnect_icon', 'vibrate_bluetooth', 'aqi_degree',
+    ];
 
     $scope.config = {
         temperature_units: 'imperial',
@@ -100,6 +103,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         layout: 0,
         air_quality: false,
         last_aqi_location: null,
+        aqi_degree: false,
     };
 
     $scope.errors = {

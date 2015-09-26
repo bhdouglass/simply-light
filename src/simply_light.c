@@ -238,6 +238,10 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
             case APP_KEY_AIR_QUALITY:
                 config.air_quality = value;
                 break;
+
+            case APP_KEY_AQI_DEGREE:
+                config.aqi_degree = value;
+                break;
         }
 
         t = dict_read_next(iter);

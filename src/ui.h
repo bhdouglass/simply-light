@@ -32,6 +32,7 @@ struct Fonts {
     GFont time;
     GFont month;
     GFont weather;
+    GFont air_quality_index;
     GFont am_pm;
     GFont icons;
     GFont battery;
@@ -44,6 +45,7 @@ struct Layers {
     TextLayer *time;
     TextLayer *month;
     TextLayer *temperature;
+    TextLayer *air_quality_index;
     TextLayer *condition;
     TextLayer *am_pm;
     TextLayer *battery_percent;
@@ -55,6 +57,7 @@ struct Texts {
     bool time_zero;
     char month[20];
     char temperature[6];
+    char air_quality_index[6];
     char condition[5];
     char am_pm[3];
     char battery_percent[6];

@@ -20,6 +20,7 @@ struct Config {
     int language;
     int layout;
     int air_quality;
+    int aqi_degree;
 };
 
 GColor load_color(int color);
