@@ -14,7 +14,14 @@ function fetchAirQuality(pos, data, callback) {
             saveSingleConfig('last_aqi_location');
 
             data.air_quality_index = parseInt(json[0].v);
-            data.err = NO_ERROR;
+            if (!data.air_quality_index) {
+                data.air_quality_index = -999;
+                data.err = AQI_ERROR;
+            }
+            else {
+                data.err = NO_ERROR;
+            }
+
             callback(pos, data);
         }
         else {

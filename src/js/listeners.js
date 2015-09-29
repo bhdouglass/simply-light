@@ -6,7 +6,7 @@ Pebble.addEventListener('ready', function(e) {
 });
 
 Pebble.addEventListener('appmessage', function(e) {
-    console.log('Received message: ' + JSON.stringify(e));
+    console.log('Received message: ' + JSON.stringify(e.payload));
     if (e.payload.fetch) {
         fetch();
     }
@@ -36,7 +36,6 @@ function fetch() {
         fetchWeather(null, fetchWeatherCallback);
     }
     else {
-        console.log('fetching location');
         fetchLocation(function(pos) {
             fetchWeather(pos, fetchWeatherCallback);
         }, function(err) {
@@ -52,7 +51,7 @@ function fetch() {
 
 function fetchWeatherCallback(pos, data) {
     data.air_quality_index = -999;
-    if (config.air_quality == 1) {
+    if (config.air_quality) {
         fetchAirQuality(pos, data, fetchAirQualityCallback);
     }
     else {

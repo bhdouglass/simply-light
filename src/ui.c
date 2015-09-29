@@ -51,19 +51,18 @@ void ui_colorize() {
 }
 
 void ui_weather_update() {
-    if (config.aqi_degree == 1) {
+    if (config.aqi_degree == 1 && config.air_quality == 1) {
         layer_set_hidden((Layer *) ui.layers.air_quality_index, false);
 
         if (ui.state.error == WEATHER_ERROR || ui.state.error == FETCH_ERROR || ui.state.temperature == -999) {
-            strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+            strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
         }
         else {
             snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d ", ui.state.temperature);
         }
 
         if (ui.state.error != NO_ERROR || ui.state.air_quality_index == -999) {
-            strncpy(ui.texts.air_quality_index, " ", sizeof(ui.texts.air_quality_index));
-            layer_set_hidden((Layer *) ui.layers.air_quality_index, true);
+            strncpy(ui.texts.air_quality_index, "", sizeof(ui.texts.air_quality_index));
         }
         else {
             snprintf(ui.texts.air_quality_index, sizeof(ui.texts.air_quality_index), "%d", ui.state.air_quality_index);
@@ -100,11 +99,11 @@ void ui_weather_update() {
     }
     else {
         layer_set_hidden((Layer *) ui.layers.air_quality_index, true);
-        strncpy(ui.texts.air_quality_index, " ", sizeof(ui.texts.air_quality_index));
+        strncpy(ui.texts.air_quality_index, "", sizeof(ui.texts.air_quality_index));
 
         if (config.air_quality == 1) {
             if (ui.state.error == AQI_ERROR || ui.state.error == FETCH_ERROR || ui.state.air_quality_index == -999) {
-                strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+                strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
             }
             else {
                 snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d", ui.state.air_quality_index);
@@ -112,7 +111,7 @@ void ui_weather_update() {
         }
         else {
             if (ui.state.error == WEATHER_ERROR || ui.state.error == FETCH_ERROR || ui.state.temperature == -999) {
-                strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+                strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
             }
             else {
                 snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", ui.state.temperature);
@@ -128,7 +127,8 @@ void ui_weather_update() {
         text_layer_set_font(ui.layers.condition, ui.fonts.icons);
         strncpy(ui.texts.condition, "\uf27f", sizeof(ui.texts.condition));
     }
-    else if (ui.state.error == FETCH_ERROR) {
+
+    if (ui.state.error == FETCH_ERROR) {
         text_layer_set_font(ui.layers.condition, ui.fonts.weather);
         strncpy(ui.texts.condition, "\uf03e", sizeof(ui.texts.condition));
     }
@@ -351,7 +351,8 @@ void ui_init() {
     ui.state.elapsed_time = 0;
     ui.state.error = FETCH_ERROR;
     ui.texts.time_zero = false;
-    strncpy(ui.texts.temperature, " ", sizeof(ui.texts.temperature));
+    strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
+    strncpy(ui.texts.air_quality_index, "", sizeof(ui.texts.air_quality_index));
 }
 
 void ui_deinit() {
