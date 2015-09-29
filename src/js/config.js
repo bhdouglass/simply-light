@@ -20,6 +20,7 @@ var config = {
     air_quality: 0,
     last_aqi_location: null,
     aqi_degree: 0,
+    air_quality_location: '',
 };
 
 var configInts = [

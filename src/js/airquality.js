@@ -1,28 +1,47 @@
 function fetchAirQuality(pos, data, callback) {
-    //full detail: http://mapidroid.aqicn.org/aqicn/json/android/_Cw121A9IzcsrrswpS8zLTNR3zCnJz89LBAA/v9.json?cityID=USA%3APennsylvania%2FAltoona&lang=en
-    var url = 'http://mapidroid.aqicn.org/aqicn/services/geolocate/?autolocate&android&geo=1;' +
-        pos.coords.latitude + ';' + pos.coords.longitude + ';' + pos.coords.accuracy + ';gps&lang=en';
+    var url = '';
+    if (config.air_quality_location) {
+        url = 'http://mapidroid.aqicn.org/aqicn/services/citysearch/?android&lang=en&city=' + config.air_quality_location;
+    }
+    else {
+        //full detail: http://mapidroid.aqicn.org/aqicn/json/android/_Cw121A9IzcsrrswpS8zLTNR3zCnJz89LBAA/v9.json?cityID=USA%3APennsylvania%2FAltoona&lang=en
+        url = 'http://mapidroid.aqicn.org/aqicn/services/geolocate/?autolocate&android&geo=1;' +
+            pos.coords.latitude + ';' + pos.coords.longitude + ';' + pos.coords.accuracy + ';gps&lang=en';
+    }
 
     console.log(url);
     get(url, function(response) {
-        var json = JSON.parse(response);
+        if (response) {
+            var json = [];
+            try {
+                json = JSON.parse(response);
+            }
+            catch (e) {
+                //Do nothing
+            }
 
-        if (json.length > 0) {
-            console.log('aqi: ' + json[0].v);
-            console.log('loc: ' + json[0].nlo);
-            config.last_aqi_location = json[0].nlo;
-            saveSingleConfig('last_aqi_location');
+            if (json.length > 0) {
+                console.log('aqi: ' + json[0].v);
+                console.log('loc: ' + json[0].nlo);
+                config.last_aqi_location = json[0].nlo;
+                saveSingleConfig('last_aqi_location');
 
-            data.air_quality_index = parseInt(json[0].v);
-            if (!data.air_quality_index) {
-                data.air_quality_index = -999;
-                data.err = AQI_ERROR;
+                data.air_quality_index = parseInt(json[0].v);
+                if (!data.air_quality_index) {
+                    data.air_quality_index = -999;
+                    data.err = AQI_ERROR;
+                }
+                else {
+                    data.err = NO_ERROR;
+                }
+
+                callback(pos, data);
             }
             else {
-                data.err = NO_ERROR;
+                data.air_quality_index = -999;
+                data.err = AQI_ERROR;
+                callback(pos, data);
             }
-
-            callback(pos, data);
         }
         else {
             data.air_quality_index = -999;

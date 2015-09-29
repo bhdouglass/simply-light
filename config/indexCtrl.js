@@ -104,6 +104,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         air_quality: false,
         last_aqi_location: null,
         aqi_degree: false,
+        air_quality_location: '',
     };
 
     $scope.errors = {
