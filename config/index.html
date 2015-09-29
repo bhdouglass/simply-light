@@ -45,54 +45,6 @@
                     <select class="item-select" dir="rtl" id="feels_like" ng-model="config.feels_like" ng-options="o.value as o.label for o in feels_like"></select>
                 </label>
             </div>
-
-            <div class="item-container-content" ng-show="version >= 2.9">
-                <label class="item">
-                    Air Quality
-                    <input type="checkbox" class="item-toggle" id="air_quality" ng-model="config.air_quality" />
-                </label>
-            </div>
-            <div class="item-container-footer" ng-show="version >= 2.9">
-                <p>
-                    When enabled, the current air quality index replaces the temperature.
-                    Air Quality information comes from <a href="http://aqicn.org/">aqicn.org</a>
-                </p>
-                <p ng-if="config.last_aqi_location">
-                    Last AQI came from "{{config.last_aqi_location}}"
-                </p>
-            </div>
-            <div class="item-container-content" ng-show="version >= 3.2 && config.air_quality">
-                <label class="item">
-                    AQI as Degree Icon
-                    <input type="checkbox" class="item-toggle" id="aqi_degree" ng-model="config.aqi_degree" />
-                </label>
-            </div>
-            <div class="item-container-footer" ng-show="version >= 3.2 && config.air_quality">
-                <p>
-                    When enabled, the current air quality index replaces the
-                    degree icon for the temperature.
-                </p>
-            </div>
-            <div class="item-container-content" ng-show="version >= 3.3 && config.air_quality">
-                <label class="item">
-                    Air Quality Location (Leave blank to use GPS)
-                    <div class="item-input-wrapper">
-                        <input type="text" class="item-input" id="air_quality_location" ng-model="config.air_quality_location" />
-                    </div>
-                </label>
-            </div>
-
-            <div class="item-container" ng-show="version == 2.9 && config.air_quality == 1">
-                <div class="item-container-content">
-                    <label class="item" ng-class="{'error': errors.aq_refresh_time}">
-                        Air Quality Refresh Time (Minutes)
-                        <div class="item-input-wrapper">
-                            <input type="number" class="item-input" id="aq_refresh_time" ng-model="config.aq_refresh_time" min="2" />
-                        </div>
-                    </label>
-                </div>
-            </div>
-
             <div class="item-container-content">
                 <label class="item" ng-class="{'error': errors.refresh_time}">
                     Refresh Time (Minutes)
@@ -111,16 +63,79 @@
                 </label>
             </div>
 
-            <div class="item-container-content">
+            <div class="item-container-content" ng-show="config.weather_provider == 0 && !config.air_quality">
                 <label class="item">
-                    Location (Leave blank to use GPS)
+                    Use GPS
+                    <input type="checkbox" class="item-toggle" id="useGPS" ng-model="useGPS" />
+                </label>
+            </div>
+            <div class="item-container-content" ng-show="!useGPS && config.weather_provider == 0 && !config.air_quality">
+                <label class="item">
                     <div class="item-input-wrapper">
-                        <input type="text" class="item-input" id="location" ng-model="config.location" ng-disabled="config.weather_provider || config.air_quality" />
+                        <input type="text" class="item-input" id="location" placeholder="Enter Location" ng-model="config.location" />
                     </div>
                 </label>
             </div>
-            <div class="item-container-footer" ng-show="config.weather_provider || config.air_quality">
+            <div class="item-container-footer" ng-show="">
                 Location is currently unavailable for Yahoo Weather or Air Quality.
+            </div>
+        </div>
+
+        <div class="item-container ng-cloak">
+            <div class="item-container-header">Air Quality Options</div>
+
+            <div class="item-container-content" ng-show="version >= 2.9">
+                <label class="item">
+                    Air Quality
+                    <input type="checkbox" class="item-toggle" id="air_quality" ng-model="config.air_quality" />
+                </label>
+            </div>
+            <div class="item-container-footer" ng-show="version >= 2.9">
+                <p>
+                    When enabled, the current air quality index replaces the temperature.
+                    Air Quality information comes from <a href="http://aqicn.org/">aqicn.org</a>
+                </p>
+                <p ng-if="config.last_aqi_location">
+                    Last AQI came from "{{config.last_aqi_location}}"
+                </p>
+            </div>
+
+            <div class="item-container-content" ng-show="version >= 3.2 && config.air_quality">
+                <label class="item">
+                    AQI as Degree Icon
+                    <input type="checkbox" class="item-toggle" id="aqi_degree" ng-model="config.aqi_degree" />
+                </label>
+            </div>
+            <div class="item-container-footer" ng-show="version >= 3.2 && config.air_quality">
+                <p>
+                    When enabled, the current air quality index replaces the
+                    degree icon for the temperature.
+                </p>
+            </div>
+
+            <div class="item-container-content" ng-show="version >= 3.3 && config.air_quality">
+                <label class="item">
+                    Use GPS for AQI
+                    <input type="checkbox" class="item-toggle" id="useGPSaqi" ng-model="useGPSaqi" />
+                </label>
+            </div>
+            <div class="item-container-content" ng-show="!useGPSaqi && version >= 3.3 && config.air_quality">
+                <label class="item">
+                    <div class="item-input-wrapper">
+                        <input type="text" class="item-input" id="air_quality_location" ng-model="config.air_quality_location" placeholder="Enter Location" />
+                    </div>
+                </label>
+            </div>
+
+            <div class="item-container" ng-show="version == 2.9 && config.air_quality == 1">
+                <div class="item-container-content">
+                    <label class="item" ng-class="{'error': errors.aq_refresh_time}">
+                        Air Quality Refresh Time (Minutes)
+                        <div class="item-input-wrapper">
+                            <input type="number" class="item-input" id="aq_refresh_time" ng-model="config.aq_refresh_time" min="2" />
+                        </div>
+                    </label>
+                </div>
             </div>
         </div>
 

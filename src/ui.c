@@ -48,6 +48,7 @@ void ui_colorize() {
     text_layer_set_text_color(ui.layers.condition, config.text_color);
     text_layer_set_text_color(ui.layers.am_pm, config.text_color);
     text_layer_set_text_color(ui.layers.battery_percent, config.text_color);
+    text_layer_set_text_color(ui.layers.air_quality_index, config.text_color);
 }
 
 void ui_weather_update() {

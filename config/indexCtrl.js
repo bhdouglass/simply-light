@@ -1,9 +1,25 @@
 'use strict';
 
 angular.module('app').controller('indexCtrl', function($scope, $http, $location, $timeout) {
+    $scope.loaded = false;
     $scope.saving = false;
     $scope.version = 1.1;
     $scope.latestVersion = '<%= version %>';
+
+    $scope.useGPS = true;
+    $scope.$watch('useGPS', function() {
+        if ($scope.useGPS && $scope.loaded) {
+            $scope.config.location = '';
+        }
+    });
+
+    $scope.useGPSaqi = true;
+    $scope.$watch('useGPSaqi', function() {
+        if ($scope.useGPSaqi && $scope.loaded) {
+            $scope.config.air_quality_location = '';
+        }
+    });
+
     $scope.temperature_units = [
         {
             label: 'Fahrenheit',
@@ -204,5 +220,15 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 
         console.log('version: ' + $scope.version);
         console.log('lastest version: ' + $scope.latestVersion);
+
+        if ($scope.config.location) {
+            $scope.useGPS = false;
+        }
+
+        if ($scope.config.air_quality_location) {
+            $scope.useGPSaqi = false;
+        }
+
+        $scope.loaded = true;
     });
 });
