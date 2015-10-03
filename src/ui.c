@@ -120,15 +120,6 @@ void ui_weather_update() {
         }
     }
 
-    if (ui.state.battery.is_charging && config.charging_icon) {
-        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
-        strncpy(ui.texts.condition, "\uf114", sizeof(ui.texts.condition));
-    }
-    else if (!ui.state.bt_connected && config.bt_disconnect_icon) {
-        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
-        strncpy(ui.texts.condition, "\uf27f", sizeof(ui.texts.condition));
-    }
-
     if (ui.state.error == FETCH_ERROR) {
         text_layer_set_font(ui.layers.condition, ui.fonts.weather);
         strncpy(ui.texts.condition, "\uf03e", sizeof(ui.texts.condition));
@@ -148,6 +139,15 @@ void ui_weather_update() {
     else {
         text_layer_set_font(ui.layers.condition, ui.fonts.weather);
         weather_set_condition(ui.state.condition, ui.state.is_day, ui.texts.condition);
+    }
+
+    if (ui.state.battery.is_charging && config.charging_icon) {
+        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
+        strncpy(ui.texts.condition, "\uf114", sizeof(ui.texts.condition));
+    }
+    else if (!ui.state.bt_connected && config.bt_disconnect_icon) {
+        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
+        strncpy(ui.texts.condition, "\uf27f", sizeof(ui.texts.condition));
     }
 
     //For pretty screenshots
