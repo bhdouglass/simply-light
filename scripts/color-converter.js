@@ -1,79 +1,38 @@
 //Colors from http://developer.getpebble.com/tools/color-picker
-var colors = require('./colors.json');
+var json = require('./colors.json');
 var fs = require('fs');
 
-var newcolors = [];
-for (var color in colors) {
-    newcolors.push({
-        name: colors[color].name,
-        hex: colors[color].html,
-        pebble: parseInt(colors[color].binary.substring(2), 2),
-    });
+var colorMap = {};
+for (var color in json) {
+    colorMap[json[color].html] = json[color].name;
 }
 
-newcolors.sort(function(a, b) {
-    var value = 0;
-    if (a.hex < b.hex) {
-        value = -1;
-    }
-    else if (a.hex > b.hex) {
-        value = 1;
-    }
 
-    return value;
+//From https://github.com/pebble/slate/blob/master/lib/js/main.js#L106
+var order = [
+    false    , false    , '#55FF00', '#AAFF55', false    , '#FFFF55', '#FFFFAA', false    , false    ,
+    false    , '#AAFFAA', '#55FF55', '#00FF00', '#AAFF00', '#FFFF00', '#FFAA55', '#FFAAAA', false    ,
+    '#55FFAA', '#00FF55', '#00AA00', '#55AA00', '#AAAA55', '#AAAA00', '#FFAA00', '#FF5500', '#FF5555',
+    '#AAFFFF', '#00FFAA', '#00AA55', '#55AA55', '#005500', '#555500', '#AA5500', '#FF0000', '#FF0055',
+    false    , '#55AAAA', '#00AAAA', '#005555', '#FFFFFF', '#000000', '#AA5555', '#AA0000', false    ,
+    '#55FFFF', '#00FFFF', '#00AAFF', '#0055AA', '#AAAAAA', '#555555', '#550000', '#AA0055', '#FF55AA',
+    '#55AAFF', '#0055FF', '#0000FF', '#0000AA', '#000055', '#550055', '#AA00AA', '#FF00AA', '#FFAAFF',
+    false    , '#5555AA', '#5555FF', '#5500FF', '#5500AA', '#AA00FF', '#FF00FF', '#FF55FF', false    ,
+    false    , false    , false    , '#AAAAFF', '#AA55FF', '#AA55AA', false    , false    , false    ,
+]
+
+var colors = [];
+order.forEach(function(o) {
+    if (o) {
+        colors.push({
+            name: colorMap[o],
+            hex: o,
+            pebble: parseInt(o.replace('#', '0x')),
+        });
+    }
+    else {
+        colors.push(null);
+    }
 });
 
-//Borrowed from http://www.runtime-era.com/2011/11/grouping-html-hex-colors-by-hue-in.html
-for (var c = 0; c < newcolors.length; c++) {
-    /* Get the hex value without hash symbol. */
-    var hex = newcolors[c].hex.substring(1);
-
-    /* Get the RGB values to calculate the Hue. */
-    var r = parseInt(hex.substring(0,2),16)/255;
-    var g = parseInt(hex.substring(2,4),16)/255;
-    var b = parseInt(hex.substring(4,6),16)/255;
-
-    /* Getting the Max and Min values for Chroma. */
-    var max = Math.max.apply(Math, [r,g,b]);
-    var min = Math.min.apply(Math, [r,g,b]);
-
-    /* Variables for HSV value of hex color. */
-    var chr = max-min;
-    var hue = 0;
-    var val = max;
-    var sat = 0;
-
-    if (val > 0) {
-        /* Calculate Saturation only if Value isn't 0. */
-        sat = chr/val;
-        if (sat > 0) {
-            if (r == max) {
-                hue = 60*(((g-min)-(b-min))/chr);
-                if (hue < 0) {hue += 360;}
-            } else if (g == max) {
-                hue = 120+60*(((b-min)-(r-min))/chr);
-            } else if (b == max) {
-                hue = 240+60*(((r-min)-(g-min))/chr);
-            }
-        }
-    }
-
-    /* Modifies existing objects by adding HSV values. */
-    newcolors[c].hue = hue;
-    newcolors[c].sat = sat;
-    newcolors[c].val = val;
-}
-
-/* Sort by Hue. */
-newcolors = newcolors.sort(function(a,b){return a.hue - b.hue;});
-
-//Get rid of extras added by sort
-for (var i = 0; i < newcolors.length; i++) {
-    newcolors[i] = {
-        name: newcolors[i].name,
-        hex: newcolors[i].hex,
-        pebble: newcolors[i].pebble,
-    };
-}
-
-console.log(JSON.stringify(newcolors));
+console.log(JSON.stringify(colors));

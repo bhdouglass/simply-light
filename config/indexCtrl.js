@@ -5,6 +5,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     $scope.saving = false;
     $scope.version = 1.1;
     $scope.latestVersion = '<%= version %>';
+    $scope.platform = 'aplite';
 
     $scope.useGPS = true;
     $scope.$watch('useGPS', function() {
@@ -218,6 +219,10 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         var query = $location.search();
         if (query.version) {
             $scope.version = parseFloat(query.version);
+        }
+
+        if (query.platform) {
+            $scope.platform = query.platform;
         }
 
         console.log('version: ' + $scope.version);

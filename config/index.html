@@ -142,12 +142,14 @@
         <div class="item-container ng-cloak">
             <div class="item-container-header">Watchface Options</div>
 
-            <color-picker ng-model="config.day_text_color" platform="aplite" title="Day Text Color"></color-picker>
-            <color-picker ng-model="config.day_background_color" platform="aplite" title="Day Background Color"></color-picker>
-            <color-picker ng-model="config.night_text_color" platform="aplite" title="Night Text Color"></color-picker>
-            <color-picker ng-model="config.night_background_color" platform="aplite" title="Night Background Color"></color-picker>
-            <div class="item-container-footer">
-                Sunset data is based on your location
+            <div ng-if="loaded">
+                <color-picker ng-model="config.day_text_color" platform="{{platform}}" title="Day Text Color"></color-picker>
+                <color-picker ng-model="config.day_background_color" platform="{{platform}}" title="Day Background Color"></color-picker>
+                <color-picker ng-model="config.night_text_color" platform="{{platform}}" title="Night Text Color"></color-picker>
+                <color-picker ng-model="config.night_background_color" platform="{{platform}}" title="Night Background Color"></color-picker>
+                <div class="item-container-footer">
+                    Sunset data is based on your location
+                </div>
             </div>
 
             <div class="item-container-content">

@@ -34,6 +34,28 @@
     margin-right: 80px;
 }
 
+.color-name {
+    display: inline-block;
+    float: right;
+    margin-right: 70px;
+    text-align: right;
+    padding-top: 5px;
+}
+
 #battery_percent {
     width: 100px;
+}
+
+.color-box {
+    width: 11.11111111111111%;
+    height: 11.11111111111111%;
+}
+
+.transparent {
+    background: transparent;
+    cursor: none;
+}
+
+.clear-left {
+    clear: left;
 }
