@@ -59,6 +59,7 @@ void load_config() {
     config.layout = 0;
     config.air_quality = 0;
     config.aqi_degree = 0;
+    config.hourly_vibrate = 0;
 
     if (persist_exists(APP_KEY_DAY_TEXT_COLOR)) {
         config.day_text_color = load_color(persist_read_int(APP_KEY_DAY_TEXT_COLOR));
@@ -123,6 +124,10 @@ void load_config() {
     if (persist_exists(APP_KEY_AQI_DEGREE)) {
         config.aqi_degree = persist_read_int(APP_KEY_AQI_DEGREE);
     }
+
+    if (persist_exists(APP_KEY_HOURLY_VIBRATE)) {
+        config.hourly_vibrate = persist_read_int(APP_KEY_HOURLY_VIBRATE);
+    }
 }
 
 void save_config() {
@@ -142,4 +147,5 @@ void save_config() {
     persist_write_int(APP_KEY_LAYOUT, config.layout);
     persist_write_int(APP_KEY_AIR_QUALITY, config.air_quality);
     persist_write_int(APP_KEY_AQI_DEGREE, config.aqi_degree);
+    persist_write_int(APP_KEY_HOURLY_VIBRATE, config.hourly_vibrate);
 }

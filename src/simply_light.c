@@ -87,6 +87,10 @@ static void handle_tick_helper(struct tm *tick_time, TimeUnits units_changed) {
 static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
     handle_tick_helper(tick_time, units_changed);
 
+    if (units_changed & HOUR_UNIT && config.hourly_vibrate == 1) {
+        vibes_short_pulse();
+    }
+
     ui.state.elapsed_time++;
     if (ui.state.bt_connected) {
         check_refresh(true, false);
@@ -242,6 +246,10 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
             case APP_KEY_AQI_DEGREE:
                 config.aqi_degree = value;
                 break;
+
+            case APP_KEY_HOURLY_VIBRATE:
+                config.hourly_vibrate = value;
+                break;
         }
 
         t = dict_read_next(iter);
@@ -271,7 +279,7 @@ static void init(void) {
 
     time_t now = time(NULL);
     struct tm *tick_time = localtime(&now);
-    handle_tick(tick_time, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT);
+    handle_tick(tick_time, MINUTE_UNIT | DAY_UNIT | MONTH_UNIT);
 
     #ifdef PBL_PLATFORM_APLITE
         free(tick_time); //Causes a crash on Basalt >=3.3

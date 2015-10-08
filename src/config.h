@@ -21,6 +21,7 @@ struct Config {
     int layout;
     int air_quality;
     int aqi_degree;
+    int hourly_vibrate;
 };
 
 GColor load_color(int color);

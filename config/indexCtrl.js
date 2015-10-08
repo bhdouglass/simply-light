@@ -96,6 +96,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     $scope.config_bools = [
         'air_quality', 'show_am_pm', 'hide_battery', 'charging_icon',
         'bt_disconnect_icon', 'vibrate_bluetooth', 'aqi_degree',
+        'hourly_vibrate'
     ];
 
     $scope.config = {
@@ -121,6 +122,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         last_aqi_location: null,
         aqi_degree: false,
         air_quality_location: '',
+        hourly_vibrate: false,
     };
 
     $scope.errors = {
