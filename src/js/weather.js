@@ -157,7 +157,7 @@ function yahooWeather(pos, callback) {
 }
 
 function openWeatherMapWeather(pos, callback) {
-    var url = 'http://api.openweathermap.org/data/2.5/weather?';
+    var url = 'http://api.openweathermap.org/data/2.5/weather?APPID=ce255d859db621b13bb985a4e06a4a18&';
     if (config.location) {
         url += 'q=' + config.location;
     }
