@@ -106,7 +106,7 @@ gulp.task('serve', ['build-config', 'watch-config'], function() {
 
     return gulp.src(paths.config.html)
         .pipe(gopen('', {
-            url: 'http://localhost:9000?version=' + appinfo.versionLabel
+            url: 'http://localhost:9000?platform=basalt&version=' + appinfo.versionLabel
         }));
 });
 

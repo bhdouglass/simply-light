@@ -11,12 +11,10 @@ struct Config {
     int charging_icon;
     int bt_disconnect_icon;
     int battery_percent;
-    GColor day_text_color;
-    GColor day_background_color;
-    GColor night_text_color;
-    GColor night_background_color;
-    GColor text_color;
-    GColor background_color;
+    int day_text_color;
+    int day_background_color;
+    int night_text_color;
+    int night_background_color;
     int language;
     int layout;
     int air_quality;
@@ -24,7 +22,6 @@ struct Config {
     int hourly_vibrate;
 };
 
-GColor load_color(int color);
 void load_config();
 void save_config();
 

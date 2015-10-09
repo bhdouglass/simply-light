@@ -3,41 +3,6 @@
 #include "appinfo.h"
 #include "config.h"
 
-GColor load_color(int color) {
-    //#ifdef PBL_COLOR
-        //GColor g;
-        //g.argb = color;
-        //return g;
-    //#else
-        if (color == 0) {
-            return GColorBlack;
-        }
-        else {
-            return GColorWhite;
-        }
-    //#endif
-}
-
-int get_color(GColor color) {
-    #ifdef PBL_COLOR
-        if (gcolor_equal(color, GColorBlack)) {
-            return 0;
-        }
-        else {
-            return 1;
-        }
-
-        //return color.argb;
-    #else
-        if (color == GColorBlack) {
-            return 0;
-        }
-        else {
-            return 1;
-        }
-    #endif
-}
-
 void load_config() {
     config.sunrise = -1;
     config.sunset = -1;
@@ -49,12 +14,10 @@ void load_config() {
     config.charging_icon = 1;
     config.bt_disconnect_icon = 1;
     config.battery_percent = 0;
-    config.day_text_color = GColorBlack;
-    config.day_background_color = GColorWhite;
-    config.night_text_color = GColorBlack;
-    config.night_background_color = GColorWhite;
-    config.text_color = GColorBlack;
-    config.background_color = GColorWhite;
+    config.day_text_color = 0;
+    config.day_background_color = 1;
+    config.night_text_color = 0;
+    config.night_background_color = 1;
     config.language = 0;
     config.layout = 0;
     config.air_quality = 0;
@@ -62,19 +25,19 @@ void load_config() {
     config.hourly_vibrate = 0;
 
     if (persist_exists(APP_KEY_DAY_TEXT_COLOR)) {
-        config.day_text_color = load_color(persist_read_int(APP_KEY_DAY_TEXT_COLOR));
+        config.day_text_color = persist_read_int(APP_KEY_DAY_TEXT_COLOR);
     }
 
     if (persist_exists(APP_KEY_DAY_BACKGROUND_COLOR)) {
-        config.day_background_color = load_color(persist_read_int(APP_KEY_DAY_BACKGROUND_COLOR));
+        config.day_background_color = persist_read_int(APP_KEY_DAY_BACKGROUND_COLOR);
     }
 
     if (persist_exists(APP_KEY_NIGHT_TEXT_COLOR)) {
-        config.night_text_color = load_color(persist_read_int(APP_KEY_NIGHT_TEXT_COLOR));
+        config.night_text_color = persist_read_int(APP_KEY_NIGHT_TEXT_COLOR);
     }
 
     if (persist_exists(APP_KEY_NIGHT_BACKGROUND_COLOR)) {
-        config.night_background_color = load_color(persist_read_int(APP_KEY_NIGHT_BACKGROUND_COLOR));
+        config.night_background_color = persist_read_int(APP_KEY_NIGHT_BACKGROUND_COLOR);
     }
 
     if (persist_exists(APP_KEY_SUNRISE)) {
@@ -131,10 +94,10 @@ void load_config() {
 }
 
 void save_config() {
-    persist_write_int(APP_KEY_DAY_TEXT_COLOR, get_color(config.day_text_color));
-    persist_write_int(APP_KEY_DAY_BACKGROUND_COLOR, get_color(config.day_background_color));
-    persist_write_int(APP_KEY_NIGHT_TEXT_COLOR, get_color(config.night_text_color));
-    persist_write_int(APP_KEY_NIGHT_BACKGROUND_COLOR, get_color(config.night_background_color));
+    persist_write_int(APP_KEY_DAY_TEXT_COLOR, config.day_text_color);
+    persist_write_int(APP_KEY_DAY_BACKGROUND_COLOR, config.day_background_color);
+    persist_write_int(APP_KEY_NIGHT_TEXT_COLOR, config.night_text_color);
+    persist_write_int(APP_KEY_NIGHT_BACKGROUND_COLOR, config.night_background_color);
     persist_write_int(APP_KEY_SUNRISE, config.sunrise);
     persist_write_int(APP_KEY_SUNSET, config.sunset);
     persist_write_int(APP_KEY_SHOW_AM_PM, config.show_am_pm);

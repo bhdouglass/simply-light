@@ -184,19 +184,19 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 break;
 
             case APP_KEY_DAY_TEXT_COLOR:
-                config.day_text_color = load_color(value);
+                config.day_text_color = value;
                 break;
 
             case APP_KEY_DAY_BACKGROUND_COLOR:
-                config.day_background_color = load_color(value);
+                config.day_background_color = value;
                 break;
 
             case APP_KEY_NIGHT_TEXT_COLOR:
-                config.night_text_color = load_color(value);
+                config.night_text_color = value;
                 break;
 
             case APP_KEY_NIGHT_BACKGROUND_COLOR:
-                config.night_background_color = load_color(value);
+                config.night_background_color = value;
                 break;
 
             case APP_KEY_SUNRISE:

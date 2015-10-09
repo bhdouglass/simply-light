@@ -29,26 +29,46 @@ void ui_align() {
     }
 }
 
+GColor get_color(int color) {
+    #ifdef PBL_COLOR
+        if (color == 1) {
+            return GColorWhite;
+        }
+        else {
+            return GColorFromHEX(color);
+        }
+    #else
+        if (color == 0) {
+            return GColorBlack;
+        }
+        else {
+            return GColorWhite;
+        }
+    #endif
+}
+
 void ui_colorize() {
+    GColor text_color;
+    GColor background_color;
     if (ui.state.is_day) {
-        config.text_color = config.day_text_color;
-        config.background_color = config.day_background_color;
+        text_color = get_color(config.day_text_color);
+        background_color = get_color(config.day_background_color);
     }
     else {
-        config.text_color = config.night_text_color;
-        config.background_color = config.night_background_color;
+        text_color = get_color(config.night_text_color);
+        background_color = get_color(config.night_background_color);
     }
 
-    window_set_background_color(ui.window, config.background_color);
-    text_layer_set_text_color(ui.layers.time, config.text_color);
+    window_set_background_color(ui.window, background_color);
+    text_layer_set_text_color(ui.layers.time, text_color);
     layer_mark_dirty(ui.layers.battery);
-    text_layer_set_text_color(ui.layers.date, config.text_color);
-    text_layer_set_text_color(ui.layers.month, config.text_color);
-    text_layer_set_text_color(ui.layers.temperature, config.text_color);
-    text_layer_set_text_color(ui.layers.condition, config.text_color);
-    text_layer_set_text_color(ui.layers.am_pm, config.text_color);
-    text_layer_set_text_color(ui.layers.battery_percent, config.text_color);
-    text_layer_set_text_color(ui.layers.air_quality_index, config.text_color);
+    text_layer_set_text_color(ui.layers.date, text_color);
+    text_layer_set_text_color(ui.layers.month, text_color);
+    text_layer_set_text_color(ui.layers.temperature, text_color);
+    text_layer_set_text_color(ui.layers.condition, text_color);
+    text_layer_set_text_color(ui.layers.am_pm, text_color);
+    text_layer_set_text_color(ui.layers.battery_percent, text_color);
+    text_layer_set_text_color(ui.layers.air_quality_index, text_color);
 }
 
 void ui_weather_update() {
@@ -191,8 +211,16 @@ void ui_battery_dirty(Layer *layer, GContext *ctx) {
     //width = 70 * CHARGEUNIT;
 
     int offset = (PWIDTH - width) / 2;
+    GColor text_color;
 
-    graphics_context_set_fill_color(ctx, config.text_color);
+    if (ui.state.is_day) {
+        text_color = get_color(config.day_text_color);
+    }
+    else {
+        text_color = get_color(config.night_text_color);
+    }
+
+    graphics_context_set_fill_color(ctx, text_color);
     graphics_fill_rect(ctx, GRect(offset, 29, width, 4), 0, GCornerNone);
 }
 
