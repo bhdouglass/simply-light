@@ -11,7 +11,7 @@ angular.module('app').directive('colorPicker', function() {
                 '{{title}}' +
                 '<span ng-if="platform == \'aplite\'">' +
                     '<span class="color" ng-style="style(model)"></span>' +
-                    '<select class="item-select" ng-model="model" ng-options="c.name for c in colors"></select>' +
+                    '<select class="item-select" ng-model="model" ng-options="c.name for c in colors" ng-change="setModel(model)"></select>' +
                     '<div class="select-triangle"></div>' +
                 '</span>' +
                 '<span ng-if="platform != \'aplite\'">' +
@@ -20,7 +20,7 @@ angular.module('app').directive('colorPicker', function() {
                         '<span class="value clickable" ng-style="style(model)" ng-click="toggle()"></span>' +
                         '<div style="padding-bottom:100%" class="color-box-wrap show" ng-if="show">' +
                             '<div class="color-box-container">' +
-                                '<i ng-repeat="c in colors track by $index" ng-click="setModel(c);" class="color-box" ng-class="{selectable: !!c, transparent: !c, \'clear-left\': $index % 9 == 0}" ng-style="style(c)"></i>' +
+                                '<i ng-repeat="c in colors track by $index" ng-click="setModel(c)" class="color-box" ng-class="{selectable: !!c, transparent: !c, \'clear-left\': $index % 9 == 0}" ng-style="style(c)"></i>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
