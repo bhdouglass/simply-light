@@ -209,6 +209,7 @@ gulp.task('build-pebble-fonts', function() {
 });
 
 gulp.task('build-config', ['lint', 'clean-config', 'build-html', 'build-js', 'build-css', 'build-fonts', 'build-font']);
-gulp.task('build-pebble', ['lint', 'clean-pebble', 'build-pebble-fonts', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
+gulp.task('prebuild-pebble', ['lint', 'clean-pebble', 'build-pebble-fonts', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js']);
+gulp.task('build-pebble', ['prebuild-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
 gulp.task('install-pebble', ['build-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && ' + installCommand(config)]));
 gulp.task('server-install', ['build-pebble']);

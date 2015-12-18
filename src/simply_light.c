@@ -281,10 +281,6 @@ static void init(void) {
     struct tm *tick_time = localtime(&now);
     handle_tick(tick_time, MINUTE_UNIT | DAY_UNIT | MONTH_UNIT);
 
-    #ifdef PBL_PLATFORM_APLITE
-        free(tick_time); //Causes a crash on Basalt >=3.3
-    #endif
-
     tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
     battery_state_service_subscribe(&handle_battery);
     bluetooth_connection_service_subscribe(&handle_bluetooth);
