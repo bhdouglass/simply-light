@@ -6,7 +6,7 @@
 #include "i18n.h"
 
 //From https://github.com/smallstoneapps/message-queue/blob/master/message-queue.c#L222
-/*static char *translate_error(AppMessageResult result) {
+static char *translate_error(AppMessageResult result) {
     switch (result) {
         case APP_MSG_OK: return "APP_MSG_OK";
         case APP_MSG_SEND_TIMEOUT: return "APP_MSG_SEND_TIMEOUT";
@@ -24,7 +24,7 @@
         case APP_MSG_INTERNAL_ERROR: return "APP_MSG_INTERNAL_ERROR";
         default: return "UNKNOWN ERROR";
     }
-}*/
+}
 
 static bool check_refresh(bool do_refresh, bool force_refresh) {
     bool refresh = false;
@@ -35,6 +35,9 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
         refresh = true;
     }
 
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh_time: %d, error: %d, elapsed_time: %d, wait_time: %d", config.refresh_time, ui.state.error, ui.state.elapsed_time, config.wait_time);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh: %d, do_refresh: %d, force_refresh: %d", refresh, do_refresh, force_refresh);
+
     if ((refresh && do_refresh) || force_refresh) {
         ui.state.elapsed_time = 0;
         ui.state.error = FETCH_ERROR;
@@ -42,6 +45,8 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
         Tuplet value = TupletInteger(APP_KEY_FETCH, 1);
         DictionaryIterator *iter;
         app_message_outbox_begin(&iter);
+        //AppMessageResult begin_result = app_message_outbox_begin(&iter);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(begin_result));
 
         if (iter == NULL) {
             return refresh;
@@ -50,8 +55,8 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
         dict_write_tuplet(iter, &value);
         dict_write_end(iter);
         app_message_outbox_send();
-        //AppMessageResult result = app_message_outbox_send();
-        //APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(result));
+        //AppMessageResult send_result = app_message_outbox_send();
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(send_result));
     }
 
     return refresh;
@@ -109,13 +114,22 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
     }
 }
 
-static void handle_failed_message(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", translate_error(reason));
+static void msg_failed_handler(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "message failed to send: %s", translate_error(reason));
     ui.state.error = FETCH_ERROR;
-    if (ui.state.bt_connected) {
+    if (ui.state.bt_connected && ui.state.retry_times > 0) {
         check_refresh(true, true);
+        ui.state.retry_times--;
     }
 }
+
+static void msg_droped_handler(AppMessageResult reason, void *context) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "message dropped: %s", translate_error(reason));
+}
+
+//static void msg_sent_handler(DictionaryIterator *iterator, void *context) {
+//    APP_LOG(APP_LOG_LEVEL_DEBUG, "message sent sucessfully");
+//}
 
 static void handle_bluetooth(bool connected) {
     ui.state.bt_connected = connected;
@@ -147,8 +161,6 @@ static void handle_battery(BatteryChargeState charge_state) {
 }
 
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
-    (void) context;
-
     Tuple *t = dict_read_first(iter);
     while(t != NULL) {
         int key = t->key;
@@ -162,12 +174,14 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
             case APP_KEY_TEMPERATURE:
                 ui.state.temperature = value;
                 ui.state.elapsed_time = 0;
+                ui.state.retry_times = MAX_RETRIES;
 
                 break;
 
             case APP_KEY_AIR_QUALITY_INDEX:
                 ui.state.air_quality_index = value;
                 ui.state.elapsed_time = 0;
+                ui.state.retry_times = MAX_RETRIES;
 
                 break;
 
@@ -284,10 +298,12 @@ static void init(void) {
     tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
     battery_state_service_subscribe(&handle_battery);
     bluetooth_connection_service_subscribe(&handle_bluetooth);
-    app_message_register_outbox_failed(&handle_failed_message);
 
-    app_message_register_inbox_received(msg_received_handler);
-    app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+    app_message_register_outbox_failed(&msg_failed_handler);
+    app_message_register_inbox_received(&msg_received_handler);
+    app_message_register_inbox_dropped(&msg_droped_handler);
+    //app_message_register_outbox_sent(&msg_sent_handler);
+    app_message_open(640, 64);
 }
 
 static void deinit(void) {

@@ -372,13 +372,14 @@ void ui_init() {
     window_stack_push(ui.window, animated);
 
     ui.state.battery = battery_state_service_peek();
-    ui.state.bt_connected = bluetooth_connection_service_peek();
+    ui.state.bt_connected = connection_service_peek_pebble_app_connection();
     ui.state.condition = -999;
     ui.state.temperature = -999;
     ui.state.air_quality_index = -999;
     ui.state.is_day = 1;
     ui.state.elapsed_time = 0;
     ui.state.error = FETCH_ERROR;
+    ui.state.retry_times = MAX_RETRIES;
     ui.texts.time_zero = false;
     strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
     strncpy(ui.texts.air_quality_index, "", sizeof(ui.texts.air_quality_index));

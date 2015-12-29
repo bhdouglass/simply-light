@@ -3,6 +3,7 @@ Pebble.addEventListener('ready', function(e) {
 
     loadConfig();
     console.log(JSON.stringify(config));
+    fetch();
 });
 
 Pebble.addEventListener('appmessage', function(e) {
@@ -60,10 +61,10 @@ function fetchWeatherCallback(pos, data) {
         fetchAirQuality(pos, data, fetchAirQualityCallback);
     }
     else {
-        MessageQueue.sendAppMessage(data);
+        MessageQueue.sendAppMessage(data, ack, nack);
     }
 }
 
 function fetchAirQualityCallback(pos, data) {
-    MessageQueue.sendAppMessage(data);
+    MessageQueue.sendAppMessage(data, ack, nack);
 }

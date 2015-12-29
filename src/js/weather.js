@@ -143,7 +143,7 @@ function yahooWeather(pos, callback) {
             sunrise: sunrise,
             sunset: sunset,
             err: NO_ERROR,
-        }, ack, nack);
+        });
 
     }, function(err) {
         console.warn('Error while getting weather: ' + err.status);
@@ -152,7 +152,7 @@ function yahooWeather(pos, callback) {
             temperature: -999,
             condition: -999,
             err: WEATHER_ERROR,
-        }, ack, nack);
+        });
     });
 }
 
@@ -203,7 +203,7 @@ function openWeatherMapWeather(pos, callback) {
             sunrise: sunrise,
             sunset: sunset,
             err: NO_ERROR,
-        }, ack, nack);
+        });
 
     }, function(err) {
         console.warn('Error while getting weather: ' + err.status);
@@ -212,7 +212,7 @@ function openWeatherMapWeather(pos, callback) {
             temperature: -999,
             condition: -999,
             err: WEATHER_ERROR,
-        }, ack, nack);
+        });
     });
 }
 

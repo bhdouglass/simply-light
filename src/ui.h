@@ -16,6 +16,8 @@
 #define LOCATION_ERROR 3
 #define AQI_ERROR 4
 
+#define MAX_RETRIES 10
+
 struct State {
     BatteryChargeState battery;
     bool               bt_connected;
@@ -25,6 +27,7 @@ struct State {
     int                is_day;
     int                elapsed_time;
     int                error;
+    int                retry_times;
 };
 
 struct Fonts {
