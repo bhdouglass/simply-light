@@ -53,6 +53,12 @@ function loadConfig() {
         }
     }
 
+    if (config.weather_provider < 2 || config.weather_provider > 4) {
+        config.weather_provider = 4;
+        saveSingleConfig('weather_provider');
+        console.log('fixing weather_provider');
+    }
+
     MessageQueue.sendAppMessage({
         refresh_time: config.refresh_time,
         wait_time: config.wait_time,

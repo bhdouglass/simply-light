@@ -25,7 +25,7 @@ function get(url, callback, errCallback) {
     if (callback) {
         req.onload = function(e) {
             if (req.readyState === 4) {
-                if (req.status == 200) {
+                if (req.status >= 200  && req.status <= 205) {
                     callback(req.responseText);
                 }
                 else if (errCallback) {

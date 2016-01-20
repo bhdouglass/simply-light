@@ -34,13 +34,26 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         }
     ];
 
-    $scope.weather_provider = [
+    $scope.old_weather_provider = [
         {
             label: 'OpenWeatherMap',
             value: 0
         }, {
             label: 'Yahoo Weather',
             value: 1
+        }
+    ];
+
+    $scope.weather_provider = [
+        {
+            label: 'Yr.no',
+            value: 4
+        }, {
+            label: 'OpenWeatherMap - Unreliable',
+            value: 2
+        }, {
+            label: 'Yahoo Weather - Unreliable',
+            value: 3
         }
     ];
 
@@ -107,7 +120,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         location: '',
         show_am_pm: false,
         hide_battery: false,
-        weather_provider: 0,
+        weather_provider: 4,
         feels_like: 0,
         vibrate_bluetooth: false,
         charging_icon: true,
@@ -213,6 +226,11 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                     }
                 }
             });
+
+            if ($scope.config.weather_provider < 2 || $scope.config.weather_provider > 4) {
+                $scope.config.weather_provider = 4;
+            }
+
             console.log($scope.config);
         }
 

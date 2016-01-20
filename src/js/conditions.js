@@ -96,3 +96,62 @@ function openWeatherMapCondition(code) {
 
     return returnCode;
 }
+
+//Reference: http://api.yr.no/weatherapi/weathericon/1.1/documentation
+function yrnoCondition(code) {
+    var returnCode = CLEAR;
+
+    if (code > 100) {
+        code -= 100;
+    }
+
+    var map = {
+        1: CLEAR, //1 Sun
+        2: CLOUDY, //2 LightCloud
+        3: CLOUDY, //3 PartlyCloud
+        4: CLOUDY, //4 Cloud
+        5: LIGHT_RAIN, //5 LightRainSun
+        6: THUNDERSTORM, //6 LightRainThunderSun
+        7: SNOW, //7 SleetSun
+        8: SNOW, //8 SnowSun
+        9: LIGHT_RAIN, //9 LightRain
+        10: RAIN, //10 Rain
+        11: THUNDERSTORM, //11 RainThunder
+        12: SNOW, //12 Sleet
+        13: SNOW, //13 Snow
+        14: SNOW_THUNDERSTORM, //14 SnowThunder
+        15: FOG, //15 Fog
+        20: SNOW_THUNDERSTORM, //20 SleetSunThunder
+        21: SNOW_THUNDERSTORM, //21 SnowSunThunder
+        22: THUNDERSTORM, //22 LightRainThunder
+        23: SNOW_THUNDERSTORM, //23 SleetThunder
+        24: THUNDERSTORM, //24 DrizzleThunderSun
+        25: THUNDERSTORM, //25 RainThunderSun
+        26: SNOW_THUNDERSTORM, //26 LightSleetThunderSun
+        27: SNOW_THUNDERSTORM, //27 HeavySleetThunderSun
+        28: SNOW_THUNDERSTORM, //28 LightSnowThunderSun
+        29: SNOW_THUNDERSTORM, //29 HeavySnowThunderSun
+        30: THUNDERSTORM, //30 DrizzleThunder
+        31: SNOW_THUNDERSTORM, //31 LightSleetThunder
+        32: SNOW_THUNDERSTORM, //32 HeavySleetThunder
+        33: SNOW_THUNDERSTORM, //33 LightSnowThunder
+        34: SNOW_THUNDERSTORM, //34 HeavySnowThunder
+        40: LIGHT_RAIN, //40 DrizzleSun
+        41: RAIN, //41 RainSun
+        42: SNOW, //42 LightSleetSun
+        43: SNOW, //43 HeavySleetSun
+        44: SNOW, //44 LightSnowSun
+        45: SNOW, //45 HeavysnowSun
+        46: LIGHT_RAIN, //46 Drizzle
+        47: SNOW, //47 LightSleet
+        48: SNOW, //48 HeavySleet
+        49: SNOW, //49 LightSnow
+        50: SNOW, //50 HeavySnow
+    };
+
+    if (map[code]) {
+        returnCode = map[code];
+    }
+
+    return returnCode;
+}

@@ -1,5 +1,5 @@
 //Formulas from http://en.wikipedia.org/wiki/Wind_chill#North_American_and_United_Kingdom_wind_chill_index
-function windChill(temperature, velocity) {
+function windChill(temperature, velocity) { //TODO split this into 3 functions, one for each temp units
     var wind_chill = temperature;
     var v = Math.pow(velocity, 0.16);
     if (config.temperature_units == 'imperial') {
@@ -18,7 +18,7 @@ function windChill(temperature, velocity) {
 }
 
 //Formula from http://en.wikipedia.org/wiki/Heat_index#Formula
-function heatIndex(temperature, humidity) {
+function heatIndex(temperature, humidity) { //TODO change this to only accept fahrenheit
     var t = temperature;
     if (config.temperature_units == 'metric') {
         t = (temperature * 9 / 5) + 32;
@@ -65,6 +65,22 @@ function heatIndex(temperature, humidity) {
     return heat_index;
 }
 
+function celciusToFahrenheit(deg) {
+    return (deg * 9 / 5) + 32;
+}
+
+function celciusToKelvin(deg) {
+    return deg +  273.15;
+}
+
+function meterspersecondToMilesperhour(velocity) {
+    return velocity * 2.23694;
+}
+
+function meterspersecondToKilometersperhour(velocity) {
+    return velocity * 3.6;
+}
+
 function convertYahooTime(string) {
     string = string.toLowerCase();
     var time = string.replace('am', '').replace('pm', '').replace(' ', '');
@@ -80,13 +96,7 @@ function convertYahooTime(string) {
 }
 
 function yahooWeather(pos, callback) {
-    var geo = '';
-    /*if (config.location) {
-        geo = 'select woeid from geo.places where text="' + config.location + '"';
-    }
-    else {*/
-        geo = 'select woeid from geo.placefinder where text="' + pos.coords.latitude + ',' + pos.coords.longitude + '" and gflags="R"';
-    //}
+    var geo = 'select woeid from geo.placefinder where text="' + pos.coords.latitude + ',' + pos.coords.longitude + '" and gflags="R"';
 
     var unit = 'c';
     if (config.temperature_units == 'imperial') {
@@ -157,12 +167,12 @@ function yahooWeather(pos, callback) {
 }
 
 function openWeatherMapWeather(pos, callback) {
-    var url = 'http://api.openweathermap.org/data/2.5/weather?APPID=ce255d859db621b13bb985a4e06a4a18&';
+    var url = 'http://api.openweathermap.org/data/2.5/weather?APPID=ce255d859db621b13bb985a4e06a4a18';
     if (config.location) {
-        url += 'q=' + config.location;
+        url += '&q=' + config.location;
     }
     else {
-        url += 'lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;
+        url += '&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;
     }
 
     if (config.temperature_units) {
@@ -216,11 +226,182 @@ function openWeatherMapWeather(pos, callback) {
     });
 }
 
+function yrnoWeather(pos, callback) {
+    var x2js = new X2JS();
+    var url = 'http://api.yr.no/weatherapi/locationforecast/1.9/?lat=' + pos.coords.latitude + ';lon=' + pos.coords.longitude;
+    console.log(url);
+    get(url, function(response) {
+        var json = x2js.xml_str2json(response);
+
+        var simple = [];
+        var full = [];
+        for (var index in json.weatherdata.product.time) {
+            if (json.weatherdata.product.time[index].location.symbol) {
+                simple.push(json.weatherdata.product.time[index]);
+            }
+            else {
+                full.push(json.weatherdata.product.time[index]);
+            }
+        }
+
+        //From https://github.com/evanshortiss/yr.no-forecast
+        var simpleWeather = null;
+        var fullWeather = null;
+        var maxDifference = Infinity;
+        var now = moment.utc(Date.now());
+
+        for (var i in simple) {
+            var to = moment.utc(simple[i]._to);
+            var from = moment.utc(simple[i]._from);
+
+            if ((from.isSame(now) || from.isBefore(now)) && (to.isSame(now) || to.isAfter(now))) {
+                var diff = Math.abs(to.diff(from));
+                if (diff < maxDifference) {
+                    maxDifference = diff;
+                    simpleWeather = simple[i];
+                }
+            }
+        }
+
+        maxDifference = Infinity;
+        for (var f in full) {
+            var difference = Math.abs(moment.utc(full[f].to).diff(now));
+            if (difference < maxDifference) {
+                maxDifference = difference;
+                fullWeather = full[f];
+            }
+        }
+
+        if (!fullWeather) {
+            fullWeather = simpleWeather;
+        }
+        else if (simpleWeather) {
+            for (var key in simpleWeather.location) {
+                fullWeather.location[key] = simpleWeather.location[key];
+            }
+        }
+
+        var temperature = -999;
+        var condition = -999;
+
+        if (fullWeather && fullWeather.location) {
+            if (fullWeather.location.temperature && fullWeather.location.temperature._value) {
+                var t = parseInt(fullWeather.location.temperature._value);
+                if (config.temperature_units == 'imperial') {
+                    temperature = Math.round(celciusToFahrenheit(t));
+                }
+                else if (config.temperature_units == 'metric') {
+                    temperature = Math.round(t);
+                }
+                else { //kelvin
+                    temperature = Math.round(celciusToKelvin(t));
+                }
+            }
+
+            if (fullWeather.location.symbol && fullWeather.location.symbol._number) {
+                condition = yrnoCondition(parseInt(fullWeather.location.symbol._number));
+            }
+
+            console.log('temp:       ' + temperature);
+            console.log('cond:       ' + condition);
+
+            if (temperature != -999) {
+                if (config.feels_like == 1) {
+                    if (fullWeather.location.windSpeed && fullWeather.location.windSpeed._mps) {
+                        var speed = parseInt(fullWeather.location.windSpeed._mps);
+
+                        if (config.temperature_units == 'imperial') {
+                            temperature = Math.round(windChill(temperature, meterspersecondToMilesperhour(speed)));
+                        }
+                        else {
+                            temperature = Math.round(windChill(temperature, meterspersecondToKilometersperhour(speed)));
+                        }
+
+                        console.log('wind cill:  ' + temperature);
+                    }
+                }
+                else if (config.feels_like == 2) {
+                    if (fullWeather.location.humidity && fullWeather.location.humidity._value && fullWeather.location.humidity._unit == 'percent') {
+                        var humidity = parseInt(fullWeather.location.humidity._value);
+                        temperature = heatIndex(temperature, humidity);
+
+                        console.log('heat index: ' + temperature);
+                    }
+                }
+            }
+        }
+
+        var lastChecked = window.localStorage.getItem('sunrise_last_checked');
+        var lastCheckedDate = moment(window.localStorage.getItem('sunrise_last_checked'));
+        var check = moment();
+        console.log('last sunrise check: ' + lastCheckedDate.format() + ', diff: ' + check.diff(lastCheckedDate, 'hours'));
+
+        if ((!lastChecked || check.diff(lastCheckedDate, 'hours') >= 24) && (config.day_text_color != config.night_text_color || config.day_background_color != config.night_background_color)) {
+            var url = 'http://api.yr.no/weatherapi/sunrise/1.0/?lat=' + pos.coords.latitude + ';lon=' + pos.coords.longitude + ';date=' + moment().format('YYYY-MM-DD');
+            console.log('getting sunrise/sunset: ' + url);
+            get(url, function(response) {
+                var sjson = x2js.xml_str2json(response);
+                console.log(JSON.stringify(sjson));
+
+                var weather = {
+                    temperature: temperature,
+                    condition: condition,
+                    err: NO_ERROR,
+                };
+
+                if (sjson.astrodata && sjson.astrodata.time && sjson.astrodata.time.location && sjson.astrodata.time.location.sun) {
+                    var sunrise_date = new Date(sjson.astrodata.time.location.sun._rise);
+                    var sunset_date = new Date(sjson.astrodata.time.location.sun._set);
+
+                    weather.sunrise = sunrise_date.getHours() * 60 + sunrise_date.getMinutes();
+                    weather.sunset = sunset_date.getHours() * 60 + sunset_date.getMinutes();
+
+                    console.log('sunrise:    ' + weather.sunrise);
+                    console.log('sunset:     ' + weather.sunset);
+                }
+
+                console.log(check.format());
+                window.localStorage.setItem('sunrise_last_checked', check.format());
+                callback(pos, weather);
+
+            }, function(err) {
+                console.warn('Error while getting sunrise: ' + err.status);
+
+                //Pretend noting happened, we still have temp and condition
+                callback(pos, {
+                    temperature: temperature,
+                    condition: condition,
+                    err: NO_ERROR,
+                });
+            });
+        }
+        else {
+            callback(pos, {
+                temperature: temperature,
+                condition: condition,
+                err: NO_ERROR,
+            });
+        }
+
+    }, function(err) {
+        console.warn('Error while getting weather: ' + err.status);
+
+        callback(pos, {
+            temperature: -999,
+            condition: -999,
+            err: WEATHER_ERROR,
+        });
+    });
+}
+
 function fetchWeather(pos, callback) {
-    if (config.weather_provider === 0) {
+    if (config.weather_provider == 2) {
         openWeatherMapWeather(pos, callback);
     }
-    else {
+    else if (config.weather_provider === 3) {
         yahooWeather(pos, callback);
+    }
+    else {
+        yrnoWeather(pos, callback);
     }
 }

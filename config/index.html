@@ -32,11 +32,24 @@
                 </label>
             </div>
 
-            <div class="item-container-content">
+            <div class="item-container-content" ng-show="version < 4.0">
+                <label class="item">
+                    Weather Provider
+                    <select class="item-select" dir="rtl" id="weather_provider" ng-model="config.weather_provider" ng-options="o.value as o.label for o in old_weather_provider"></select>
+                </label>
+            </div>
+
+            <div class="item-container-content" ng-show="version >= 4.0">
                 <label class="item">
                     Weather Provider
                     <select class="item-select" dir="rtl" id="weather_provider" ng-model="config.weather_provider" ng-options="o.value as o.label for o in weather_provider"></select>
                 </label>
+            </div>
+
+            <div class="item-container-footer" ng-show="version >= 4.0 && config.weather_provider == 4">
+                <p>
+                    Weather forecast from Yr, delivered by the Norwegian Meteorological Institute and NRK.
+                </p>
             </div>
 
             <div class="item-container-content">
@@ -265,6 +278,12 @@
                             <i class="wi wi-fw wi-day-snow"></i>
                             <i class="wi wi-fw wi-night-snow"></i>
                             Snow
+                        </li>
+
+                        <li>
+                            <i class="wi wi-fw wi-day-snow-thunderstorm"></i>
+                            <i class="wi wi-fw wi-night-snow-thunderstorm"></i>
+                            Thunderstorm with Snow
                         </li>
 
                         <li>

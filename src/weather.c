@@ -92,4 +92,12 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
     else if (code == EXTREME_HEAT) {
         strncpy(condition_text, "\uf072", size); //wi-hot
     }
+    else if (code == SNOW_THUNDERSTORM) {
+        if (is_day == 1) {
+            strncpy(condition_text, "\uf06b", size); //wi-day-snow-thunderstorm
+        }
+        else {
+            strncpy(condition_text, "\uf06c", size); //wi-night-snow-thunderstorm
+        }
+    }
 }
