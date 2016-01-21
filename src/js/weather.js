@@ -167,7 +167,8 @@ function yahooWeather(pos, callback) {
 }
 
 function openWeatherMapWeather(pos, callback) {
-    var url = 'http://api.openweathermap.org/data/2.5/weather?APPID=ce255d859db621b13bb985a4e06a4a18';
+    var api_key = (config.openweathermap_api_key.length > 0) ? config.openweathermap_api_key : 'ce255d859db621b13bb985a4e06a4a18';
+    var url = 'http://api.openweathermap.org/data/2.5/weather?APPID=' + api_key;
     if (config.location) {
         url += '&q=' + config.location;
     }
@@ -395,10 +396,10 @@ function yrnoWeather(pos, callback) {
 }
 
 function fetchWeather(pos, callback) {
-    if (config.weather_provider == 2) {
+    if (config.weather_provider === OPENWEATHERMAP) {
         openWeatherMapWeather(pos, callback);
     }
-    else if (config.weather_provider === 3) {
+    else if (config.weather_provider === YAHOO) {
         yahooWeather(pos, callback);
     }
     else {

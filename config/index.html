@@ -46,8 +46,25 @@
                 </label>
             </div>
 
-            <div class="item-container-footer" ng-show="version >= 4.0 && config.weather_provider == 4">
-                <p>
+            <div class="item-container-content" ng-show="version >= 4.0 && config.weather_provider == OPENWEATHERMAP">
+                <label class="item">
+                    Open Weather Map API Key
+                    <div class="item-input-wrapper">
+                        <input type="text" class="item-input" id="openweathermap_api_key" ng-model="config.openweathermap_api_key" placeholder="API Key" />
+                    </div>
+                </label>
+            </div>
+
+            <div class="item-container-footer" ng-show="version >= 4.0">
+                <p ng-if="config.weather_provider == OPENWEATHERMAP">
+                    Leave blank to use the community API key. Using the community key can possibly lead to
+                    errors accessing the weather (as there are limits on the key). If you want to sign up for a key
+                    visit <a href="http://openweathermap.org/appid">OpenWeatherMap.org</a> and then enter your key here.
+                </p>
+                <p ng-if="config.weather_provider == YAHOO">
+                    Yahoo weather has been unreliable in the past. If you encounter errors try another provider.
+                </p>
+                <p ng-if="config.weather_provider == YRNO">
                     Weather forecast from Yr, delivered by the Norwegian Meteorological Institute and NRK.
                 </p>
             </div>
@@ -76,13 +93,13 @@
                 </label>
             </div>
 
-            <div class="item-container-content" ng-show="config.weather_provider == 0 && !config.air_quality">
+            <div class="item-container-content" ng-show="config.weather_provider == OPENWEATHERMAP && !config.air_quality">
                 <label class="item">
                     Use GPS
                     <input type="checkbox" class="item-toggle" id="useGPS" ng-model="useGPS" />
                 </label>
             </div>
-            <div class="item-container-content" ng-show="!useGPS && config.weather_provider == 0 && !config.air_quality">
+            <div class="item-container-content" ng-show="!useGPS && config.weather_provider == OPENWEATHERMAP && !config.air_quality">
                 <label class="item">
                     <div class="item-input-wrapper">
                         <input type="text" class="item-input" id="location" placeholder="Enter Location" ng-model="config.location" />

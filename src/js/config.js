@@ -5,7 +5,7 @@ var config = {
     location: '',
     show_am_pm: 0,
     hide_battery: 0,
-    weather_provider: 0,
+    weather_provider: YRNO,
     feels_like: 0,
     vibrate_bluetooth: 0,
     charging_icon: 1,
@@ -22,6 +22,7 @@ var config = {
     aqi_degree: 0,
     air_quality_location: '',
     hourly_vibrate: 0,
+    openweathermap_api_key: '',
 };
 
 var configInts = [
@@ -53,8 +54,12 @@ function loadConfig() {
         }
     }
 
-    if (config.weather_provider < 2 || config.weather_provider > 4) {
-        config.weather_provider = 4;
+    if (
+        config.weather_provider !== OPENWEATHERMAP &&
+        config.weather_provider != YAHOO &&
+        config.weather_provider != YRNO
+    ) {
+        config.weather_provider = YRNO;
         saveSingleConfig('weather_provider');
         console.log('fixing weather_provider');
     }

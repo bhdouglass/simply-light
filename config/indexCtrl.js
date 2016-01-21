@@ -7,6 +7,11 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     $scope.latestVersion = '<%= version %>';
     $scope.platform = 'aplite';
 
+    $scope.OPENWEATHERMAP = 0;
+    $scope.OLDYAHOO = 1;
+    $scope.YAHOO = 2;
+    $scope.YRNO = 3;
+
     $scope.useGPS = true;
     $scope.$watch('useGPS', function() {
         if ($scope.useGPS && $scope.loaded) {
@@ -37,23 +42,23 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     $scope.old_weather_provider = [
         {
             label: 'OpenWeatherMap',
-            value: 0
+            value: $scope.OPENWEATHERMAP
         }, {
             label: 'Yahoo Weather',
-            value: 1
+            value: $scope.OLDYAHOO
         }
     ];
 
     $scope.weather_provider = [
         {
             label: 'Yr.no',
-            value: 4
+            value: $scope.YRNO
         }, {
-            label: 'OpenWeatherMap - Unreliable',
-            value: 2
+            label: 'OpenWeatherMap',
+            value: $scope.OPENWEATHERMAP
         }, {
             label: 'Yahoo Weather - Unreliable',
-            value: 3
+            value: $scope.YAHOO
         }
     ];
 
@@ -120,7 +125,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         location: '',
         show_am_pm: false,
         hide_battery: false,
-        weather_provider: 4,
+        weather_provider: $scope.OPENWEATHERMAP,
         feels_like: 0,
         vibrate_bluetooth: false,
         charging_icon: true,
@@ -137,6 +142,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         aqi_degree: false,
         air_quality_location: '',
         hourly_vibrate: false,
+        openweathermap_api_key: '',
     };
 
     $scope.errors = {
@@ -208,6 +214,18 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     };
 
     $timeout(function() {
+        var query = $location.search();
+        if (query.version) {
+            $scope.version = parseFloat(query.version);
+        }
+
+        if (query.platform) {
+            $scope.platform = query.platform;
+        }
+
+        console.log('version: ' + $scope.version);
+        console.log('lastest version: ' + $scope.latestVersion);
+
         var hash = $location.hash();
         if (hash) {
             var config = JSON.parse(decodeURIComponent(hash));
@@ -227,24 +245,18 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                 }
             });
 
-            if ($scope.config.weather_provider < 2 || $scope.config.weather_provider > 4) {
-                $scope.config.weather_provider = 4;
+            if ($scope.version >= 4.0) {
+                if (
+                    $scope.config.weather_provider !== $scope.OPENWEATHERMAP &&
+                    $scope.config.weather_provider != $scope.YAHOO &&
+                    $scope.config.weather_provider != $scope.YRNO
+                ) {
+                    $scope.config.weather_provider = $scope.YRNO;
+                }
             }
 
             console.log($scope.config);
         }
-
-        var query = $location.search();
-        if (query.version) {
-            $scope.version = parseFloat(query.version);
-        }
-
-        if (query.platform) {
-            $scope.platform = query.platform;
-        }
-
-        console.log('version: ' + $scope.version);
-        console.log('lastest version: ' + $scope.latestVersion);
 
         if ($scope.config.location) {
             $scope.useGPS = false;

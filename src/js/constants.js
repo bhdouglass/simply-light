@@ -21,3 +21,9 @@ var HURRICANE = 11;
 var EXTREME_COLD = 12;
 var EXTREME_HEAT = 13;
 var SNOW_THUNDERSTORM = 14;
+
+//Weather Providers
+var OPENWEATHERMAP = 0;
+//old yahoo = 1
+var YAHOO = 2;
+var YRNO = 3;
