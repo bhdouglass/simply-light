@@ -23,6 +23,7 @@ var config = {
     air_quality_location: '',
     hourly_vibrate: 0,
     openweathermap_api_key: '',
+    forcastio_api_key: '',
 };
 
 var configInts = [
@@ -57,7 +58,8 @@ function loadConfig() {
     if (
         config.weather_provider !== OPENWEATHERMAP &&
         config.weather_provider != YAHOO &&
-        config.weather_provider != YRNO
+        config.weather_provider != YRNO &&
+        config.weather_provider != FORCASTIO
     ) {
         config.weather_provider = YRNO;
         saveSingleConfig('weather_provider');

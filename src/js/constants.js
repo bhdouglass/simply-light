@@ -24,6 +24,7 @@ var SNOW_THUNDERSTORM = 14;
 
 //Weather Providers
 var OPENWEATHERMAP = 0;
-//old yahoo = 1
+//var OLDYAHOO = 1
 var YAHOO = 2;
 var YRNO = 3;
+var FORECASTIO = 4;

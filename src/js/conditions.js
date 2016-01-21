@@ -155,3 +155,29 @@ function yrnoCondition(code) {
 
     return returnCode;
 }
+
+function forecastioCondition(code) {
+    var returnCode = CLEAR;
+
+    var map = {
+        'clear-day': CLEAR,
+        'clear-night': CLEAR,
+        'rain': RAIN,
+        'snow': SNOW,
+        'sleet': SNOW,
+        'wind': WIND,
+        'fog': FOG,
+        'cloudy': CLOUDY,
+        'partly-cloudy-day': CLOUDY,
+        'partly-cloudy-night': CLOUDY,
+        'hail': SNOW,
+        'thunderstorm': THUNDERSTORM,
+        'tornado': TORNADO,
+    };
+
+    if (map[code]) {
+        returnCode = map[code];
+    }
+
+    return returnCode;
+}

@@ -180,7 +180,7 @@ gulp.task('build-pebble-js', function() {
             config_url: config.config,
         }))
         .pipe(concat('pebble-js-app.js'))
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(gulp.dest(paths.pebble.jsdist));
 });
 

@@ -58,7 +58,7 @@ function heatIndex(temperature, humidity) { //TODO change this to only accept fa
             heat_index = (heat_index - 32) * 5 / 9;
         }
         else if (!config.temperature_units) { //kelvin
-            heat_index = (heat_index = (heat_index - 32) * 5 / 9) + 273.15;
+            heat_index = ((heat_index - 32) * 5 / 9) + 273.15;
         }
     }
 
@@ -73,12 +73,24 @@ function celciusToKelvin(deg) {
     return deg +  273.15;
 }
 
+function fahrenheitToCelcius(deg) {
+    return (deg - 32) * 5 / 9;
+}
+
+function fahrenheitToKelvin(deg) {
+    return celciusToKelvin(fahrenheitToCelcius(deg));
+}
+
 function meterspersecondToMilesperhour(velocity) {
     return velocity * 2.23694;
 }
 
 function meterspersecondToKilometersperhour(velocity) {
     return velocity * 3.6;
+}
+
+function milesperhourToKilometersperhour(velocity) {
+    return velocity * 1.60934;
 }
 
 function convertYahooTime(string) {
@@ -167,7 +179,7 @@ function yahooWeather(pos, callback) {
 }
 
 function openWeatherMapWeather(pos, callback) {
-    var api_key = (config.openweathermap_api_key.length > 0) ? config.openweathermap_api_key : 'ce255d859db621b13bb985a4e06a4a18';
+    var api_key = (config.openweathermap_api_key && config.openweathermap_api_key.length > 0) ? config.openweathermap_api_key : 'ce255d859db621b13bb985a4e06a4a18';
     var url = 'http://api.openweathermap.org/data/2.5/weather?APPID=' + api_key;
     if (config.location) {
         url += '&q=' + config.location;
@@ -204,7 +216,7 @@ function openWeatherMapWeather(pos, callback) {
             console.log('wind cill:  ' + temperature);
         }
         else if (config.feels_like == 2) {
-            temperature = heatIndex(json.main.temp, data.atmosphere.humidity);
+            temperature = heatIndex(json.main.temp, json.main.humidity);
             console.log('heat index: ' + temperature);
         }
 
@@ -395,12 +407,106 @@ function yrnoWeather(pos, callback) {
     });
 }
 
+function forecastioWeather(pos, callback) {
+    if (config.forecastio_api_key && config.forecastio_api_key.length > 0) {
+        var url = 'https://api.forecast.io/forecast/' + config.forecastio_api_key + '/' + pos.coords.latitude + ',' + pos.coords.longitude;
+
+        console.log(url);
+        get(url, function(response) {
+            var json = JSON.parse(response);
+
+            var temperature = -999;
+            var condition = -999;
+            var sunrise = 1;
+            var sunset = 0;
+
+            if (json && json.currently) {
+                var t = json.currently.temperature;
+                if (config.temperature_units == 'imperial') {
+                    temperature = Math.round(t);
+                }
+                else if (config.temperature_units == 'metric') {
+                    temperature = Math.round(fahrenheitToCelcius(t));
+                }
+                else { //kelvin
+                    temperature = Math.round(fahrenheitToKelvin(t));
+                }
+
+                condition = forecastioCondition(json.currently.icon);
+
+                var current = null;
+                for (var index in json.daily.data) {
+                    if (!current || json.daily.data[index].time < current.time) {
+                        current = json.daily.data[index];
+                    }
+                }
+
+                if (current) {
+                    var sunrise_date = new Date(current.sunriseTime * 1000);
+                    var sunset_date = new Date(current.sunsetTime * 1000);
+                    sunrise = sunrise_date.getHours() * 60 + sunrise_date.getMinutes();
+                    sunset = sunset_date.getHours() * 60 + sunset_date.getMinutes();
+                }
+
+                console.log('temp:       ' + temperature);
+                console.log('cond:       ' + condition);
+                console.log('sunrise:    ' + sunrise);
+                console.log('sunset:     ' + sunset);
+
+                if (config.feels_like == 1) {
+                    if (config.temperature_units == 'imperial') {
+                        temperature = Math.round(windChill(temperature, json.currently.windSpeed));
+                    }
+                    else {
+                        temperature = Math.round(windChill(temperature, milesperhourToKilometersperhour(json.currently.windSpeed)));
+                    }
+
+                    console.log('wind cill:  ' + temperature);
+                }
+                else if (config.feels_like == 2) {
+                    temperature = heatIndex(temperature, json.currently.humidity * 100);
+                    console.log('heat index: ' + temperature);
+                }
+            }
+
+            callback(pos, {
+                temperature: temperature,
+                condition: condition,
+                sunrise: sunrise,
+                sunset: sunset,
+                err: NO_ERROR,
+            });
+
+        }, function(err) {
+            console.warn('Error while getting weather: ' + err.status);
+
+            callback(pos, {
+                temperature: -999,
+                condition: -999,
+                err: WEATHER_ERROR,
+            });
+        });
+    }
+    else {
+        console.warn('No forecast.io api key');
+
+        callback(pos, {
+            temperature: -999,
+            condition: -999,
+            err: WEATHER_ERROR,
+        });
+    }
+}
+
 function fetchWeather(pos, callback) {
     if (config.weather_provider === OPENWEATHERMAP) {
         openWeatherMapWeather(pos, callback);
     }
     else if (config.weather_provider === YAHOO) {
         yahooWeather(pos, callback);
+    }
+    else if (config.weather_provider === FORECASTIO) {
+        forecastioWeather(pos, callback);
     }
     else {
         yrnoWeather(pos, callback);

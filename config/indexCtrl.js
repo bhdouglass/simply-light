@@ -11,6 +11,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     $scope.OLDYAHOO = 1;
     $scope.YAHOO = 2;
     $scope.YRNO = 3;
+    $scope.FORECASTIO = 4;
 
     $scope.useGPS = true;
     $scope.$watch('useGPS', function() {
@@ -56,6 +57,9 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         }, {
             label: 'OpenWeatherMap',
             value: $scope.OPENWEATHERMAP
+        }, {
+            label: 'Forecast.io',
+            value: $scope.FORECASTIO
         }, {
             label: 'Yahoo Weather - Unreliable',
             value: $scope.YAHOO
@@ -125,7 +129,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         location: '',
         show_am_pm: false,
         hide_battery: false,
-        weather_provider: $scope.OPENWEATHERMAP,
+        weather_provider: $scope.YRNO,
         feels_like: 0,
         vibrate_bluetooth: false,
         charging_icon: true,
@@ -143,6 +147,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         air_quality_location: '',
         hourly_vibrate: false,
         openweathermap_api_key: '',
+        forecastio_api_key: '',
     };
 
     $scope.errors = {
@@ -249,7 +254,8 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                 if (
                     $scope.config.weather_provider !== $scope.OPENWEATHERMAP &&
                     $scope.config.weather_provider != $scope.YAHOO &&
-                    $scope.config.weather_provider != $scope.YRNO
+                    $scope.config.weather_provider != $scope.YRNO &&
+                    $scope.config.weather_provider != $scope.FORECASTIO
                 ) {
                     $scope.config.weather_provider = $scope.YRNO;
                 }

@@ -55,6 +55,15 @@
                 </label>
             </div>
 
+            <div class="item-container-content" ng-show="version >= 4.0 && config.weather_provider == FORECASTIO">
+                <label class="item">
+                    Forecast.io API Key
+                    <div class="item-input-wrapper">
+                        <input type="text" class="item-input" id="forecastio_api_key" ng-model="config.forecastio_api_key" placeholder="API Key" />
+                    </div>
+                </label>
+            </div>
+
             <div class="item-container-footer" ng-show="version >= 4.0">
                 <p ng-if="config.weather_provider == OPENWEATHERMAP">
                     Leave blank to use the community API key. Using the community key can possibly lead to
@@ -65,7 +74,12 @@
                     Yahoo weather has been unreliable in the past. If you encounter errors try another provider.
                 </p>
                 <p ng-if="config.weather_provider == YRNO">
-                    Weather forecast from Yr, delivered by the Norwegian Meteorological Institute and NRK.
+                    <a href="http://m.yr.no/">Weather forecast from Yr, delivered by the Norwegian Meteorological Institute and NRK.</a>
+                </p>
+                <p ng-if="config.weather_provider == FORECASTIO">
+                    <a href="http://forecast.io/">Powered by Forecast</a>
+                    <br/>
+                    Simply Light does not provide an API key for Forecast.io, you must provide your own key.
                 </p>
             </div>
 
