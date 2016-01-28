@@ -61,7 +61,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
             label: 'Forecast.io',
             value: $scope.FORECASTIO
         }, {
-            label: 'Yahoo Weather - Unreliable',
+            label: 'Yahoo Weather',
             value: $scope.YAHOO
         }
     ];

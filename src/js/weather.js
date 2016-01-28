@@ -108,7 +108,7 @@ function convertYahooTime(string) {
 }
 
 function yahooWeather(pos, callback) {
-    var geo = 'select woeid from geo.placefinder where text="' + pos.coords.latitude + ',' + pos.coords.longitude + '" and gflags="R"';
+    var geo = 'select woeid from geo.places where text="(' + pos.coords.latitude + ',' + pos.coords.longitude + ')" limit 1';
 
     var unit = 'c';
     if (config.temperature_units == 'imperial') {
@@ -123,48 +123,62 @@ function yahooWeather(pos, callback) {
     get(url, function(response) {
         var json = JSON.parse(response);
         var data = {};
-        if (Array.isArray(json.query.results)) {
-            data = json.query.results[0].channel;
-        }
-        else {
-            data = json.query.results.channel;
-        }
 
-        var title = data.title;
-        var temperature = Math.round(data.item.condition.temp);
-        var condition = yahooCondition(data.item.condition.code);
-        var sunrise = convertYahooTime(data.astronomy.sunrise);
-        var sunset = convertYahooTime(data.astronomy.sunset);
+        var temperature = -999;
+        var condition = -999;
+        var sunrise = 1;
+        var sunset = 0;
+        var err = WEATHER_ERROR;
 
-        if (config.temperature_units === '') {
-            temperature += 273.15;
-        }
-
-        console.log('temp:       ' + temperature);
-        console.log('cond:       ' + condition);
-        console.log('title:      ' + title);
-        console.log('sunrise:    ' + sunrise);
-        console.log('sunset:     ' + sunset);
-
-        if (config.feels_like == 1) {
-            temperature = Math.round(data.wind.chill);
-            if (config.temperature_units === '') {
-                temperature += 273.15;
+        if (json.query.results) {
+            if (Array.isArray(json.query.results)) {
+                data = json.query.results[0].channel;
+            }
+            else {
+                data = json.query.results.channel;
             }
 
-            console.log('wind cill:  ' + temperature);
+            if (data.item.condition && data.item.condition.temp && data.item.condition.code) {
+                var title = data.title;
+                temperature = Math.round(data.item.condition.temp);
+                condition = yahooCondition(data.item.condition.code);
+                sunrise = convertYahooTime(data.astronomy.sunrise);
+                sunset = convertYahooTime(data.astronomy.sunset);
+
+                if (config.temperature_units === '') {
+                    temperature += 273.15;
+                }
+
+                console.log('temp:       ' + temperature);
+                console.log('cond:       ' + condition);
+                console.log('title:      ' + title);
+                console.log('sunrise:    ' + sunrise);
+                console.log('sunset:     ' + sunset);
+
+                if (config.feels_like == 1) {
+                    temperature = Math.round(data.wind.chill);
+                    if (config.temperature_units === '') {
+                        temperature += 273.15;
+                    }
+
+                    console.log('wind cill:  ' + temperature);
+                }
+                else if (config.feels_like == 2) {
+                    temperature = heatIndex(data.item.condition.temp, data.atmosphere.humidity);
+                    console.log('heat index: ' + temperature);
+                }
+
+                err = NO_ERROR;
+            }
         }
-        else if (config.feels_like == 2) {
-            temperature = heatIndex(data.item.condition.temp, data.atmosphere.humidity);
-            console.log('heat index: ' + temperature);
-        }
+
 
         callback(pos, {
             temperature: temperature,
             condition: condition,
             sunrise: sunrise,
             sunset: sunset,
-            err: NO_ERROR,
+            err: err,
         });
 
     }, function(err) {
