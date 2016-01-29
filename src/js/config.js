@@ -23,7 +23,7 @@ var config = {
     air_quality_location: '',
     hourly_vibrate: 0,
     openweathermap_api_key: '',
-    forcastio_api_key: '',
+    forecastio_api_key: '',
 };
 
 var configInts = [
