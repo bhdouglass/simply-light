@@ -44,3 +44,16 @@ function get(url, callback, errCallback) {
     req.send();
     return req;
 }
+
+function ack(e) {
+    console.log('Successfully delivered message with transactionId=' + e.data.transactionId);
+}
+
+function nack(e) {
+    console.log('Unable to deliver message with transactionId=' + e.data.transactionId + ', error is: ' + e.error.message);
+}
+
+module.exports.fetchLocation = fetchLocation;
+module.exports.get = get;
+module.exports.ack = ack;
+module.exports.nack = nack;

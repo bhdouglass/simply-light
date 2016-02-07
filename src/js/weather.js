@@ -1,11 +1,19 @@
+var enums = require('enums');
+var conf = require('conf');
+var conditions = require('conditions');
+var util = require('util');
+
+var moment = require('libs/moment');
+var X2JS = require('libs/xml2json');
+
 //Formulas from http://en.wikipedia.org/wiki/Wind_chill#North_American_and_United_Kingdom_wind_chill_index
 function windChill(temperature, velocity) { //TODO split this into 3 functions, one for each temp units
     var wind_chill = temperature;
     var v = Math.pow(velocity, 0.16);
-    if (config.temperature_units == 'imperial') {
+    if (conf.config.temperature_units == 'imperial') {
         wind_chill = 35.74 + 0.6215 * temperature - 35.75 * v + 0.4275 * temperature * v;
     }
-    else if (config.temperature_units == 'metric') {
+    else if (conf.config.temperature_units == 'metric') {
         wind_chill = 13.12 + 0.6215 * temperature - 11.37 * v + 0.3965 * temperature * v;
     }
     else { //kelvin
@@ -20,10 +28,10 @@ function windChill(temperature, velocity) { //TODO split this into 3 functions, 
 //Formula from http://en.wikipedia.org/wiki/Heat_index#Formula
 function heatIndex(temperature, humidity) { //TODO change this to only accept fahrenheit
     var t = temperature;
-    if (config.temperature_units == 'metric') {
+    if (conf.config.temperature_units == 'metric') {
         t = (temperature * 9 / 5) + 32;
     }
-    else if (!config.temperature_units) { //kelvin
+    else if (!conf.config.temperature_units) { //kelvin
         t = ((temperature - 273.15) * 9 / 5) + 32;
     }
 
@@ -54,10 +62,10 @@ function heatIndex(temperature, humidity) { //TODO change this to only accept fa
             (c[8]* t * hsq) +
             (c[9]* tsq * hsq);
 
-        if (config.temperature_units == 'metric') {
+        if (conf.config.temperature_units == 'metric') {
             heat_index = (heat_index - 32) * 5 / 9;
         }
-        else if (!config.temperature_units) { //kelvin
+        else if (!conf.config.temperature_units) { //kelvin
             heat_index = ((heat_index - 32) * 5 / 9) + 273.15;
         }
     }
@@ -111,7 +119,7 @@ function yahooWeather(pos, callback) {
     var geo = 'select woeid from geo.places where text="(' + pos.coords.latitude + ',' + pos.coords.longitude + ')" limit 1';
 
     var unit = 'c';
-    if (config.temperature_units == 'imperial') {
+    if (conf.config.temperature_units == 'imperial') {
         unit = 'f';
     }
 
@@ -120,7 +128,7 @@ function yahooWeather(pos, callback) {
     var url = 'https://query.yahooapis.com/v1/public/yql?format=json&q=' + encodeURIComponent(select);
     console.log(url);
 
-    get(url, function(response) {
+    util.get(url, function(response) {
         var json = JSON.parse(response);
         var data = {};
 
@@ -128,7 +136,7 @@ function yahooWeather(pos, callback) {
         var condition = -999;
         var sunrise = 1;
         var sunset = 0;
-        var err = WEATHER_ERROR;
+        var err = enums.WEATHER_ERROR;
 
         if (json.query.results) {
             if (Array.isArray(json.query.results)) {
@@ -141,11 +149,11 @@ function yahooWeather(pos, callback) {
             if (data.item.condition && data.item.condition.temp && data.item.condition.code) {
                 var title = data.title;
                 temperature = Math.round(data.item.condition.temp);
-                condition = yahooCondition(data.item.condition.code);
+                condition = conditions.yahooCondition(data.item.condition.code);
                 sunrise = convertYahooTime(data.astronomy.sunrise);
                 sunset = convertYahooTime(data.astronomy.sunset);
 
-                if (config.temperature_units === '') {
+                if (conf.config.temperature_units === '') {
                     temperature += 273.15;
                 }
 
@@ -155,20 +163,20 @@ function yahooWeather(pos, callback) {
                 console.log('sunrise:    ' + sunrise);
                 console.log('sunset:     ' + sunset);
 
-                if (config.feels_like == 1) {
+                if (conf.config.feels_like == 1) {
                     temperature = Math.round(data.wind.chill);
-                    if (config.temperature_units === '') {
+                    if (conf.config.temperature_units === '') {
                         temperature += 273.15;
                     }
 
                     console.log('wind cill:  ' + temperature);
                 }
-                else if (config.feels_like == 2) {
+                else if (conf.config.feels_like == 2) {
                     temperature = heatIndex(data.item.condition.temp, data.atmosphere.humidity);
                     console.log('heat index: ' + temperature);
                 }
 
-                err = NO_ERROR;
+                err = enums.NO_ERROR;
             }
         }
 
@@ -187,32 +195,32 @@ function yahooWeather(pos, callback) {
         callback(pos, {
             temperature: -999,
             condition: -999,
-            err: WEATHER_ERROR,
+            err: enums.WEATHER_ERROR,
         });
     });
 }
 
 function openWeatherMapWeather(pos, callback) {
-    var api_key = (config.openweathermap_api_key && config.openweathermap_api_key.length > 0) ? config.openweathermap_api_key : 'ce255d859db621b13bb985a4e06a4a18';
+    var api_key = (conf.config.openweathermap_api_key && conf.config.openweathermap_api_key.length > 0) ? conf.config.openweathermap_api_key : 'ce255d859db621b13bb985a4e06a4a18';
     var url = 'http://api.openweathermap.org/data/2.5/weather?APPID=' + api_key;
-    if (config.location) {
-        url += '&q=' + config.location;
+    if (conf.config.location) {
+        url += '&q=' + conf.config.location;
     }
     else {
         url += '&lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude;
     }
 
-    if (config.temperature_units) {
-        url += '&units=' + config.temperature_units;
+    if (conf.config.temperature_units) {
+        url += '&units=' + conf.config.temperature_units;
     }
 
     console.log(url);
-    get(url, function(response) {
+    util.get(url, function(response) {
         var json = JSON.parse(response);
 
         var temperature = Math.round(json.main.temp);
         var location = json.name;
-        var condition = openWeatherMapCondition(json.weather[0].id);
+        var condition = conditions.openWeatherMapCondition(json.weather[0].id);
 
         var sunrise_date = new Date(json.sys.sunrise * 1000);
         var sunset_date = new Date(json.sys.sunset * 1000);
@@ -225,11 +233,11 @@ function openWeatherMapWeather(pos, callback) {
         console.log('sunrise:    ' + sunrise);
         console.log('sunset:     ' + sunset);
 
-        if (config.feels_like == 1) {
+        if (conf.config.feels_like == 1) {
             temperature = Math.round(windChill(json.main.temp, json.wind.speed));
             console.log('wind cill:  ' + temperature);
         }
-        else if (config.feels_like == 2) {
+        else if (conf.config.feels_like == 2) {
             temperature = heatIndex(json.main.temp, json.main.humidity);
             console.log('heat index: ' + temperature);
         }
@@ -239,7 +247,7 @@ function openWeatherMapWeather(pos, callback) {
             condition: condition,
             sunrise: sunrise,
             sunset: sunset,
-            err: NO_ERROR,
+            err: enums.NO_ERROR,
         });
 
     }, function(err) {
@@ -248,7 +256,7 @@ function openWeatherMapWeather(pos, callback) {
         callback(pos, {
             temperature: -999,
             condition: -999,
-            err: WEATHER_ERROR,
+            err: enums.WEATHER_ERROR,
         });
     });
 }
@@ -257,7 +265,7 @@ function yrnoWeather(pos, callback) {
     var x2js = new X2JS();
     var url = 'http://api.yr.no/weatherapi/locationforecast/1.9/?lat=' + pos.coords.latitude + ';lon=' + pos.coords.longitude;
     console.log(url);
-    get(url, function(response) {
+    util.get(url, function(response) {
         var json = x2js.xml_str2json(response);
 
         var simple = [];
@@ -314,10 +322,10 @@ function yrnoWeather(pos, callback) {
         if (fullWeather && fullWeather.location) {
             if (fullWeather.location.temperature && fullWeather.location.temperature._value) {
                 var t = parseInt(fullWeather.location.temperature._value);
-                if (config.temperature_units == 'imperial') {
+                if (conf.config.temperature_units == 'imperial') {
                     temperature = Math.round(celciusToFahrenheit(t));
                 }
-                else if (config.temperature_units == 'metric') {
+                else if (conf.config.temperature_units == 'metric') {
                     temperature = Math.round(t);
                 }
                 else { //kelvin
@@ -326,18 +334,18 @@ function yrnoWeather(pos, callback) {
             }
 
             if (fullWeather.location.symbol && fullWeather.location.symbol._number) {
-                condition = yrnoCondition(parseInt(fullWeather.location.symbol._number));
+                condition = conditions.yrnoCondition(parseInt(fullWeather.location.symbol._number));
             }
 
             console.log('temp:       ' + temperature);
             console.log('cond:       ' + condition);
 
             if (temperature != -999) {
-                if (config.feels_like == 1) {
+                if (conf.config.feels_like == 1) {
                     if (fullWeather.location.windSpeed && fullWeather.location.windSpeed._mps) {
                         var speed = parseInt(fullWeather.location.windSpeed._mps);
 
-                        if (config.temperature_units == 'imperial') {
+                        if (conf.config.temperature_units == 'imperial') {
                             temperature = Math.round(windChill(temperature, meterspersecondToMilesperhour(speed)));
                         }
                         else {
@@ -347,7 +355,7 @@ function yrnoWeather(pos, callback) {
                         console.log('wind cill:  ' + temperature);
                     }
                 }
-                else if (config.feels_like == 2) {
+                else if (conf.config.feels_like == 2) {
                     if (fullWeather.location.humidity && fullWeather.location.humidity._value && fullWeather.location.humidity._unit == 'percent') {
                         var humidity = parseInt(fullWeather.location.humidity._value);
                         temperature = heatIndex(temperature, humidity);
@@ -363,17 +371,17 @@ function yrnoWeather(pos, callback) {
         var check = moment();
         console.log('last sunrise check: ' + lastCheckedDate.format() + ', diff: ' + check.diff(lastCheckedDate, 'hours'));
 
-        if ((!lastChecked || check.diff(lastCheckedDate, 'hours') >= 24) && (config.day_text_color != config.night_text_color || config.day_background_color != config.night_background_color)) {
+        if ((!lastChecked || check.diff(lastCheckedDate, 'hours') >= 24) && (conf.config.day_text_color != conf.config.night_text_color || conf.config.day_background_color != conf.config.night_background_color)) {
             var url = 'http://api.yr.no/weatherapi/sunrise/1.0/?lat=' + pos.coords.latitude + ';lon=' + pos.coords.longitude + ';date=' + moment().format('YYYY-MM-DD');
             console.log('getting sunrise/sunset: ' + url);
-            get(url, function(response) {
+            util.get(url, function(response) {
                 var sjson = x2js.xml_str2json(response);
                 console.log(JSON.stringify(sjson));
 
                 var weather = {
                     temperature: temperature,
                     condition: condition,
-                    err: NO_ERROR,
+                    err: enums.NO_ERROR,
                 };
 
                 if (sjson.astrodata && sjson.astrodata.time && sjson.astrodata.time.location && sjson.astrodata.time.location.sun) {
@@ -398,7 +406,7 @@ function yrnoWeather(pos, callback) {
                 callback(pos, {
                     temperature: temperature,
                     condition: condition,
-                    err: NO_ERROR,
+                    err: enums.NO_ERROR,
                 });
             });
         }
@@ -406,7 +414,7 @@ function yrnoWeather(pos, callback) {
             callback(pos, {
                 temperature: temperature,
                 condition: condition,
-                err: NO_ERROR,
+                err: enums.NO_ERROR,
             });
         }
 
@@ -416,17 +424,17 @@ function yrnoWeather(pos, callback) {
         callback(pos, {
             temperature: -999,
             condition: -999,
-            err: WEATHER_ERROR,
+            err: enums.WEATHER_ERROR,
         });
     });
 }
 
 function forecastioWeather(pos, callback) {
-    if (config.forecastio_api_key && config.forecastio_api_key.length > 0) {
-        var url = 'https://api.forecast.io/forecast/' + config.forecastio_api_key + '/' + pos.coords.latitude + ',' + pos.coords.longitude;
+    if (conf.config.forecastio_api_key && conf.config.forecastio_api_key.length > 0) {
+        var url = 'https://api.forecast.io/forecast/' + conf.config.forecastio_api_key + '/' + pos.coords.latitude + ',' + pos.coords.longitude;
 
         console.log(url);
-        get(url, function(response) {
+        util.get(url, function(response) {
             var json = JSON.parse(response);
 
             var temperature = -999;
@@ -436,17 +444,17 @@ function forecastioWeather(pos, callback) {
 
             if (json && json.currently) {
                 var t = json.currently.temperature;
-                if (config.temperature_units == 'imperial') {
+                if (conf.config.temperature_units == 'imperial') {
                     temperature = Math.round(t);
                 }
-                else if (config.temperature_units == 'metric') {
+                else if (conf.config.temperature_units == 'metric') {
                     temperature = Math.round(fahrenheitToCelcius(t));
                 }
                 else { //kelvin
                     temperature = Math.round(fahrenheitToKelvin(t));
                 }
 
-                condition = forecastioCondition(json.currently.icon);
+                condition = conditions.forecastioCondition(json.currently.icon);
 
                 var current = null;
                 for (var index in json.daily.data) {
@@ -467,8 +475,8 @@ function forecastioWeather(pos, callback) {
                 console.log('sunrise:    ' + sunrise);
                 console.log('sunset:     ' + sunset);
 
-                if (config.feels_like == 1) {
-                    if (config.temperature_units == 'imperial') {
+                if (conf.config.feels_like == 1) {
+                    if (conf.config.temperature_units == 'imperial') {
                         temperature = Math.round(windChill(temperature, json.currently.windSpeed));
                     }
                     else {
@@ -477,7 +485,7 @@ function forecastioWeather(pos, callback) {
 
                     console.log('wind cill:  ' + temperature);
                 }
-                else if (config.feels_like == 2) {
+                else if (conf.config.feels_like == 2) {
                     temperature = heatIndex(temperature, json.currently.humidity * 100);
                     console.log('heat index: ' + temperature);
                 }
@@ -488,7 +496,7 @@ function forecastioWeather(pos, callback) {
                 condition: condition,
                 sunrise: sunrise,
                 sunset: sunset,
-                err: NO_ERROR,
+                err: enums.NO_ERROR,
             });
 
         }, function(err) {
@@ -497,7 +505,7 @@ function forecastioWeather(pos, callback) {
             callback(pos, {
                 temperature: -999,
                 condition: -999,
-                err: WEATHER_ERROR,
+                err: enums.WEATHER_ERROR,
             });
         });
     }
@@ -507,22 +515,24 @@ function forecastioWeather(pos, callback) {
         callback(pos, {
             temperature: -999,
             condition: -999,
-            err: WEATHER_ERROR,
+            err: enums.WEATHER_ERROR,
         });
     }
 }
 
 function fetchWeather(pos, callback) {
-    if (config.weather_provider === OPENWEATHERMAP) {
+    if (conf.config.weather_provider === enums.OPENWEATHERMAP) {
         openWeatherMapWeather(pos, callback);
     }
-    else if (config.weather_provider === YAHOO) {
+    else if (conf.config.weather_provider === enums.YAHOO) {
         yahooWeather(pos, callback);
     }
-    else if (config.weather_provider === FORECASTIO) {
+    else if (conf.config.weather_provider === enums.FORECASTIO) {
         forecastioWeather(pos, callback);
     }
     else {
         yrnoWeather(pos, callback);
     }
 }
+
+module.exports.fetchWeather = fetchWeather;

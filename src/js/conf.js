@@ -1,3 +1,7 @@
+var enums = require('enums');
+var util = require('util');
+var MessageQueue = require('libs/js-message-queue');
+
 var config = {
     temperature_units: 'imperial',
     refresh_time: 30,
@@ -5,7 +9,7 @@ var config = {
     location: '',
     show_am_pm: 0,
     hide_battery: 0,
-    weather_provider: YRNO,
+    weather_provider: enums.YRNO,
     feels_like: 0,
     vibrate_bluetooth: 0,
     charging_icon: 1,
@@ -34,14 +38,6 @@ var configInts = [
     'air_quality', 'aqi_degree', 'hourly_vibrate',
 ];
 
-function ack(e) {
-    console.log('Successfully delivered message with transactionId=' + e.data.transactionId);
-}
-
-function nack(e) {
-    console.log('Unable to deliver message with transactionId=' + e.data.transactionId + ', error is: ' + e.error.message);
-}
-
 function loadConfig() {
     for (var key in config) {
         var value = window.localStorage.getItem(key);
@@ -56,12 +52,12 @@ function loadConfig() {
     }
 
     if (
-        config.weather_provider !== OPENWEATHERMAP &&
-        config.weather_provider != YAHOO &&
-        config.weather_provider != YRNO &&
-        config.weather_provider != FORCASTIO
+        config.weather_provider !== enums.OPENWEATHERMAP &&
+        config.weather_provider != enums.YAHOO &&
+        config.weather_provider != enums.YRNO &&
+        config.weather_provider != enums.FORECASTIO
     ) {
-        config.weather_provider = YRNO;
+        config.weather_provider = enums.YRNO;
         saveSingleConfig('weather_provider');
         console.log('fixing weather_provider');
     }
@@ -84,7 +80,7 @@ function loadConfig() {
         air_quality: config.air_quality,
         aqi_degree: config.aqi_degree,
         hourly_vibrate: config.hourly_vibrate,
-    }, ack, nack);
+    }, util.ack, util.nack);
 }
 
 function saveConfig() {
@@ -110,9 +106,14 @@ function saveConfig() {
         air_quality: config.air_quality,
         aqi_degree: config.aqi_degree,
         hourly_vibrate: config.hourly_vibrate,
-    }, ack, nack);
+    }, util.ack, util.nack);
 }
 
 function saveSingleConfig(key) {
     window.localStorage.setItem(key, config[key]);
 }
+
+module.exports.config = config;
+module.exports.loadConfig = loadConfig;
+module.exports.saveConfig = saveConfig;
+module.exports.saveSingleConfig = saveSingleConfig;

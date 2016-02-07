@@ -1,1 +1,1 @@
-var appinfo = <%= appinfo %>;
+module.exports = <%= appinfo %>;
