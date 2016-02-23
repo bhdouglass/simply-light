@@ -3,6 +3,7 @@
     "Pebble": true,
     "angular": true,
     "aplite_colors": true,
+    "aplite_colors_background": true,
     "basalt_colors": true
   },
   "browser": true,

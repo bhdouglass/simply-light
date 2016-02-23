@@ -33,7 +33,12 @@ angular.module('app').directive('colorPicker', function() {
 
             $scope.platform = $attrs.platform;
             if ($scope.platform == 'aplite') {
-                $scope.colors = aplite_colors;
+                if ($attrs.background) {
+                    $scope.colors = aplite_colors_background;
+                }
+                else {
+                    $scope.colors = aplite_colors;
+                }
             }
             else {
                 $scope.colors = basalt_colors;

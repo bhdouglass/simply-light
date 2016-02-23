@@ -6,7 +6,22 @@ var aplite_colors = [{
         name: 'White',
         hex: '#FFFFFF',
         pebble: 1
-    },
+    }
+];
+
+var aplite_colors_background = [{
+        name: 'Black',
+        hex: '#000000',
+        pebble: 0
+    }, {
+        name: 'White',
+        hex: '#FFFFFF',
+        pebble: 1
+    }, {
+        name: 'Grey',
+        hex: '#BBBBBB',
+        pebble: 2
+    }
 ];
 
 var basalt_colors = [

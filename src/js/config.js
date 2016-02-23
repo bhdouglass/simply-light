@@ -59,7 +59,7 @@ function loadConfig() {
         config.weather_provider !== OPENWEATHERMAP &&
         config.weather_provider != YAHOO &&
         config.weather_provider != YRNO &&
-        config.weather_provider != FORCASTIO
+        config.weather_provider != FORECASTIO
     ) {
         config.weather_provider = YRNO;
         saveSingleConfig('weather_provider');

@@ -41,6 +41,9 @@ GColor get_color(int color) {
         if (color == 0) {
             return GColorBlack;
         }
+        else if (color == 2) {
+            return GColorDarkGray;
+        }
         else {
             return GColorWhite;
         }
