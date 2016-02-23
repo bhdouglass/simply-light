@@ -1,4 +1,6 @@
 function fetchAirQuality(pos, data, callback) {
+    log(LOG_FETCH_AIRQUALITY);
+
     var url = '';
     if (config.air_quality_location) {
         url = 'http://mapidroid.aqicn.org/aqicn/services/citysearch/?android&lang=en&city=' + config.air_quality_location;
@@ -30,8 +32,11 @@ function fetchAirQuality(pos, data, callback) {
                 if (!data.air_quality_index) {
                     data.air_quality_index = -999;
                     data.err = AQI_ERROR;
+
+                    log(LOG_AQI_MISSING_INDEX);
                 }
                 else {
+                    log(LOG_AQI_SUCCESS);
                     data.err = NO_ERROR;
                 }
 
@@ -40,12 +45,16 @@ function fetchAirQuality(pos, data, callback) {
             else {
                 data.air_quality_index = -999;
                 data.err = AQI_ERROR;
+
+                log(LOG_AQI_MISSING_LOCATIONS);
                 callback(pos, data);
             }
         }
         else {
             data.air_quality_index = -999;
             data.err = AQI_ERROR;
+
+            log(LOG_AQI_MISSING_RESPONSE);
             callback(pos, data);
         }
 
@@ -54,6 +63,8 @@ function fetchAirQuality(pos, data, callback) {
 
         data.air_quality_index = -999;
         data.err = AQI_ERROR;
+
+        log(LOG_AQI_ERROR);
         callback(pos, data);
     });
 }

@@ -193,6 +193,7 @@ function yahooWeather(pos, callback) {
 }
 
 function openWeatherMapWeather(pos, callback) {
+    log(LOG_OPENWEATHERMAP);
     var api_key = (config.openweathermap_api_key && config.openweathermap_api_key.length > 0) ? config.openweathermap_api_key : 'ce255d859db621b13bb985a4e06a4a18';
     var url = 'http://api.openweathermap.org/data/2.5/weather?APPID=' + api_key;
     if (config.location) {
@@ -234,6 +235,7 @@ function openWeatherMapWeather(pos, callback) {
             console.log('heat index: ' + temperature);
         }
 
+        log(LOG_WEATHER_SUCCESS);
         callback(pos, {
             temperature: temperature,
             condition: condition,
@@ -245,6 +247,7 @@ function openWeatherMapWeather(pos, callback) {
     }, function(err) {
         console.warn('Error while getting weather: ' + err.status);
 
+        log(LOG_WEATHER_ERROR);
         callback(pos, {
             temperature: -999,
             condition: -999,
@@ -254,6 +257,8 @@ function openWeatherMapWeather(pos, callback) {
 }
 
 function yrnoWeather(pos, callback) {
+    log(LOG_YRNOWEATHER);
+
     var x2js = new X2JS();
     var url = 'http://api.yr.no/weatherapi/locationforecast/1.9/?lat=' + pos.coords.latitude + ';lon=' + pos.coords.longitude;
     console.log(url);
@@ -364,6 +369,8 @@ function yrnoWeather(pos, callback) {
         console.log('last sunrise check: ' + lastCheckedDate.format() + ', diff: ' + check.diff(lastCheckedDate, 'hours'));
 
         if ((!lastChecked || check.diff(lastCheckedDate, 'hours') >= 24) && (config.day_text_color != config.night_text_color || config.day_background_color != config.night_background_color)) {
+            log(LOG_YRNO_SUNRISE);
+
             var url = 'http://api.yr.no/weatherapi/sunrise/1.0/?lat=' + pos.coords.latitude + ';lon=' + pos.coords.longitude + ';date=' + moment().format('YYYY-MM-DD');
             console.log('getting sunrise/sunset: ' + url);
             get(url, function(response) {
@@ -389,12 +396,14 @@ function yrnoWeather(pos, callback) {
 
                 console.log(check.format());
                 window.localStorage.setItem('sunrise_last_checked', check.format());
+                log(LOG_YRNO_SUNRISE_SUCCESS);
                 callback(pos, weather);
 
             }, function(err) {
                 console.warn('Error while getting sunrise: ' + err.status);
 
                 //Pretend noting happened, we still have temp and condition
+                log(LOG_YRNO_SUNRISE_ERROR);
                 callback(pos, {
                     temperature: temperature,
                     condition: condition,
@@ -403,6 +412,7 @@ function yrnoWeather(pos, callback) {
             });
         }
         else {
+            log(LOG_WEATHER_SUCCESS);
             callback(pos, {
                 temperature: temperature,
                 condition: condition,
@@ -413,6 +423,7 @@ function yrnoWeather(pos, callback) {
     }, function(err) {
         console.warn('Error while getting weather: ' + err.status);
 
+        log(LOG_WEATHER_ERROR);
         callback(pos, {
             temperature: -999,
             condition: -999,
@@ -422,6 +433,8 @@ function yrnoWeather(pos, callback) {
 }
 
 function forecastioWeather(pos, callback) {
+    log(LOG_FORECASTIOWEATHER);
+
     if (config.forecastio_api_key && config.forecastio_api_key.length > 0) {
         var url = 'https://api.forecast.io/forecast/' + config.forecastio_api_key + '/' + pos.coords.latitude + ',' + pos.coords.longitude;
 
@@ -483,6 +496,7 @@ function forecastioWeather(pos, callback) {
                 }
             }
 
+            log(LOG_WEATHER_SUCCESS);
             callback(pos, {
                 temperature: temperature,
                 condition: condition,
@@ -494,6 +508,7 @@ function forecastioWeather(pos, callback) {
         }, function(err) {
             console.warn('Error while getting weather: ' + err.status);
 
+            log(LOG_WEATHER_ERROR);
             callback(pos, {
                 temperature: -999,
                 condition: -999,
@@ -504,6 +519,7 @@ function forecastioWeather(pos, callback) {
     else {
         console.warn('No forecast.io api key');
 
+        log(LOG_FORECASTIO_NO_KEY);
         callback(pos, {
             temperature: -999,
             condition: -999,
@@ -513,6 +529,7 @@ function forecastioWeather(pos, callback) {
 }
 
 function fetchWeather(pos, callback) {
+    log(LOG_FETCH_WEATHER);
     if (config.weather_provider === OPENWEATHERMAP) {
         openWeatherMapWeather(pos, callback);
     }

@@ -397,6 +397,20 @@
                     </ul>
                 </label>
             </div>
+
+            <div class="item-container-content" ng-if="version >= 4.3">
+                <label class="item">
+                    Debug Information
+
+                    <div class="select-triangle" ng-click="showDebug = !showDebug"></div>
+
+                    <div ng-if="showDebug">
+                        <div>
+                            When requested, copy this and send it to the developer via email.
+                        </div>
+                        <code ng-bind="debug | json"></code>
+                    </div>
+                </label>
         </div>
 
         <div class="item-container ng-cloak">

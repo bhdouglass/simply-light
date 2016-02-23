@@ -6,6 +6,13 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     $scope.version = 1.1;
     $scope.latestVersion = '<%= version %>';
     $scope.platform = 'aplite';
+    $scope.debug = {
+        config: null,
+        version: null,
+        datalog: '',
+        last_status_code: -1,
+        last_location_error_code: -1,
+    };
 
     $scope.OPENWEATHERMAP = 0;
     $scope.OLDYAHOO = 1;
@@ -228,6 +235,18 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
             $scope.platform = query.platform;
         }
 
+        if (query.dl) {
+            $scope.debug.datalog = query.dl;
+        }
+
+        if (query.lsc) {
+            $scope.debug.last_status_code = query.lsc;
+        }
+
+        if (query.llec) {
+            $scope.debug.last_location_error_code = query.llec;
+        }
+
         console.log('version: ' + $scope.version);
         console.log('lastest version: ' + $scope.latestVersion);
 
@@ -271,6 +290,9 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         if ($scope.config.air_quality_location) {
             $scope.useGPSaqi = false;
         }
+
+        $scope.debug.config = $scope.config;
+        $scope.debug.version = $scope.version;
 
         $scope.loaded = true;
     });
