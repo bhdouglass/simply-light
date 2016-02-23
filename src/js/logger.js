@@ -40,6 +40,9 @@ function log(msg) {
 
 function loadLog() {
     datalog = window.localStorage.getItem('datalog');
+    if (!datalog) {
+        datalog = '';
+    }
 }
 
 function statusCode(code) {
