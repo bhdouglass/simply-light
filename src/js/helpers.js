@@ -18,8 +18,8 @@ function fetchLocation(callback, errCallback) {
         }
 
     }, { //Options
-        timeout: 20000,
-        maximumAge: 60000
+        timeout: 30000, //30 seconds
+        maximumAge: 300000, //5 minutes
     });
 }
 
