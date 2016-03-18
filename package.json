@@ -23,6 +23,7 @@
     "gulp-open": "^0.3.2",
     "gulp-shell": "^0.4.2",
     "gulp-sourcemaps": "^1.5.2",
+    "gulp-surge": "^0.1.0",
     "gulp-template": "^3.0.0",
     "gulp-uglify": "^1.2.0",
     "jshint-stylish": "^0.2.0",

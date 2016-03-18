@@ -12,8 +12,10 @@ var ngAnnotate = require('gulp-ng-annotate');
 var sourcemaps = require('gulp-sourcemaps');
 var htmlmin = require('gulp-htmlmin');
 var minifyCSS = require('gulp-minify-css');
+var surge = require('gulp-surge');
 var del = require('del');
 var minimist = require('minimist');
+var fs = require('fs');
 
 var paths = {
     jslint: ['src/js/*.js', '!src/js/appinfo.js', 'gulpfile.js', 'config/*.js', '!config/colors.js'],
@@ -213,3 +215,10 @@ gulp.task('prebuild-pebble', ['lint', 'clean-pebble', 'build-pebble-fonts', 'bui
 gulp.task('build-pebble', ['prebuild-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
 gulp.task('install-pebble', ['build-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && ' + installCommand(config)]));
 gulp.task('server-install', ['build-pebble']);
+
+gulp.task('deploy-config', ['build-config'], function() {
+    return surge({
+        project: paths.config.dist,
+        domain: fs.readFileSync('CNAME', 'utf-8'),
+    });
+});
