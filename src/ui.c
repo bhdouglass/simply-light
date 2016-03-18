@@ -17,12 +17,19 @@ void ui_align() {
         //air_quality_index layer set in ui_weather_update()
     }
     else {
-        layer_set_frame((Layer *) ui.layers.time, GRect(0, MARGINTOP, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.battery, GRect(0, MARGINTOP + 29, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.date, GRect(0, MARGINTOP + 60, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.month, GRect(0, MARGINTOP + 96, PWIDTH, 28));
-        layer_set_frame((Layer *) ui.layers.temperature, GRect(0, MARGINTOP + 120, HALFPWIDTH, 50));
-        layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50));
+        int top = MARGINTOP;
+        if (config.battery_percent != 0) {
+            top = top + 3;
+        }
+
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", top);
+
+        layer_set_frame((Layer *) ui.layers.time, GRect(0, top, PWIDTH, 100));
+        layer_set_frame((Layer *) ui.layers.battery, GRect(0, top + 29, PWIDTH, 100));
+        layer_set_frame((Layer *) ui.layers.date, GRect(0, top + 60, PWIDTH, 100));
+        layer_set_frame((Layer *) ui.layers.month, GRect(0, top + 96, PWIDTH, 28));
+        layer_set_frame((Layer *) ui.layers.temperature, GRect(0, top + 120, HALFPWIDTH, 50));
+        layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, top + 121, HALFPWIDTH, 50));
         //am_pm layer set in ui_time_update()
         layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 7, PWIDTH - 5, 20));
         //air_quality_index layer set in ui_weather_update()
@@ -107,17 +114,22 @@ void ui_weather_update() {
             }
         }
         else {
+            int top = MARGINTOP;
+            if (config.battery_percent != 0) {
+                top = top + 3;
+            }
+
             if (strlen(ui.texts.temperature) == 2) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(16, MARGINTOP + 120, HALFPWIDTH, 50));
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(16, top + 120, HALFPWIDTH, 50));
             }
             else if (strlen(ui.texts.temperature) == 3) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(26, MARGINTOP + 120, HALFPWIDTH, 50));
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(26, top + 120, HALFPWIDTH, 50));
             }
             else if (strlen(ui.texts.temperature) == 4) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(35, MARGINTOP + 120, HALFPWIDTH, 50));
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(35, top + 120, HALFPWIDTH, 50));
             }
             else {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(38, MARGINTOP + 120, HALFPWIDTH, 50));
+                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(38, top + 120, HALFPWIDTH, 50));
             }
         }
     }
@@ -246,11 +258,16 @@ void ui_time_update() {
             layer_set_frame((Layer *) ui.layers.am_pm, GRect(0, MARGINTOP - 5, PWIDTH, 20));
         }
         else {
+            int top = MARGINTOP;
+            if (config.battery_percent != 0) {
+                top = top + 3;
+            }
+
             if (ui.texts.time_zero) {
-                layer_set_frame((Layer *) ui.layers.am_pm, GRect(-13, MARGINTOP, PWIDTH, 20));
+                layer_set_frame((Layer *) ui.layers.am_pm, GRect(-13, top, PWIDTH, 20));
             }
             else {
-                layer_set_frame((Layer *) ui.layers.am_pm, GRect(0, MARGINTOP, PWIDTH, 20));
+                layer_set_frame((Layer *) ui.layers.am_pm, GRect(0, top, PWIDTH, 20));
             }
         }
     }

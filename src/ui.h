@@ -4,7 +4,7 @@
 
 #include "config.h"
 
-#define MARGINTOP 5
+#define MARGINTOP 4
 #define PWIDTH 144
 #define HALFPWIDTH 72
 #define PHEIGHT 168
