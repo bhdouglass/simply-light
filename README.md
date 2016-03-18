@@ -37,7 +37,7 @@ Translation have been made possible by the following people:
 
 * [js-message-queue](https://github.com/smallstoneapps/js-message-queue)
 * [Moment.js](http://momentjs.com/)
-* [x2js](https://github.com/abdmob/x2js)
+* [Weatherman](https://github.com/bhdouglass/weather-man)
 
 # Simply Light Config Page #
 

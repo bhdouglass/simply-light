@@ -20,20 +20,6 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     $scope.YRNO = 3;
     $scope.FORECASTIO = 4;
 
-    $scope.useGPS = true;
-    $scope.$watch('useGPS', function() {
-        if ($scope.useGPS && $scope.loaded) {
-            $scope.config.location = '';
-        }
-    });
-
-    $scope.useGPSaqi = true;
-    $scope.$watch('useGPSaqi', function() {
-        if ($scope.useGPSaqi && $scope.loaded) {
-            $scope.config.air_quality_location = '';
-        }
-    });
-
     $scope.temperature_units = [
         {
             label: 'Fahrenheit',
@@ -133,7 +119,6 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         temperature_units: 'imperial',
         refresh_time: 30,
         wait_time: 1,
-        location: '',
         show_am_pm: false,
         hide_battery: false,
         weather_provider: $scope.YRNO,
@@ -151,7 +136,6 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         air_quality: false,
         last_aqi_location: null,
         aqi_degree: false,
-        air_quality_location: '',
         hourly_vibrate: false,
         openweathermap_api_key: '',
         forecastio_api_key: '',
@@ -160,7 +144,6 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
     $scope.errors = {
         refresh_time: false,
         wait_time: false,
-        location: false,
     };
 
     function validateInt(value, error) {
@@ -281,14 +264,6 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
             }
 
             console.log($scope.config);
-        }
-
-        if ($scope.config.location) {
-            $scope.useGPS = false;
-        }
-
-        if ($scope.config.air_quality_location) {
-            $scope.useGPSaqi = false;
         }
 
         $scope.debug.config = $scope.config;

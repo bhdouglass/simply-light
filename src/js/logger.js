@@ -23,6 +23,7 @@ var LOG_GET_ERROR = 'L';
 var LOG_FETCH_LOCATION = 'M';
 var LOG_LOCATION_SUCCESS = 'N';
 var LOG_LOCATION_ERROR = 'O';
+var LOG_YAHOOWEATHER = 'P';
 
 var datalog = '';
 var last_status_code = -1;

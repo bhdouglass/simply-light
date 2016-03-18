@@ -106,23 +106,6 @@
                     </div>
                 </label>
             </div>
-
-            <div class="item-container-content" ng-show="config.weather_provider == OPENWEATHERMAP && !config.air_quality">
-                <label class="item">
-                    Use GPS
-                    <input type="checkbox" class="item-toggle" id="useGPS" ng-model="useGPS" />
-                </label>
-            </div>
-            <div class="item-container-content" ng-show="!useGPS && config.weather_provider == OPENWEATHERMAP && !config.air_quality">
-                <label class="item">
-                    <div class="item-input-wrapper">
-                        <input type="text" class="item-input" id="location" placeholder="Enter Location" ng-model="config.location" />
-                    </div>
-                </label>
-            </div>
-            <div class="item-container-footer" ng-show="">
-                Location is currently unavailable for Yahoo Weather or Air Quality.
-            </div>
         </div>
 
         <div class="item-container ng-cloak">
@@ -155,20 +138,6 @@
                     When enabled, the current air quality index replaces the
                     degree icon for the temperature.
                 </p>
-            </div>
-
-            <div class="item-container-content" ng-show="version >= 3.3 && config.air_quality">
-                <label class="item">
-                    Use GPS for AQI
-                    <input type="checkbox" class="item-toggle" id="useGPSaqi" ng-model="useGPSaqi" />
-                </label>
-            </div>
-            <div class="item-container-content" ng-show="!useGPSaqi && version >= 3.3 && config.air_quality">
-                <label class="item">
-                    <div class="item-input-wrapper">
-                        <input type="text" class="item-input" id="air_quality_location" ng-model="config.air_quality_location" placeholder="Enter Location" />
-                    </div>
-                </label>
             </div>
 
             <div class="item-container" ng-show="version == 2.9 && config.air_quality == 1">

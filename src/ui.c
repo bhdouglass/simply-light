@@ -22,8 +22,6 @@ void ui_align() {
             top = top + 3;
         }
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", top);
-
         layer_set_frame((Layer *) ui.layers.time, GRect(0, top, PWIDTH, 100));
         layer_set_frame((Layer *) ui.layers.battery, GRect(0, top + 29, PWIDTH, 100));
         layer_set_frame((Layer *) ui.layers.date, GRect(0, top + 60, PWIDTH, 100));
