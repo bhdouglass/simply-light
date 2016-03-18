@@ -1,15 +1,18 @@
 # Simply Light #
 
-[ ![Codeship Status for bhdouglass/simply-light](https://codeship.com/projects/4381e650-63ea-0132-862e-32c060907738/status?branch=master)](https://codeship.com/projects/52458)
-
 A simple Pebble watchface with time, weather, and battery status.
 
 Weather icons from <http://erikflowers.github.io/weather-icons/>. Other icons from
 <http://zavoloklom.github.io/material-design-iconic-font/icons.html>.
 
-Weather data from <http://openweathermap.org/> or <https://query.yahooapis.com/v1/public/yql>.
+Weather/AQI data from
+[OpenWeatherMap](http://openweathermap.org/),
+[Yahoo](https://www.yahoo.com/?ilc=401),
+[Yr.no](http://yr.no/),
+[forecast.io](http://forecast.io/),
+or [AQIcn.org](http://aqicn.org/).
 
-Get it on your Pebble - <https://apps.getpebble.com/applications/5472c040c13ebf3ddf000045>.
+[Get it on your Pebble](https://apps.getpebble.com/applications/5472c040c13ebf3ddf000045)
 
 ## Translations ##
 
@@ -33,6 +36,8 @@ Translation have been made possible by the following people:
 ## Third Party Libraries ##
 
 * [js-message-queue](https://github.com/smallstoneapps/js-message-queue)
+* [Moment.js](http://momentjs.com/)
+* [x2js](https://github.com/abdmob/x2js)
 
 # Simply Light Config Page #
 
@@ -42,10 +47,12 @@ The config page is hosted at <http://simply-light.bhdouglass.com>.
 	* `gulp serve`
 * Build the config page for deployment
 	* `gulp build-config`
+* Deploy the config page
+	* `gulp deploy`
 
 ## License ##
 
-Copyright (C) 2015 [Brian Douglass](http://bhdouglass.com/)
+Copyright (C) 2016 [Brian Douglass](http://bhdouglass.com/)
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License version 3, as published by the Free
