@@ -99,6 +99,7 @@ function fetchWeather(pos, callback) {
     }
 
     if (wm) {
+        log(LOG_FETCH_WEATHER2);
         wm.getCurrent(pos.coords.latitude, pos.coords.longitude).then(function(result) {
             log(LOG_WEATHER_SUCCESS);
 
@@ -143,8 +144,12 @@ function fetchWeather(pos, callback) {
                 sunset: result.getSunset(),
                 err: NO_ERROR,
             });
-        }).catch(function() { //TODO get error info
+        }).catch(function(result) {
             log(LOG_WEATHER_ERROR);
+
+            if (result && result.status) {
+                statusCode(result.status);
+            }
 
             callback(pos, {
                 temperature: -999,
@@ -170,6 +175,10 @@ function fetchWeatherCallback(pos, data) {
         }).catch(function() {
             data.air_quality_index = -999;
             data.err = AQI_ERROR;
+
+            if (result && result.status) {
+                statusCode(result.status);
+            }
 
             log(LOG_AQI_ERROR);
             fetchAirQualityCallback(pos, data);

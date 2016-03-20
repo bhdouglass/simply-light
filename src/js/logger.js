@@ -24,6 +24,7 @@ var LOG_FETCH_LOCATION = 'M';
 var LOG_LOCATION_SUCCESS = 'N';
 var LOG_LOCATION_ERROR = 'O';
 var LOG_YAHOOWEATHER = 'P';
+var LOG_FETCH_WEATHER2 = 'Q';
 
 var datalog = '';
 var last_status_code = -1;
