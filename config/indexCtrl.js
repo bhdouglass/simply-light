@@ -12,6 +12,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         datalog: '',
         last_status_code: -1,
         last_location_error_code: -1,
+        platform: '',
     };
 
     $scope.OPENWEATHERMAP = 0;
@@ -268,6 +269,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 
         $scope.debug.config = $scope.config;
         $scope.debug.version = $scope.version;
+        $scope.debug.platform = $scope.platform;
 
         $scope.loaded = true;
     });

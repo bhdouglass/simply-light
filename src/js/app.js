@@ -1,20 +1,25 @@
 Pebble.addEventListener('ready', function(e) {
     console.log('starting js, v' + appinfo.versionCode);
+    log(LOG_APP_START);
 
     loadConfig();
     loadLog();
     console.log(JSON.stringify(config));
-    fetch();
+    fetchLocation();
 });
 
 Pebble.addEventListener('appmessage', function(e) {
     console.log('Received message: ' + JSON.stringify(e.payload));
     if (e.payload.fetch) {
-        fetch();
+        log(LOG_FETCH_MESSAGE);
+
+        fetchLocation();
     }
 });
 
 Pebble.addEventListener('showConfiguration', function(e) {
+    log(LOG_CONFIGURATION);
+
     var platform = 'aplite';
     if (Pebble.getActiveWatchInfo) {
         platform = Pebble.getActiveWatchInfo().platform;
@@ -31,75 +36,87 @@ Pebble.addEventListener('showConfiguration', function(e) {
 
 Pebble.addEventListener('webviewclosed', function(e) {
     if (e.response == 'cancel') {
+        log(LOG_CONFIGURATION_CANCELED);
         console.log('config canceled');
     }
     else {
+        log(LOG_CONFIGURATION_CLOSE);
+
         config = JSON.parse(decodeURIComponent(e.response));
         console.log(JSON.stringify(config));
 
         saveConfig();
-        fetch();
+        fetchLocation();
     }
 });
 
-function fetch() {
-    log(LOG_FETCH);
-    fetchLocation(function(pos) {
-        log(LOG_LOCATION_CALLBACK);
-        fetchWeather(pos, fetchWeatherCallback);
-    }, function(err) {
+function fetchLocation() {
+    log(LOG_FETCH_LOCATION);
+
+    window.navigator.geolocation.getCurrentPosition(function(pos) { //Success
+        log(LOG_LOCATION_SUCCESS);
+
+        console.log('lat: ' + pos.coords.latitude);
+        console.log('lng: ' + pos.coords.longitude);
+
+        fetchWeather(pos);
+
+    }, function(err) { //Error
         log(LOG_LOCATION_ERROR);
+        locationErrorCode(err.code);
+
+        console.warn('location error: ' + err.code + ' - ' + err.message);
+
         MessageQueue.sendAppMessage({
             temperature: -999,
             condition: -999,
             air_quality_index: -999,
             err: LOCATION_ERROR,
         }, ack, nack);
+
+    }, { //Options
+        timeout: 30000, //30 seconds
+        maximumAge: 300000, //5 minutes
     });
 }
 
-function fetchWeather(pos, callback) {
+
+function fetchWeather(pos) {
     log(LOG_FETCH_WEATHER);
+
     var wm = null;
     if (config.weather_provider === OPENWEATHERMAP) {
-        log(LOG_OPENWEATHERMAP);
-
         var api_key = 'ce255d859db621b13bb985a4e06a4a18';
         if (config.openweathermap_api_key && config.openweathermap_api_key.length > 0) {
             api_key = config.openweathermap_api_key;
         }
         wm = new WeatherMan(WeatherMan.OPENWEATHERMAP, api_key);
+
+        log(LOG_OPENWEATHERMAP);
     }
     else if (config.weather_provider === YAHOO) {
-        log(LOG_YAHOOWEATHER);
-
         wm = new WeatherMan(WeatherMan.YAHOO);
+
+        log(LOG_YAHOO_WEATHER);
     }
     else if (config.weather_provider === FORECASTIO) {
-        log(LOG_FORECASTIOWEATHER);
-
         if (config.forecastio_api_key && config.forecastio_api_key.length > 0) {
             wm = new WeatherMan(WeatherMan.FORECASTIO, config.forecastio_api_key);
+
+            log(LOG_FORECASTIO_WEATHER);
         }
         else {
             console.warn('No forecast.io api key');
-
             log(LOG_FORECASTIO_NO_KEY);
-            callback(pos, {
-                temperature: -999,
-                condition: -999,
-                err: WEATHER_ERROR,
-            });
         }
     }
     else {
-        log(LOG_YRNOWEATHER);
-
         wm = new WeatherMan(WeatherMan.YRNO);
+
+        log(LOG_YRNO_WEATHER);
     }
 
     if (wm) {
-        log(LOG_FETCH_WEATHER2);
         wm.getCurrent(pos.coords.latitude, pos.coords.longitude).then(function(result) {
             log(LOG_WEATHER_SUCCESS);
 
@@ -137,13 +154,14 @@ function fetchWeather(pos, callback) {
             conditions[WeatherMan.EXTREME_HEAT] = EXTREME_HEAT;
             conditions[WeatherMan.SNOW_THUNDERSTORM] = SNOW_THUNDERSTORM;
 
-            callback(pos, {
+            fetchAirQuality(pos, {
                 temperature: temp,
                 condition: conditions[condition] ? conditions[condition] : CLEAR,
                 sunrise: result.getSunrise(),
                 sunset: result.getSunset(),
                 err: NO_ERROR,
             });
+
         }).catch(function(result) {
             log(LOG_WEATHER_ERROR);
 
@@ -151,18 +169,27 @@ function fetchWeather(pos, callback) {
                 statusCode(result.status);
             }
 
-            callback(pos, {
+            fetchAirQuality(pos, {
                 temperature: -999,
                 condition: -999,
                 err: WEATHER_ERROR,
             });
         });
     }
+    else {
+        fetchAirQuality(pos, {
+            temperature: -999,
+            condition: -999,
+            err: WEATHER_ERROR,
+        });
+    }
 }
 
-function fetchWeatherCallback(pos, data) {
+function fetchAirQuality(pos, data) {
     data.air_quality_index = -999;
     if (config.air_quality) {
+        log(LOG_FETCH_AQI);
+
         var wm = new WeatherMan(WeatherMan.AQICN);
         wm.getCurrent(pos.coords.latitude, pos.coords.longitude).then(function(result) {
             log(LOG_AQI_SUCCESS);
@@ -171,8 +198,11 @@ function fetchWeatherCallback(pos, data) {
             saveSingleConfig('last_aqi_location');
 
             data.air_quality_index = result.getAQI();
-            fetchAirQualityCallback(pos, data);
+            MessageQueue.sendAppMessage(data, ack, nack);
+
         }).catch(function() {
+            log(LOG_AQI_ERROR);
+
             data.air_quality_index = -999;
             data.err = AQI_ERROR;
 
@@ -180,17 +210,11 @@ function fetchWeatherCallback(pos, data) {
                 statusCode(result.status);
             }
 
-            log(LOG_AQI_ERROR);
-            fetchAirQualityCallback(pos, data);
+            MessageQueue.sendAppMessage(data, ack, nack);
         });
     }
     else {
-        log(LOG_WEATHER_CALLBACK);
+        log(LOG_NO_FETCH_AQI);
         MessageQueue.sendAppMessage(data, ack, nack);
     }
-}
-
-function fetchAirQualityCallback(pos, data) {
-    log(LOG_AIRQUALITY_CALLBACK);
-    MessageQueue.sendAppMessage(data, ack, nack);
 }
