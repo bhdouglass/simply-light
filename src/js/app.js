@@ -1,3 +1,6 @@
+window.location = {}; //shim for iOS
+document.createElement = null; //shim to trick the browserify shims, yay! (also for iOS, yay!)
+
 Pebble.addEventListener('ready', function(e) {
     console.log('starting js, v' + appinfo.versionCode);
     log(LOG_APP_START);
