@@ -99,5 +99,6 @@
     "aplite",
     "basalt"
   ],
-  "sdkVersion": "3"
+  "sdkVersion": "3",
+  "enableMultiJS": true
 }

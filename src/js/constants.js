@@ -1,30 +1,32 @@
-//Errors
-var NO_ERROR = 0;
-var FETCH_ERROR = 1;
-var WEATHER_ERROR = 2;
-var LOCATION_ERROR = 3;
-var AQI_ERROR = 4;
+module.exports = {
+    //Errors
+    NO_ERROR: 0,
+    FETCH_ERROR: 1,
+    WEATHER_ERROR: 2,
+    LOCATION_ERROR: 3,
+    AQI_ERROR: 4,
 
-//Conditions
-var CLEAR = 0;
-var CLOUDY = 1;
-var FOG = 2;
-var LIGHT_RAIN = 3;
-var RAIN = 4;
-var THUNDERSTORM = 5;
-var SNOW = 6;
-var HAIL = 7;
-var WIND = 8;
-var EXTREME_WIND = 9;
-var TORNADO = 10;
-var HURRICANE = 11;
-var EXTREME_COLD = 12;
-var EXTREME_HEAT = 13;
-var SNOW_THUNDERSTORM = 14;
+    //Conditions
+    CLEAR: 0,
+    CLOUDY: 1,
+    FOG: 2,
+    LIGHT_RAIN: 3,
+    RAIN: 4,
+    THUNDERSTORM: 5,
+    SNOW: 6,
+    HAIL: 7,
+    WIND: 8,
+    EXTREME_WIND: 9,
+    TORNADO: 10,
+    HURRICANE: 11,
+    EXTREME_COLD: 12,
+    EXTREME_HEAT: 13,
+    SNOW_THUNDERSTORM: 14,
 
-//Weather Providers
-var OPENWEATHERMAP = 0;
-//var OLDYAHOO = 1
-var YAHOO = 2;
-var YRNO = 3;
-var FORECASTIO = 4;
+    //Weather Providers
+    OPENWEATHERMAP: 0,
+    //OLDYAHOO: 1,
+    YAHOO: 2,
+    YRNO: 3,
+    FORECASTIO: 4,
+};

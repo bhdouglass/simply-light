@@ -15,7 +15,7 @@
   "immed": true,
   "indent": true,
   "latedef": "nofunc",
-  "undef": false,
+  "undef": true,
   "unused": false,
   "globalstrict": false,
   "node": true

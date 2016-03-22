@@ -1,27 +1,41 @@
 window.location = {}; //shim for iOS
 document.createElement = null; //shim to trick the browserify shims, yay! (also for iOS, yay!)
 
-Pebble.addEventListener('ready', function(e) {
-    console.log('starting js, v' + appinfo.versionCode);
-    log(LOG_APP_START);
+var MessageQueue = require('libs/js-message-queue');
+var WeatherMan = require('libs/weather-man');
+var config = require('config');
+var constants = require('constants');
+var logger = require('logger');
 
-    loadConfig();
-    loadLog();
-    console.log(JSON.stringify(config));
+function ack(e) {
+    console.log('Successfully delivered message with transactionId=' + e.data.transactionId);
+}
+
+function nack(e) {
+    console.log('Unable to deliver message with transactionId=' + e.data.transactionId + ', error is: ' + e.error.message);
+}
+
+Pebble.addEventListener('ready', function(e) {
+    console.log('starting js, v<%= version %>');
+    logger.log(logger.APP_START);
+
+    config.load();
+    config.send();
+    logger.load();
     fetchLocation();
 });
 
 Pebble.addEventListener('appmessage', function(e) {
     console.log('Received message: ' + JSON.stringify(e.payload));
     if (e.payload.fetch) {
-        log(LOG_FETCH_MESSAGE);
+        logger.log(logger.FETCH_MESSAGE);
 
         fetchLocation();
     }
 });
 
 Pebble.addEventListener('showConfiguration', function(e) {
-    log(LOG_CONFIGURATION);
+    logger.log(logger.CONFIGURATION);
 
     var platform = 'aplite';
     if (Pebble.getActiveWatchInfo) {
@@ -29,35 +43,34 @@ Pebble.addEventListener('showConfiguration', function(e) {
     }
 
     var url = '<%= config_url %>?platform=' +
-        platform + '&version=' + appinfo.versionCode +
-        '&dl=' + datalog + '&lsc=' + last_status_code +
-        '&llec=' + last_location_error_code +
-        '#' + encodeURIComponent(JSON.stringify(config));
+        platform + '&version=<%= version %>' +
+        '&dl=' + logger.getLog() + '&lsc=' + logger.getStatusCode() +
+        '&llec=' + logger.getLocationErrorCode() +
+        '#' + encodeURIComponent(JSON.stringify(config.configuration));
+
     Pebble.openURL(url);
     console.log(url);
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
     if (e.response == 'cancel') {
-        log(LOG_CONFIGURATION_CANCELED);
+        logger.log(logger.CONFIGURATION_CANCELED);
         console.log('config canceled');
     }
     else {
-        log(LOG_CONFIGURATION_CLOSE);
+        logger.log(logger.CONFIGURATION_CLOSE);
 
-        config = JSON.parse(decodeURIComponent(e.response));
-        console.log(JSON.stringify(config));
-
-        saveConfig();
+        config.save(JSON.parse(decodeURIComponent(e.response)));
+        config.send();
         fetchLocation();
     }
 });
 
 function fetchLocation() {
-    log(LOG_FETCH_LOCATION);
+    logger.log(logger.FETCH_LOCATION);
 
     window.navigator.geolocation.getCurrentPosition(function(pos) { //Success
-        log(LOG_LOCATION_SUCCESS);
+        logger.log(logger.LOCATION_SUCCESS);
 
         console.log('lat: ' + pos.coords.latitude);
         console.log('lng: ' + pos.coords.longitude);
@@ -65,8 +78,8 @@ function fetchLocation() {
         fetchWeather(pos);
 
     }, function(err) { //Error
-        log(LOG_LOCATION_ERROR);
-        locationErrorCode(err.code);
+        logger.log(logger.LOCATION_ERROR);
+        logger.setLocationErrorCode(err.code);
 
         console.warn('location error: ' + err.code + ' - ' + err.message);
 
@@ -74,7 +87,7 @@ function fetchLocation() {
             temperature: -999,
             condition: -999,
             air_quality_index: -999,
-            err: LOCATION_ERROR,
+            err: constants.LOCATION_ERROR,
         }, ack, nack);
 
     }, { //Options
@@ -83,99 +96,99 @@ function fetchLocation() {
     });
 }
 
-
 function fetchWeather(pos) {
-    log(LOG_FETCH_WEATHER);
+    logger.log(logger.FETCH_WEATHER);
 
     var wm = null;
-    if (config.weather_provider === OPENWEATHERMAP) {
+    if (config.configuration.weather_provider === constants.OPENWEATHERMAP) {
         var api_key = 'ce255d859db621b13bb985a4e06a4a18';
-        if (config.openweathermap_api_key && config.openweathermap_api_key.length > 0) {
-            api_key = config.openweathermap_api_key;
+        if (config.configuration.openweathermap_api_key && config.configuration.openweathermap_api_key.length > 0) {
+            api_key = config.configuration.openweathermap_api_key;
         }
         wm = new WeatherMan(WeatherMan.OPENWEATHERMAP, api_key);
 
-        log(LOG_OPENWEATHERMAP);
+        logger.log(logger.OPENWEATHERMAP);
     }
-    else if (config.weather_provider === YAHOO) {
+    else if (config.configuration.weather_provider === constants.YAHOO) {
         wm = new WeatherMan(WeatherMan.YAHOO);
 
-        log(LOG_YAHOO_WEATHER);
+        logger.log(logger.YAHOO_WEATHER);
     }
-    else if (config.weather_provider === FORECASTIO) {
-        if (config.forecastio_api_key && config.forecastio_api_key.length > 0) {
-            wm = new WeatherMan(WeatherMan.FORECASTIO, config.forecastio_api_key);
+    else if (config.configuration.weather_provider === constants.FORECASTIO) {
+        if (config.configuration.forecastio_api_key && config.configuration.forecastio_api_key.length > 0) {
+            wm = new WeatherMan(WeatherMan.FORECASTIO, config.configuration.forecastio_api_key);
 
-            log(LOG_FORECASTIO_WEATHER);
+            logger.log(logger.FORECASTIO_WEATHER);
         }
         else {
             console.warn('No forecast.io api key');
-            log(LOG_FORECASTIO_NO_KEY);
+            logger.log(logger.FORECASTIO_NO_KEY);
         }
     }
     else {
         wm = new WeatherMan(WeatherMan.YRNO);
 
-        log(LOG_YRNO_WEATHER);
+        logger.log(logger.YRNO_WEATHER);
     }
 
     if (wm) {
         wm.getCurrent(pos.coords.latitude, pos.coords.longitude).then(function(result) {
-            log(LOG_WEATHER_SUCCESS);
+            logger.log(logger.WEATHER_SUCCESS);
 
             var units = WeatherMan.KELVIN;
-            if (config.temperature_units == 'imperial') {
+            if (config.configuration.temperature_units == 'imperial') {
                 units = WeatherMan.FAHRENHEIT;
             }
-            else if (config.temperature_units == 'metric') {
+            else if (config.configuration.temperature_units == 'metric') {
                 units = WeatherMan.CELCIUS;
             }
 
             var temp = result.getTemperature(units);
-            if (config.feels_like == 1) {
+            if (config.configuration.feels_like == 1) {
                 temp = result.getWindChill(units);
             }
-            else if (config.feels_like == 2) {
+            else if (config.configuration.feels_like == 2) {
                 temp = result.getHeatIndex(units);
             }
 
             var condition = result.getCondition();
             var conditions = {};
-            conditions[WeatherMan.CLEAR] = CLEAR;
-            conditions[WeatherMan.CLOUDY] = CLOUDY;
-            conditions[WeatherMan.FOG] = FOG;
-            conditions[WeatherMan.LIGHT_RAIN] = LIGHT_RAIN;
-            conditions[WeatherMan.RAIN] = RAIN;
-            conditions[WeatherMan.THUNDERSTORM] = THUNDERSTORM;
-            conditions[WeatherMan.SNOW] = SNOW;
-            conditions[WeatherMan.HAIL] = HAIL;
-            conditions[WeatherMan.WIND] = WIND;
-            conditions[WeatherMan.EXTREME_WIND] = EXTREME_WIND;
-            conditions[WeatherMan.TORNADO] = TORNADO;
-            conditions[WeatherMan.HURRICANE] = HURRICANE;
-            conditions[WeatherMan.EXTREME_COLD] = EXTREME_COLD;
-            conditions[WeatherMan.EXTREME_HEAT] = EXTREME_HEAT;
-            conditions[WeatherMan.SNOW_THUNDERSTORM] = SNOW_THUNDERSTORM;
+            conditions[WeatherMan.CLEAR] = constants.CLEAR;
+            conditions[WeatherMan.CLOUDY] = constants.CLOUDY;
+            conditions[WeatherMan.FOG] = constants.FOG;
+            conditions[WeatherMan.LIGHT_RAIN] = constants.LIGHT_RAIN;
+            conditions[WeatherMan.RAIN] = constants.RAIN;
+            conditions[WeatherMan.THUNDERSTORM] = constants.THUNDERSTORM;
+            conditions[WeatherMan.SNOW] = constants.SNOW;
+            conditions[WeatherMan.HAIL] = constants.HAIL;
+            conditions[WeatherMan.WIND] = constants.WIND;
+            conditions[WeatherMan.EXTREME_WIND] = constants.EXTREME_WIND;
+            conditions[WeatherMan.TORNADO] = constants.TORNADO;
+            conditions[WeatherMan.HURRICANE] = constants.HURRICANE;
+            conditions[WeatherMan.EXTREME_COLD] = constants.EXTREME_COLD;
+            conditions[WeatherMan.EXTREME_HEAT] = constants.EXTREME_HEAT;
+            conditions[WeatherMan.SNOW_THUNDERSTORM] = constants.SNOW_THUNDERSTORM;
 
             fetchAirQuality(pos, {
                 temperature: temp,
-                condition: conditions[condition] ? conditions[condition] : CLEAR,
+                condition: conditions[condition] ? conditions[condition] : constants.CLEAR,
                 sunrise: result.getSunrise(),
                 sunset: result.getSunset(),
-                err: NO_ERROR,
+                err: constants.NO_ERROR,
             });
 
         }).catch(function(result) {
-            log(LOG_WEATHER_ERROR);
+            logger.log(logger.WEATHER_ERROR);
+            console.warn('weather error: ' + JSON.stringify(result));
 
             if (result && result.status) {
-                statusCode(result.status);
+                logger.setStatusCode(result.status);
             }
 
             fetchAirQuality(pos, {
                 temperature: -999,
                 condition: -999,
-                err: WEATHER_ERROR,
+                err: constants.WEATHER_ERROR,
             });
         });
     }
@@ -183,41 +196,42 @@ function fetchWeather(pos) {
         fetchAirQuality(pos, {
             temperature: -999,
             condition: -999,
-            err: WEATHER_ERROR,
+            err: constants.WEATHER_ERROR,
         });
     }
 }
 
 function fetchAirQuality(pos, data) {
     data.air_quality_index = -999;
-    if (config.air_quality) {
-        log(LOG_FETCH_AQI);
+    if (config.configuration.air_quality) {
+        logger.log(logger.FETCH_AQI);
 
         var wm = new WeatherMan(WeatherMan.AQICN);
         wm.getCurrent(pos.coords.latitude, pos.coords.longitude).then(function(result) {
-            log(LOG_AQI_SUCCESS);
+            logger.log(logger.AQI_SUCCESS);
 
-            config.last_aqi_location = result.getLocation();
-            saveSingleConfig('last_aqi_location');
+            config.configuration.last_aqi_location = result.getLocation();
+            config.saveSingle('last_aqi_location');
 
             data.air_quality_index = result.getAQI();
             MessageQueue.sendAppMessage(data, ack, nack);
 
-        }).catch(function() {
-            log(LOG_AQI_ERROR);
+        }).catch(function(result) {
+            logger.log(logger.AQI_ERROR);
+            console.warn('aqi error: ' + JSON.stringify(result));
 
             data.air_quality_index = -999;
-            data.err = AQI_ERROR;
+            data.err = constants.AQI_ERROR;
 
             if (result && result.status) {
-                statusCode(result.status);
+                logger.setStatusCode(result.status);
             }
 
             MessageQueue.sendAppMessage(data, ack, nack);
         });
     }
     else {
-        log(LOG_NO_FETCH_AQI);
+        logger.log(logger.NO_FETCH_AQI);
         MessageQueue.sendAppMessage(data, ack, nack);
     }
 }

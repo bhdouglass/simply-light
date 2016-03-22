@@ -18,10 +18,11 @@ var minimist = require('minimist');
 var fs = require('fs');
 
 var paths = {
-    jslint: ['src/js/*.js', '!src/js/appinfo.js', 'gulpfile.js', 'config/*.js', '!config/colors.js'],
+    jslint: ['src/js/*.js', 'gulpfile.js', 'config/*.js', '!config/colors.js'],
     pebble: {
         js: ['src/js/*.js', 'src/js/libs/*.js'],
         jsdist: 'dist/pebble/src/js/',
+        jsbase: 'src/js',
         c: ['src/*.h', 'src/*.c', 'wscript', 'appinfo.json'],
         resources: 'resources/**/*',
         fonts: [
@@ -176,13 +177,11 @@ gulp.task('clean-pebble', function() {
 gulp.task('build-pebble-js', function() {
     delete appinfo.resources;
 
-    return gulp.src(paths.pebble.js)
+    return gulp.src(paths.pebble.js, {base: paths.pebble.jsbase})
         .pipe(template({
-            appinfo: JSON.stringify(appinfo),
+            version: appinfo.versionLabel,
             config_url: config.config,
         }))
-        .pipe(concat('pebble-js-app.js'))
-        //.pipe(uglify())
         .pipe(gulp.dest(paths.pebble.jsdist));
 });
 

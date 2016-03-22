@@ -1,10 +1,13 @@
-var config = {
+var MessageQueue = require('libs/js-message-queue');
+var constants = require('constants');
+
+var configuration = {
     temperature_units: 'imperial',
     refresh_time: 30,
     wait_time: 1,
     show_am_pm: 0,
     hide_battery: 0,
-    weather_provider: YRNO,
+    weather_provider: constants.YRNO,
     feels_like: 0,
     vibrate_bluetooth: 0,
     charging_icon: 1,
@@ -24,7 +27,7 @@ var config = {
     forecastio_api_key: '',
 };
 
-var configInts = [
+var configurationInts = [
     'refresh_time', 'wait_time', 'show_am_pm', 'hide_battery', 'weather_provider',
     'feels_like', 'vibrate_bluetooth', 'charging_icon', 'bt_disconnect_icon',
     'battery_percent', 'day_text_color', 'day_background_color',
@@ -33,84 +36,68 @@ var configInts = [
 ];
 
 function ack(e) {
-    console.log('Successfully delivered message with transactionId=' + e.data.transactionId);
+    console.log('Successfully delivered config message with transactionId=' + e.data.transactionId);
 }
 
 function nack(e) {
-    console.log('Unable to deliver message with transactionId=' + e.data.transactionId + ', error is: ' + e.error.message);
+    console.log('Unable to deliver config message with transactionId=' + e.data.transactionId + ', error is: ' + e.error.message);
 }
 
-function loadConfig() {
-    for (var key in config) {
+function send() {
+    MessageQueue.sendAppMessage({
+        refresh_time: configuration.refresh_time,
+        wait_time: configuration.wait_time,
+        show_am_pm: configuration.show_am_pm,
+        hide_battery: configuration.hide_battery,
+        vibrate_bluetooth: configuration.vibrate_bluetooth,
+        charging_icon: configuration.charging_icon,
+        bt_disconnect_icon: configuration.bt_disconnect_icon,
+        battery_percent: configuration.battery_percent,
+        day_text_color: configuration.day_text_color,
+        day_background_color: configuration.day_background_color,
+        night_text_color: configuration.night_text_color,
+        night_background_color: configuration.night_background_color,
+        language: configuration.language,
+        layout: configuration.layout,
+        air_quality: configuration.air_quality,
+        aqi_degree: configuration.aqi_degree,
+        hourly_vibrate: configuration.hourly_vibrate,
+    }, ack, nack);
+}
+
+function load() {
+    for (var key in configuration) {
         var value = window.localStorage.getItem(key);
         if (value !== null) {
-            if (configInts.indexOf(key) >= 0) {
-                config[key] = parseInt(value);
+            if (configurationInts.indexOf(key) >= 0) {
+                configuration[key] = parseInt(value);
             }
             else {
-                config[key] = value;
+                configuration[key] = value;
             }
         }
     }
 
-    if (
-        config.weather_provider !== OPENWEATHERMAP &&
-        config.weather_provider != YAHOO &&
-        config.weather_provider != YRNO &&
-        config.weather_provider != FORECASTIO
-    ) {
-        config.weather_provider = YRNO;
-        saveSingleConfig('weather_provider');
-        console.log('fixing weather_provider');
+    console.log(JSON.stringify(configuration));
+}
+
+function save(new_configuration) {
+    for (var key in new_configuration) {
+        configuration[key] = new_configuration[key];
+        saveSingle(key);
     }
 
-    MessageQueue.sendAppMessage({
-        refresh_time: config.refresh_time,
-        wait_time: config.wait_time,
-        show_am_pm: config.show_am_pm,
-        hide_battery: config.hide_battery,
-        vibrate_bluetooth: config.vibrate_bluetooth,
-        charging_icon: config.charging_icon,
-        bt_disconnect_icon: config.bt_disconnect_icon,
-        battery_percent: config.battery_percent,
-        day_text_color: config.day_text_color,
-        day_background_color: config.day_background_color,
-        night_text_color: config.night_text_color,
-        night_background_color: config.night_background_color,
-        language: config.language,
-        layout: config.layout,
-        air_quality: config.air_quality,
-        aqi_degree: config.aqi_degree,
-        hourly_vibrate: config.hourly_vibrate,
-    }, ack, nack);
+    console.log(JSON.stringify(configuration));
 }
 
-function saveConfig() {
-    for (var key in config) {
-        saveSingleConfig(key);
-    }
-
-    MessageQueue.sendAppMessage({
-        refresh_time: config.refresh_time,
-        wait_time: config.wait_time,
-        show_am_pm: config.show_am_pm,
-        hide_battery: config.hide_battery,
-        vibrate_bluetooth: config.vibrate_bluetooth,
-        charging_icon: config.charging_icon,
-        bt_disconnect_icon: config.bt_disconnect_icon,
-        battery_percent: config.battery_percent,
-        day_text_color: config.day_text_color,
-        day_background_color: config.day_background_color,
-        night_text_color: config.night_text_color,
-        night_background_color: config.night_background_color,
-        language: config.language,
-        layout: config.layout,
-        air_quality: config.air_quality,
-        aqi_degree: config.aqi_degree,
-        hourly_vibrate: config.hourly_vibrate,
-    }, ack, nack);
+function saveSingle(key) {
+    window.localStorage.setItem(key, configuration[key]);
 }
 
-function saveSingleConfig(key) {
-    window.localStorage.setItem(key, config[key]);
-}
+module.exports = {
+    configuration: configuration,
+    send: send,
+    load: load,
+    save: save,
+    saveSingle: saveSingle,
+};
