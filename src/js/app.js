@@ -202,8 +202,15 @@ function fetchWeather(pos) {
 }
 
 function fetchAirQuality(pos, data) {
+    var fetch = config.configuration.air_quality;
+    for (var i = 1; i <= 5; i++) {
+        if (config.configuration['status_bar' + i] == constants.STATUS_BAR_AQI) {
+            fetch = true;
+        }
+    }
+
     data.air_quality_index = -999;
-    if (config.configuration.air_quality) {
+    if (fetch) {
         logger.log(logger.FETCH_AQI);
 
         var wm = new WeatherMan(WeatherMan.AQICN);

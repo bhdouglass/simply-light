@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 4.82,
-  "versionLabel": "4.82",
+  "versionCode": 5.0,
+  "versionLabel": "5.0",
   "capabilities": [
     "configurable"
   ],
@@ -37,7 +37,13 @@
     "air_quality_index": 22,
     "err": 23,
     "aqi_degree": 24,
-    "hourly_vibrate": 25
+    "hourly_vibrate": 25,
+    "show_status_bar": 26,
+    "status_bar_color": 27,
+    "status_bar_text_color": 28,
+    "status_bar1": 29,
+    "status_bar2": 30,
+    "status_bar3": 31
   },
   "resources": {
     "media": [
@@ -59,14 +65,14 @@
         "type": "font"
       },
       {
-        "name": "DROIDSANS_MONO_20",
-        "file": "fonts/DroidSansMono.ttf",
+        "name": "DROIDSANS_BOLD_14",
+        "file": "fonts/DroidSans-Bold.ttf",
+        "characterRegex": "[0-9%APMDUEPGT\u00b0]",
         "type": "font"
       },
       {
-        "name": "DROIDSANS_MONO_16",
+        "name": "DROIDSANS_MONO_20",
         "file": "fonts/DroidSansMono.ttf",
-        "characterRegex": "[APMDUEPGT]",
         "type": "font"
       },
       {
@@ -76,13 +82,13 @@
         "type": "font"
       },
       {
-        "name": "DROIDSANS_BOLD_20",
-        "file": "fonts/DroidSans-Bold.ttf",
-        "characterRegex": "[0-9\\%+]",
+        "name": "WEATHER_30",
+        "file": "fonts/weathericons-regular-webfont.ttf",
+        "characterRegex": "[\uf002\uf003\uf004\uf008\uf00a\uf00b\uf00d\uf010\uf013\uf014\uf015\uf019\uf01b\uf01c\uf01e\uf021\uf02e\uf031\uf032\uf036\uf038\uf039\uf03b\uf03e\uf04a\uf050\uf056\uf072\uf073\uf076\uf06b\uf06c]",
         "type": "font"
       },
       {
-        "name": "WEATHER_30",
+        "name": "WEATHER_14",
         "file": "fonts/weathericons-regular-webfont.ttf",
         "characterRegex": "[\uf002\uf003\uf004\uf008\uf00a\uf00b\uf00d\uf010\uf013\uf014\uf015\uf019\uf01b\uf01c\uf01e\uf021\uf02e\uf031\uf032\uf036\uf038\uf039\uf03b\uf03e\uf04a\uf050\uf056\uf072\uf073\uf076\uf06b\uf06c]",
         "type": "font"
@@ -90,7 +96,13 @@
       {
         "name": "MATERIAL_30",
         "file": "fonts/Material-Design-Iconic-Font.ttf",
-        "characterRegex": "[\uf114\uf27f\uf1aa\uf21b\uf368]",
+        "characterRegex": "[\uf1aa\uf21b\uf368]",
+        "type": "font"
+      },
+      {
+        "name": "MATERIAL_14",
+        "file": "fonts/Material-Design-Iconic-Font.ttf",
+        "characterRegex": "[\uf27f\uf282]",
         "type": "font"
       }
     ]

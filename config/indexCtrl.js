@@ -109,11 +109,36 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         }
     ];
 
+    $scope.status_items = [
+        {
+            label: 'Empty',
+            value: 0
+        }, {
+            label: 'Bluetooth Status',
+            value: 1
+        }, {
+            label: 'Battery Level',
+            value: 2
+        }, {
+            label: 'Air Quality Index',
+            value: 3
+        }, {
+            label: 'Temperature',
+            value: 4
+        }, {
+            label: 'Weather Condition',
+            value: 5
+        }, {
+            label: 'AM/PM',
+            value: 6
+        }
+    ];
+
     $scope.config_ints = ['refresh_time', 'wait_time'];
     $scope.config_bools = [
         'air_quality', 'show_am_pm', 'hide_battery', 'charging_icon',
         'bt_disconnect_icon', 'vibrate_bluetooth', 'aqi_degree',
-        'hourly_vibrate'
+        'hourly_vibrate', 'show_status_bar'
     ];
 
     $scope.config = {
@@ -140,6 +165,12 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         hourly_vibrate: false,
         openweathermap_api_key: '',
         forecastio_api_key: '',
+        show_status_bar: true,
+        status_bar_color: 1,
+        status_bar_text_color: 0,
+        status_bar1: 0,
+        status_bar2: 0,
+        status_bar3: 0,
     };
 
     $scope.errors = {

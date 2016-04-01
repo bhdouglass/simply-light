@@ -3,36 +3,7 @@
 #include "ui.h"
 #include "config.h"
 #include "weather.h"
-
-void ui_align() {
-    if (config.layout == 1) {
-        layer_set_frame((Layer *) ui.layers.time, GRect(0, PHEIGHT - 64, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.battery, GRect(0, PHEIGHT - 90, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.date, GRect(0, PHEIGHT - 101, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.month, GRect(0, PHEIGHT - 122, PWIDTH, 28));
-        layer_set_frame((Layer *) ui.layers.temperature, GRect(0, PHEIGHT - 157, HALFPWIDTH, 50));
-        layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, PHEIGHT - 154, HALFPWIDTH, 50));
-        //am_pm layer set in ui_time_update()
-        layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 7, PWIDTH - 5, 20));
-        //air_quality_index layer set in ui_weather_update()
-    }
-    else {
-        int top = MARGINTOP;
-        if (config.battery_percent != 0) {
-            top = top + 3;
-        }
-
-        layer_set_frame((Layer *) ui.layers.time, GRect(0, top, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.battery, GRect(0, top + 29, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.date, GRect(0, top + 60, PWIDTH, 100));
-        layer_set_frame((Layer *) ui.layers.month, GRect(0, top + 96, PWIDTH, 28));
-        layer_set_frame((Layer *) ui.layers.temperature, GRect(0, top + 120, HALFPWIDTH, 50));
-        layer_set_frame((Layer *) ui.layers.condition, GRect(HALFPWIDTH + 1, top + 121, HALFPWIDTH, 50));
-        //am_pm layer set in ui_time_update()
-        layer_set_frame((Layer *) ui.layers.battery_percent, GRect(3, MARGINTOP - 7, PWIDTH - 5, 20));
-        //air_quality_index layer set in ui_weather_update()
-    }
-}
+#include "helpers.h"
 
 GColor get_color(int color) {
     #ifdef PBL_COLOR
@@ -55,6 +26,146 @@ GColor get_color(int color) {
     #endif
 }
 
+void ui_align() {
+    int top = MARGINTOP;
+    if (config.show_status_bar == 1) {
+        top = STATUS_BAR_MARGINTOP;
+    }
+
+    if (config.layout == 1) {
+        text_layer_move(ui.layers.time, 0, PHEIGHT - 64);
+        layer_move(ui.layers.battery, 0, PHEIGHT - 90);
+        text_layer_move(ui.layers.date, 0, PHEIGHT - 101);
+        text_layer_move(ui.layers.month, 0, PHEIGHT - 122);
+        text_layer_move(ui.layers.temperature, 0, PHEIGHT - 157);
+        text_layer_move(ui.layers.condition, HALFPWIDTH + 1, PHEIGHT - 154);
+    }
+    else {
+        text_layer_move(ui.layers.time, 0, top);
+        layer_move(ui.layers.battery, 0, top + 29);
+        text_layer_move(ui.layers.date, 0, top + 60);
+        text_layer_move(ui.layers.month, 0, top + 96);
+        text_layer_move(ui.layers.temperature, 0, top + 120);
+        text_layer_move(ui.layers.condition, HALFPWIDTH + 1, top + 121);
+    }
+}
+
+void ui_status_bar_item(TextLayer *layer, int item) {
+    if (layer != NULL) {
+        if (ui.fonts.status_bar == NULL && (
+            item == STATUS_BAR_BATTERY_LEVEL ||
+            item == STATUS_BAR_AQI ||
+            item == STATUS_BAR_TEMP ||
+            item == STATUS_BAR_AMPM
+        )) {
+            ui.fonts.status_bar = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_14);
+        }
+
+        if (ui.fonts.status_bar_icons == NULL && item == STATUS_BAR_BLUETOOTH) {
+            ui.fonts.status_bar_icons = fonts_load_resource_font(RESOURCE_ID_MATERIAL_14);
+        }
+
+        if (ui.fonts.status_bar_weather == NULL && item == STATUS_BAR_CONDITION) {
+            ui.fonts.status_bar_weather = fonts_load_resource_font(RESOURCE_ID_WEATHER_14);
+        }
+
+        if (item == STATUS_BAR_BLUETOOTH) {
+            bool connected = connection_service_peek_pebble_app_connection();
+
+            if (connected) {
+                strncpy(ui.texts.bluetooth, "\uf282", sizeof(ui.texts.bluetooth));
+            }
+            else {
+                strncpy(ui.texts.bluetooth, "\uf27f", sizeof(ui.texts.bluetooth));
+            }
+
+            text_layer_show(layer);
+            text_layer_set_font(layer, ui.fonts.status_bar_icons);
+            text_layer_set_text(layer, ui.texts.bluetooth);
+        }
+        else if (item == STATUS_BAR_BATTERY_LEVEL) {
+            text_layer_show(layer);
+            text_layer_set_font(layer, ui.fonts.status_bar);
+            text_layer_set_text(layer, ui.texts.battery_percent);
+        }
+        else if (item == STATUS_BAR_AQI) {
+            text_layer_show(layer);
+            text_layer_set_font(layer, ui.fonts.status_bar);
+            text_layer_set_text(layer, ui.texts.aqi);
+        }
+        else if (item == STATUS_BAR_TEMP) {
+            text_layer_show(layer);
+            text_layer_set_font(layer, ui.fonts.status_bar);
+            text_layer_set_text(layer, ui.texts.temperature);
+        }
+        else if (item == STATUS_BAR_CONDITION) {
+            text_layer_show(layer);
+            text_layer_set_font(layer, ui.fonts.status_bar_weather);
+            text_layer_set_text(layer, ui.texts.condition);
+        }
+        else if (item == STATUS_BAR_AMPM) {
+            text_layer_show(layer);
+            text_layer_set_font(layer, ui.fonts.status_bar);
+            text_layer_set_text(layer, ui.texts.am_pm);
+        }
+        else {
+            text_layer_hide(layer);
+        }
+    }
+}
+
+void ui_status_bar() {
+    if (config.show_status_bar == 1) {
+        layer_show(ui.layers.status_bar);
+
+        if (config.status_bar1 != STATUS_BAR_EMPTY) {
+            if (ui.layers.status_bar1 == NULL) {
+                ui.layers.status_bar1 = text_layer_init(
+                    ui.layers.window,
+                    GRect(STATUS_BAR_MARGIN, 0, STATUS_BAR_ITEM_WIDTH, STATUS_BAR_HEIGHT),
+                    ui.fonts.time,
+                    GColorClear,
+                    get_color(config.status_bar_text_color),
+                    GTextAlignmentLeft
+                );
+            }
+        }
+
+        if (config.status_bar2 != STATUS_BAR_EMPTY) {
+            if (ui.layers.status_bar2 == NULL) {
+                ui.layers.status_bar2 = text_layer_init(
+                    ui.layers.window,
+                    GRect(STATUS_BAR_MARGIN + STATUS_BAR_ITEM_WIDTH, 0, STATUS_BAR_ITEM_WIDTH, STATUS_BAR_HEIGHT),
+                    ui.fonts.time,
+                    GColorClear,
+                    get_color(config.status_bar_text_color),
+                    GTextAlignmentCenter
+                );
+            }
+        }
+
+        if (config.status_bar3 != STATUS_BAR_EMPTY) {
+            if (ui.layers.status_bar3 == NULL) {
+                ui.layers.status_bar3 = text_layer_init(
+                    ui.layers.window,
+                    GRect(STATUS_BAR_MARGIN + (STATUS_BAR_ITEM_WIDTH * 2), 0, STATUS_BAR_ITEM_WIDTH, STATUS_BAR_HEIGHT),
+                    ui.fonts.time,
+                    GColorClear,
+                    get_color(config.status_bar_text_color),
+                    GTextAlignmentRight
+                );
+            }
+        }
+
+        ui_status_bar_item(ui.layers.status_bar1, config.status_bar1);
+        ui_status_bar_item(ui.layers.status_bar2, config.status_bar2);
+        ui_status_bar_item(ui.layers.status_bar3, config.status_bar3);
+    }
+    else {
+        layer_hide(ui.layers.status_bar);
+    }
+}
+
 void ui_colorize() {
     GColor text_color;
     GColor background_color;
@@ -70,88 +181,50 @@ void ui_colorize() {
     window_set_background_color(ui.window, background_color);
     text_layer_set_text_color(ui.layers.time, text_color);
     layer_mark_dirty(ui.layers.battery);
+    layer_mark_dirty(ui.layers.status_bar);
     text_layer_set_text_color(ui.layers.date, text_color);
     text_layer_set_text_color(ui.layers.month, text_color);
     text_layer_set_text_color(ui.layers.temperature, text_color);
     text_layer_set_text_color(ui.layers.condition, text_color);
-    text_layer_set_text_color(ui.layers.am_pm, text_color);
-    text_layer_set_text_color(ui.layers.battery_percent, text_color);
-    text_layer_set_text_color(ui.layers.air_quality_index, text_color);
+
+    GColor status_bar_text_color = get_color(config.status_bar_text_color);
+    if (ui.layers.status_bar1 != NULL) {
+        text_layer_set_text_color(ui.layers.status_bar1, status_bar_text_color);
+    }
+
+    if (ui.layers.status_bar2 != NULL) {
+        text_layer_set_text_color(ui.layers.status_bar2, status_bar_text_color);
+    }
+
+    if (ui.layers.status_bar3 != NULL) {
+        text_layer_set_text_color(ui.layers.status_bar3, status_bar_text_color);
+    }
 }
 
 void ui_weather_update() {
-    if (config.aqi_degree == 1 && config.air_quality == 1) {
-        layer_set_hidden((Layer *) ui.layers.air_quality_index, false);
-
-        if (ui.state.error == WEATHER_ERROR || ui.state.error == FETCH_ERROR || ui.state.temperature == -999) {
-            strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
-        }
-        else {
-            snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d ", ui.state.temperature);
-        }
-
-        if (ui.state.error != NO_ERROR || ui.state.air_quality_index == -999) {
-            strncpy(ui.texts.air_quality_index, "", sizeof(ui.texts.air_quality_index));
-        }
-        else {
-            snprintf(ui.texts.air_quality_index, sizeof(ui.texts.air_quality_index), "%d", ui.state.air_quality_index);
-        }
-
-        if (config.layout == 1) {
-            if (strlen(ui.texts.temperature) == 2) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(16, PHEIGHT - 157, HALFPWIDTH, 50));
-            }
-            else if (strlen(ui.texts.temperature) == 3) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(26, PHEIGHT - 157, HALFPWIDTH, 50));
-            }
-            else if (strlen(ui.texts.temperature) == 4) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(35, PHEIGHT - 157, HALFPWIDTH, 50));
-            }
-            else {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(38, PHEIGHT - 157, HALFPWIDTH, 50));
-            }
-        }
-        else {
-            int top = MARGINTOP;
-            if (config.battery_percent != 0) {
-                top = top + 3;
-            }
-
-            if (strlen(ui.texts.temperature) == 2) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(16, top + 120, HALFPWIDTH, 50));
-            }
-            else if (strlen(ui.texts.temperature) == 3) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(26, top + 120, HALFPWIDTH, 50));
-            }
-            else if (strlen(ui.texts.temperature) == 4) {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(35, top + 120, HALFPWIDTH, 50));
-            }
-            else {
-                layer_set_frame((Layer *) ui.layers.air_quality_index, GRect(38, top + 120, HALFPWIDTH, 50));
-            }
-        }
+    if (ui.state.error == AQI_ERROR || ui.state.error == FETCH_ERROR || ui.state.air_quality_index == -999) {
+        strncpy(ui.texts.aqi, "", sizeof(ui.texts.aqi));
     }
     else {
-        layer_set_hidden((Layer *) ui.layers.air_quality_index, true);
-        strncpy(ui.texts.air_quality_index, "", sizeof(ui.texts.air_quality_index));
-
-        if (config.air_quality == 1) {
-            if (ui.state.error == AQI_ERROR || ui.state.error == FETCH_ERROR || ui.state.air_quality_index == -999) {
-                strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
-            }
-            else {
-                snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d", ui.state.air_quality_index);
-            }
-        }
-        else {
-            if (ui.state.error == WEATHER_ERROR || ui.state.error == FETCH_ERROR || ui.state.temperature == -999) {
-                strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
-            }
-            else {
-                snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", ui.state.temperature);
-            }
-        }
+        snprintf(ui.texts.aqi, sizeof(ui.texts.aqi), "%d", ui.state.air_quality_index);
     }
+
+    if (ui.state.error == WEATHER_ERROR || ui.state.error == FETCH_ERROR || ui.state.temperature == -999) {
+        strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
+    }
+    else {
+        snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", ui.state.temperature);
+    }
+
+    if (ui.fonts.icons == NULL && (
+        ui.state.error == WEATHER_ERROR ||
+        ui.state.error == LOCATION_ERROR ||
+        ui.state.error == AQI_ERROR
+    )) {
+        ui.fonts.icons = fonts_load_resource_font(RESOURCE_ID_MATERIAL_30);
+    }
+
+    //TODO show something when bluetooth disconnected & trying to fetch
 
     if (ui.state.error == FETCH_ERROR) {
         text_layer_set_font(ui.layers.condition, ui.fonts.weather);
@@ -174,51 +247,38 @@ void ui_weather_update() {
         weather_set_condition(ui.state.condition, ui.state.is_day, ui.texts.condition);
     }
 
-    if (ui.state.battery.is_charging && config.charging_icon) {
-        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
-        strncpy(ui.texts.condition, "\uf114", sizeof(ui.texts.condition));
-    }
-    else if (!ui.state.bt_connected && config.bt_disconnect_icon) {
-        text_layer_set_font(ui.layers.condition, ui.fonts.icons);
-        strncpy(ui.texts.condition, "\uf27f", sizeof(ui.texts.condition));
-    }
-
     //For pretty screenshots
     //strncpy(ui.texts.temperature, "75\u00b0", sizeof(ui.texts.temperature));
     //strncpy(ui.texts.condition, "\uf00d", sizeof(ui.texts.condition));
 
-    text_layer_set_text(ui.layers.air_quality_index, ui.texts.air_quality_index);
-    text_layer_set_text(ui.layers.temperature, ui.texts.temperature);
+    if (config.air_quality) {
+        text_layer_set_text(ui.layers.temperature, ui.texts.aqi);
+    }
+    else {
+        text_layer_set_text(ui.layers.temperature, ui.texts.temperature);
+    }
+
     text_layer_set_text(ui.layers.condition, ui.texts.condition);
 }
 
 void ui_battery_update() {
-    layer_mark_dirty(ui.layers.battery);
-    layer_mark_dirty((Layer *) ui.layers.battery_percent);
-
-    text_layer_set_text(ui.layers.battery_percent, ui.texts.battery_percent);
-    if (config.battery_percent == 0) {
-        layer_set_hidden((Layer *) ui.layers.battery_percent, true);
-    }
-    else if (config.battery_percent == 1) {
-        layer_set_hidden((Layer *) ui.layers.battery_percent, false);
-        text_layer_set_text_alignment(ui.layers.battery_percent, GTextAlignmentRight);
-    }
-    else {
-        layer_set_hidden((Layer *) ui.layers.battery_percent, false);
-        text_layer_set_text_alignment(ui.layers.battery_percent, GTextAlignmentLeft);
-    }
+    BatteryChargeState battery = battery_state_service_peek();
+    snprintf(ui.texts.battery_percent, sizeof(ui.texts.battery_percent), "%d%%", battery.charge_percent);
 
     if (config.hide_battery == 1) {
-        layer_set_hidden((Layer *) ui.layers.battery, true);
+        layer_hide(ui.layers.battery);
     }
     else {
-        layer_set_hidden((Layer *) ui.layers.battery, false);
+        layer_show(ui.layers.battery);
+        layer_mark_dirty(ui.layers.battery);
     }
+
+    ui_status_bar();
 }
 
 void ui_battery_dirty(Layer *layer, GContext *ctx) {
-    int width = ui.state.battery.charge_percent * CHARGEUNIT;
+    BatteryChargeState battery = battery_state_service_peek();
+    int width = battery.charge_percent * CHARGEUNIT;
 
     //For pretty screenshots
     //width = 70 * CHARGEUNIT;
@@ -237,6 +297,11 @@ void ui_battery_dirty(Layer *layer, GContext *ctx) {
     graphics_fill_rect(ctx, GRect(offset, 29, width, 4), 0, GCornerNone);
 }
 
+void ui_status_bar_dirty(Layer *layer, GContext *ctx) {
+    graphics_context_set_fill_color(ctx, get_color(config.status_bar_color));
+    graphics_fill_rect(ctx, layer_get_frame(layer), 0, GCornerNone);
+}
+
 void ui_time_update() {
     //For pretty screenshots
     //strncpy(ui.texts.time, "12:00", sizeof(ui.texts.time));
@@ -246,32 +311,6 @@ void ui_time_update() {
     text_layer_set_text(ui.layers.time, ui.texts.time);
     text_layer_set_text(ui.layers.date, ui.texts.date);
     text_layer_set_text(ui.layers.month, ui.texts.month);
-    text_layer_set_text(ui.layers.am_pm, ui.texts.am_pm);
-
-    //Update am/pm
-    if (config.show_am_pm == 1 && !clock_is_24h_style()) {
-        layer_set_hidden((Layer *) ui.layers.am_pm, false);
-
-        if (config.layout == 1) {
-            layer_set_frame((Layer *) ui.layers.am_pm, GRect(0, MARGINTOP - 5, PWIDTH, 20));
-        }
-        else {
-            int top = MARGINTOP;
-            if (config.battery_percent != 0) {
-                top = top + 3;
-            }
-
-            if (ui.texts.time_zero) {
-                layer_set_frame((Layer *) ui.layers.am_pm, GRect(-13, top, PWIDTH, 20));
-            }
-            else {
-                layer_set_frame((Layer *) ui.layers.am_pm, GRect(0, top, PWIDTH, 20));
-            }
-        }
-    }
-    else {
-        layer_set_hidden((Layer *) ui.layers.am_pm, true);
-    }
 
     //Update day/night flag
     if (config.sunrise > 0 && config.sunset > 0) {
@@ -294,83 +333,83 @@ void ui_time_update() {
 void ui_window_load(Window *window) {
     ui.layers.window = window_get_root_layer(window);
 
-    ui.layers.time = text_layer_create(GRect(0, MARGINTOP, PWIDTH, 100));
-    text_layer_set_background_color(ui.layers.time, GColorClear);
-    text_layer_set_font(ui.layers.time, ui.fonts.time);
-    text_layer_set_text_alignment(ui.layers.time, GTextAlignmentCenter);
-    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.time));
+    ui.layers.time = text_layer_init(
+        ui.layers.window,
+        GRect(0, MARGINTOP, PWIDTH, 100),
+        ui.fonts.time,
+        GColorClear,
+        GColorBlack,
+        GTextAlignmentCenter
+    );
 
-    ui.layers.battery = layer_create(GRect(0, MARGINTOP + 29, PWIDTH, 100));
-    layer_set_update_proc(ui.layers.battery, ui_battery_dirty);
-    layer_add_child(ui.layers.window, ui.layers.battery);
+    ui.layers.battery = layer_init(ui.layers.window, GRect(0, MARGINTOP + 29, PWIDTH, 100), ui_battery_dirty);
 
-    ui.layers.date = text_layer_create(GRect(0, MARGINTOP + 60, PWIDTH, 100));
-    text_layer_set_background_color(ui.layers.date, GColorClear);
-    text_layer_set_font(ui.layers.date, ui.fonts.date);
-    text_layer_set_text_alignment(ui.layers.date, GTextAlignmentCenter);
-    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.date));
+    ui.layers.date = text_layer_init(
+        ui.layers.window,
+        GRect(0, MARGINTOP + 60, PWIDTH, 100),
+        ui.fonts.date,
+        GColorClear,
+        GColorBlack,
+        GTextAlignmentCenter
+    );
 
-    ui.layers.month = text_layer_create(GRect(0, MARGINTOP + 96, PWIDTH, 28));
-    text_layer_set_background_color(ui.layers.month, GColorClear);
-    text_layer_set_font(ui.layers.month, ui.fonts.month);
-    text_layer_set_text_alignment(ui.layers.month, GTextAlignmentCenter);
-    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.month));
+    ui.layers.month = text_layer_init(
+        ui.layers.window,
+        GRect(0, MARGINTOP + 96, PWIDTH, 28),
+        ui.fonts.month,
+        GColorClear,
+        GColorBlack,
+        GTextAlignmentCenter
+    );
 
-    ui.layers.temperature = text_layer_create(GRect(0, MARGINTOP + 120, HALFPWIDTH, 50));
-    text_layer_set_background_color(ui.layers.temperature, GColorClear);
-    text_layer_set_font(ui.layers.temperature, ui.fonts.date);
-    text_layer_set_text_alignment(ui.layers.temperature, GTextAlignmentCenter);
-    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.temperature));
+    ui.layers.temperature = text_layer_init(
+        ui.layers.window,
+        GRect(0, MARGINTOP + 120, HALFPWIDTH, 50),
+        ui.fonts.date,
+        GColorClear,
+        GColorBlack,
+        GTextAlignmentCenter
+    );
 
-    ui.layers.air_quality_index = text_layer_create(GRect(0, MARGINTOP + 120, HALFPWIDTH, 50));
-    text_layer_set_background_color(ui.layers.air_quality_index, GColorClear);
-    text_layer_set_font(ui.layers.air_quality_index, ui.fonts.air_quality_index);
-    text_layer_set_text_alignment(ui.layers.air_quality_index, GTextAlignmentCenter);
-    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.air_quality_index));
+    ui.layers.condition = text_layer_init(
+        ui.layers.window,
+        GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50),
+        ui.fonts.weather,
+        GColorClear,
+        GColorBlack,
+        GTextAlignmentCenter
+    );
 
-    ui.layers.condition = text_layer_create(GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50));
-    text_layer_set_background_color(ui.layers.condition, GColorClear);
-    text_layer_set_font(ui.layers.condition, ui.fonts.weather);
-    text_layer_set_text_alignment(ui.layers.condition, GTextAlignmentCenter);
-    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.condition));
-
-    ui.layers.am_pm = text_layer_create(GRect(0, MARGINTOP, PWIDTH, 20));
-    text_layer_set_background_color(ui.layers.am_pm, GColorClear);
-    text_layer_set_font(ui.layers.am_pm, ui.fonts.am_pm);
-    text_layer_set_text_alignment(ui.layers.am_pm, GTextAlignmentCenter);
-    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.am_pm));
-
-    ui.layers.battery_percent = text_layer_create(GRect(3, MARGINTOP - 5, PWIDTH - 5, 20));
-    text_layer_set_background_color(ui.layers.battery_percent, GColorClear);
-    text_layer_set_font(ui.layers.battery_percent, ui.fonts.battery);
-    text_layer_set_text_alignment(ui.layers.battery_percent, GTextAlignmentRight);
-    layer_add_child(ui.layers.window, text_layer_get_layer(ui.layers.battery_percent));
+    ui.layers.status_bar = layer_init(ui.layers.window, GRect(0, 0, PWIDTH, STATUS_BAR_HEIGHT), ui_status_bar_dirty);
 
     ui_align();
+    ui_status_bar();
 }
 
 void ui_window_unload(Window *window) {
-    text_layer_destroy(ui.layers.time);
-    layer_destroy(ui.layers.battery);
-    text_layer_destroy(ui.layers.date);
-    text_layer_destroy(ui.layers.month);
-    text_layer_destroy(ui.layers.temperature);
-    text_layer_destroy(ui.layers.air_quality_index);
-    text_layer_destroy(ui.layers.condition);
-    text_layer_destroy(ui.layers.am_pm);
-    text_layer_destroy(ui.layers.battery_percent);
+    text_layer_destroy_safe(ui.layers.time);
+    layer_destroy_safe(ui.layers.battery);
+    text_layer_destroy_safe(ui.layers.date);
+    text_layer_destroy_safe(ui.layers.month);
+    text_layer_destroy_safe(ui.layers.temperature);
+    text_layer_destroy_safe(ui.layers.condition);
+    layer_destroy_safe(ui.layers.status_bar);
+
+    text_layer_destroy_safe(ui.layers.status_bar1);
+    text_layer_destroy_safe(ui.layers.status_bar2);
+    text_layer_destroy_safe(ui.layers.status_bar3);
 }
 
 void ui_init() {
     struct Fonts fonts;
-    fonts.time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_50));
-    fonts.date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_32));
-    fonts.month = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_20));
-    fonts.weather = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_WEATHER_30));
-    fonts.air_quality_index = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_18));
-    fonts.am_pm = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_MONO_16));
-    fonts.icons = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_MATERIAL_30));
-    fonts.battery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_DROIDSANS_BOLD_20));
+    fonts.time = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_50);
+    fonts.date = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_32);
+    fonts.month = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_MONO_20);
+    fonts.weather = fonts_load_resource_font(RESOURCE_ID_WEATHER_30);
+    fonts.icons = NULL;
+    fonts.status_bar = NULL;
+    fonts.status_bar_weather = NULL;
+    fonts.status_bar_icons = NULL; //TODO reduce regex
 
     struct Texts texts;
     struct Layers layers;
@@ -379,6 +418,10 @@ void ui_init() {
     ui.texts = texts;
     ui.fonts = fonts;
     ui.state = state;
+
+    ui.layers.status_bar1 = NULL;
+    ui.layers.status_bar2 = NULL;
+    ui.layers.status_bar3 = NULL;
 
     ui.window = window_create();
     window_set_window_handlers(ui.window, (WindowHandlers) {
@@ -389,8 +432,6 @@ void ui_init() {
     const bool animated = true;
     window_stack_push(ui.window, animated);
 
-    ui.state.battery = battery_state_service_peek();
-    ui.state.bt_connected = connection_service_peek_pebble_app_connection();
     ui.state.condition = -999;
     ui.state.temperature = -999;
     ui.state.air_quality_index = -999;
@@ -400,18 +441,17 @@ void ui_init() {
     ui.state.retry_times = MAX_RETRIES;
     ui.texts.time_zero = false;
     strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
-    strncpy(ui.texts.air_quality_index, "", sizeof(ui.texts.air_quality_index));
 }
 
 void ui_deinit() {
     window_destroy(ui.window);
 
-    fonts_unload_custom_font(ui.fonts.time);
-    fonts_unload_custom_font(ui.fonts.date);
-    fonts_unload_custom_font(ui.fonts.month);
-    fonts_unload_custom_font(ui.fonts.weather);
-    fonts_unload_custom_font(ui.fonts.air_quality_index);
-    fonts_unload_custom_font(ui.fonts.am_pm);
-    fonts_unload_custom_font(ui.fonts.icons);
-    fonts_unload_custom_font(ui.fonts.battery);
+    fonts_unload_custom_font_safe(ui.fonts.time);
+    fonts_unload_custom_font_safe(ui.fonts.date);
+    fonts_unload_custom_font_safe(ui.fonts.month);
+    fonts_unload_custom_font_safe(ui.fonts.weather);
+    fonts_unload_custom_font_safe(ui.fonts.icons);
+    fonts_unload_custom_font_safe(ui.fonts.status_bar);
+    fonts_unload_custom_font_safe(ui.fonts.status_bar_weather);
+    fonts_unload_custom_font_safe(ui.fonts.status_bar_icons);
 }

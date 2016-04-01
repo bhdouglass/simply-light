@@ -127,20 +127,20 @@
                 </p>
             </div>
 
-            <div class="item-container-content" ng-show="version >= 3.2 && config.air_quality">
+            <div class="item-container-content" ng-show="version >= 3.2 && version < 5 && config.air_quality">
                 <label class="item">
                     AQI as Degree Icon
                     <input type="checkbox" class="item-toggle" id="aqi_degree" ng-model="config.aqi_degree" />
                 </label>
             </div>
-            <div class="item-container-footer" ng-show="version >= 3.2 && config.air_quality">
+            <div class="item-container-footer" ng-show="version >= 3.2 && version < 5 && config.air_quality">
                 <p>
                     When enabled, the current air quality index replaces the
                     degree icon for the temperature.
                 </p>
             </div>
 
-            <div class="item-container" ng-show="version == 2.9 && config.air_quality == 1">
+            <div class="item-container" ng-show="version == 2.9 && version < 5 && config.air_quality == 1">
                 <div class="item-container-content">
                     <label class="item" ng-class="{'error': errors.aq_refresh_time}">
                         Air Quality Refresh Time (Minutes)
@@ -153,7 +153,7 @@
         </div>
 
         <div class="item-container ng-cloak">
-            <div class="item-container-header">Watchface Options</div>
+            <div class="item-container-header">Color Options</div>
 
             <div ng-if="loaded">
                 <color-picker ng-model="config.day_text_color" platform="{{platform}}" title="Day Text Color"></color-picker>
@@ -164,6 +164,47 @@
                     Sunset data is based on your location
                 </div>
             </div>
+        </div>
+
+        <div class="item-container ng-cloak" ng-show="version >= 5">
+            <div class="item-container-header">Status Bar Options</div>
+
+            <div class="item-container-content">
+                <label class="item">
+                    Show Status Bar
+                    <input type="checkbox" class="item-toggle" id="show_status_bar" ng-model="config.show_status_bar" />
+                </label>
+            </div>
+
+            <div ng-if="loaded && config.show_status_bar">
+                <color-picker ng-model="config.status_bar_color" platform="{{platform}}" title="Status Bar Color" background="true"></color-picker>
+                <color-picker ng-model="config.status_bar_text_color" platform="{{platform}}" title="Status Bar Text Color"></color-picker>
+            </div>
+
+            <div class="item-container-content">
+                <label class="item">
+                    Status Item Left
+                    <select class="item-select" dir="rtl" id="status_bar1" ng-model="config.status_bar1" ng-options="o.value as o.label for o in status_items"></select>
+                </label>
+            </div>
+
+            <div class="item-container-content">
+                <label class="item">
+                    Status Item Middle
+                    <select class="item-select" dir="rtl" id="status_bar2" ng-model="config.status_bar2" ng-options="o.value as o.label for o in status_items"></select>
+                </label>
+            </div>
+
+            <div class="item-container-content">
+                <label class="item">
+                    Status Item Right
+                    <select class="item-select" dir="rtl" id="status_bar3" ng-model="config.status_bar3" ng-options="o.value as o.label for o in status_items"></select>
+                </label>
+            </div>
+        </div>
+
+        <div class="item-container ng-cloak">
+            <div class="item-container-header">Watchface Options</div>
 
             <div class="item-container-content">
                 <label class="item">
@@ -182,7 +223,7 @@
                 </label>
             </div>
 
-            <div class="item-container-content">
+            <div class="item-container-content" ng-show="version < 5">
                 <label class="item">
                     Show AM/PM
                     <input type="checkbox" class="item-toggle" id="show_am_pm" ng-model="config.show_am_pm" />
@@ -196,21 +237,21 @@
                 </label>
             </div>
 
-            <div class="item-container-content">
+            <div class="item-container-content" ng-show="version < 5">
                 <label class="item">
                     Show Charging Icon
                     <input type="checkbox" class="item-toggle" id="charging_icon" ng-model="config.charging_icon" />
                 </label>
             </div>
 
-            <div class="item-container-content">
+            <div class="item-container-content" ng-show="version < 5">
                 <label class="item">
                     Show BT Disconnected Icon
                     <input type="checkbox" class="item-toggle" id="bt_disconnect_icon" ng-model="config.bt_disconnect_icon" />
                 </label>
             </div>
 
-            <div class="item-container-content">
+            <div class="item-container-content" ng-show="version < 5">
                 <label class="item">
                     Show Battery Percent
                     <select class="item-select" dir="rtl" id="battery_percent" ng-model="config.battery_percent" ng-options="o.value as o.label for o in battery_percent"></select>
@@ -323,8 +364,8 @@
                         </li>
 
                         <li>
-                            <i class="zmdi wi-fw zmdi-battery-flash"></i>
-                            Battery Charging
+                            <i class="zmdi wi-fw zmdi-bluetooth"></i>
+                            Bluetooth Connected
                         </li>
 
                         <li>

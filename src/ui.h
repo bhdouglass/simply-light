@@ -5,9 +5,13 @@
 #include "config.h"
 
 #define MARGINTOP 4
+#define STATUS_BAR_MARGINTOP 8
 #define PWIDTH 144
 #define HALFPWIDTH 72
 #define PHEIGHT 168
+#define STATUS_BAR_HEIGHT 16
+#define STATUS_BAR_ITEM_WIDTH 46
+#define STATUS_BAR_MARGIN 3
 #define CHARGEUNIT 1.44
 
 #define NO_ERROR 0
@@ -19,15 +23,13 @@
 #define MAX_RETRIES 10
 
 struct State {
-    BatteryChargeState battery;
-    bool               bt_connected;
-    int                condition;
-    int                temperature;
-    int                air_quality_index;
-    int                is_day;
-    int                elapsed_time;
-    int                error;
-    int                retry_times;
+    int condition;
+    int temperature;
+    int air_quality_index;
+    int is_day;
+    int elapsed_time;
+    int error;
+    int retry_times;
 };
 
 struct Fonts {
@@ -35,10 +37,10 @@ struct Fonts {
     GFont time;
     GFont month;
     GFont weather;
-    GFont air_quality_index;
-    GFont am_pm;
     GFont icons;
-    GFont battery;
+    GFont status_bar;
+    GFont status_bar_weather;
+    GFont status_bar_icons;
 };
 
 struct Layers {
@@ -48,10 +50,11 @@ struct Layers {
     TextLayer *time;
     TextLayer *month;
     TextLayer *temperature;
-    TextLayer *air_quality_index;
     TextLayer *condition;
-    TextLayer *am_pm;
-    TextLayer *battery_percent;
+    Layer *status_bar;
+    TextLayer *status_bar1;
+    TextLayer *status_bar2;
+    TextLayer *status_bar3;
 };
 
 struct Texts {
@@ -60,10 +63,11 @@ struct Texts {
     bool time_zero;
     char month[20];
     char temperature[6];
-    char air_quality_index[6];
+    char aqi[6];
     char condition[5];
     char am_pm[3];
     char battery_percent[6];
+    char bluetooth[5];
 };
 
 struct UI {
@@ -75,6 +79,8 @@ struct UI {
 };
 
 void ui_align();
+void ui_status_bar_item(TextLayer *layer, int item);
+void ui_status_bar();
 void ui_colorize();
 void ui_weather_update();
 void ui_battery_update();

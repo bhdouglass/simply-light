@@ -87,6 +87,7 @@ static void handle_tick_helper(struct tm *tick_time, TimeUnits units_changed) {
     tr_am_pm(tick_time);
     ui_time_update();
     ui_colorize();
+    ui_status_bar();
 }
 
 static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
@@ -97,7 +98,7 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
     }
 
     ui.state.elapsed_time++;
-    if (ui.state.bt_connected) {
+    if (connection_service_peek_pebble_app_connection()) {
         check_refresh(true, false);
     }
     else {
@@ -117,7 +118,7 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 static void msg_failed_handler(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "message failed to send: %s", translate_error(reason));
     ui.state.error = FETCH_ERROR;
-    if (ui.state.bt_connected && ui.state.retry_times > 0) {
+    if (connection_service_peek_pebble_app_connection() && ui.state.retry_times > 0) {
         check_refresh(true, true);
         ui.state.retry_times--;
     }
@@ -132,9 +133,7 @@ static void msg_droped_handler(AppMessageResult reason, void *context) {
 //}
 
 static void handle_bluetooth(bool connected) {
-    ui.state.bt_connected = connected;
-
-    if (ui.state.bt_connected) {
+    if (connected) {
         check_refresh(true, false);
     }
     else {
@@ -143,19 +142,10 @@ static void handle_bluetooth(bool connected) {
         }
     }
 
-    ui_weather_update();
+    ui_status_bar();
 }
 
-static void handle_battery(BatteryChargeState charge_state) {
-    ui.state.battery = charge_state;
-
-    if (ui.state.battery.is_charging) {
-        snprintf(ui.texts.battery_percent, sizeof(ui.texts.battery_percent), "+%d%%", ui.state.battery.charge_percent);
-    }
-    else {
-        snprintf(ui.texts.battery_percent, sizeof(ui.texts.battery_percent), "%d%%", ui.state.battery.charge_percent);
-    }
-
+static void handle_battery(BatteryChargeState battery) {
     ui_battery_update();
     ui_weather_update();
 }
@@ -221,28 +211,12 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 config.sunset = value;
                 break;
 
-            case APP_KEY_SHOW_AM_PM:
-                config.show_am_pm = value;
-                break;
-
             case APP_KEY_HIDE_BATTERY:
                 config.hide_battery = value;
                 break;
 
             case APP_KEY_VIBRATE_BLUETOOTH:
                 config.vibrate_bluetooth = value;
-                break;
-
-            case APP_KEY_CHARGING_ICON:
-                config.charging_icon = value;
-                break;
-
-            case APP_KEY_BT_DISCONNECT_ICON:
-                config.bt_disconnect_icon = value;
-                break;
-
-            case APP_KEY_BATTERY_PERCENT:
-                config.battery_percent = value;
                 break;
 
             case APP_KEY_LANGUAGE:
@@ -257,12 +231,32 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 config.air_quality = value;
                 break;
 
-            case APP_KEY_AQI_DEGREE:
-                config.aqi_degree = value;
-                break;
-
             case APP_KEY_HOURLY_VIBRATE:
                 config.hourly_vibrate = value;
+                break;
+
+            case APP_KEY_SHOW_STATUS_BAR:
+                config.show_status_bar = value;
+                break;
+
+            case APP_KEY_STATUS_BAR_COLOR:
+                config.status_bar_color = value;
+                break;
+
+            case APP_KEY_STATUS_BAR_TEXT_COLOR:
+                config.status_bar_text_color = value;
+                break;
+
+            case APP_KEY_STATUS_BAR1:
+                config.status_bar1 = value;
+                break;
+
+            case APP_KEY_STATUS_BAR2:
+                config.status_bar2 = value;
+                break;
+
+            case APP_KEY_STATUS_BAR3:
+                config.status_bar3 = value;
                 break;
         }
 
@@ -274,6 +268,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
     ui_battery_update();
     //ui_colorize(); Called in handle_tick_helper
     ui_align();
+    ui_status_bar();
 
     time_t now = time(NULL);
     struct tm *tick_time = localtime(&now);
@@ -289,7 +284,7 @@ static void init(void) {
 
     ui_init();
 
-    handle_battery(ui.state.battery);
+    handle_battery(battery_state_service_peek());
 
     time_t now = time(NULL);
     struct tm *tick_time = localtime(&now);

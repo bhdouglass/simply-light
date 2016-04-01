@@ -29,4 +29,13 @@ module.exports = {
     YAHOO: 2,
     YRNO: 3,
     FORECASTIO: 4,
+
+    //Status bar items
+    STATUS_BAR_EMPTY: 0,
+    STATUS_BAR_BLUETOOTH: 1,
+    STATUS_BAR_BATTERY_LEVEL: 2,
+    STATUS_BAR_AQI: 3,
+    STATUS_BAR_TEMP: 4,
+    STATUS_BAR_CONDITION: 5,
+    STATUS_BAR_AMPM: 6,
 };

@@ -8,12 +8,8 @@ void load_config() {
     config.sunset = -1;
     config.refresh_time = 30;
     config.wait_time = 1;
-    config.show_am_pm = 0;
     config.hide_battery = 0;
     config.vibrate_bluetooth = 0;
-    config.charging_icon = 1;
-    config.bt_disconnect_icon = 1;
-    config.battery_percent = 0;
     config.day_text_color = 0;
     config.day_background_color = 1;
     config.night_text_color = 0;
@@ -21,8 +17,13 @@ void load_config() {
     config.language = 0;
     config.layout = 0;
     config.air_quality = 0;
-    config.aqi_degree = 0;
     config.hourly_vibrate = 0;
+    config.show_status_bar = 1;
+    config.status_bar_color = 0;
+    config.status_bar_text_color = 1;
+    config.status_bar1 = STATUS_BAR_EMPTY;
+    config.status_bar2 = STATUS_BAR_EMPTY;
+    config.status_bar3 = STATUS_BAR_EMPTY;
 
     if (persist_exists(APP_KEY_DAY_TEXT_COLOR)) {
         config.day_text_color = persist_read_int(APP_KEY_DAY_TEXT_COLOR);
@@ -48,28 +49,12 @@ void load_config() {
         config.sunset = persist_read_int(APP_KEY_SUNSET);
     }
 
-    if (persist_exists(APP_KEY_SHOW_AM_PM)) {
-        config.show_am_pm = persist_read_int(APP_KEY_SHOW_AM_PM);
-    }
-
     if (persist_exists(APP_KEY_HIDE_BATTERY)) {
         config.hide_battery = persist_read_int(APP_KEY_HIDE_BATTERY);
     }
 
     if (persist_exists(APP_KEY_VIBRATE_BLUETOOTH)) {
         config.vibrate_bluetooth = persist_read_int(APP_KEY_VIBRATE_BLUETOOTH);
-    }
-
-    if (persist_exists(APP_KEY_CHARGING_ICON)) {
-        config.charging_icon = persist_read_int(APP_KEY_CHARGING_ICON);
-    }
-
-    if (persist_exists(APP_KEY_BT_DISCONNECT_ICON)) {
-        config.bt_disconnect_icon = persist_read_int(APP_KEY_BT_DISCONNECT_ICON);
-    }
-
-    if (persist_exists(APP_KEY_BATTERY_PERCENT)) {
-        config.battery_percent = persist_read_int(APP_KEY_BATTERY_PERCENT);
     }
 
     if (persist_exists(APP_KEY_LANGUAGE)) {
@@ -84,12 +69,32 @@ void load_config() {
         config.air_quality = persist_read_int(APP_KEY_AIR_QUALITY);
     }
 
-    if (persist_exists(APP_KEY_AQI_DEGREE)) {
-        config.aqi_degree = persist_read_int(APP_KEY_AQI_DEGREE);
-    }
-
     if (persist_exists(APP_KEY_HOURLY_VIBRATE)) {
         config.hourly_vibrate = persist_read_int(APP_KEY_HOURLY_VIBRATE);
+    }
+
+    if (persist_exists(APP_KEY_SHOW_STATUS_BAR)) {
+        config.show_status_bar = persist_read_int(APP_KEY_SHOW_STATUS_BAR);
+    }
+
+    if (persist_exists(APP_KEY_STATUS_BAR_COLOR)) {
+        config.status_bar_color = persist_read_int(APP_KEY_STATUS_BAR_COLOR);
+    }
+
+    if (persist_exists(APP_KEY_STATUS_BAR_TEXT_COLOR)) {
+        config.status_bar_text_color = persist_read_int(APP_KEY_STATUS_BAR_TEXT_COLOR);
+    }
+
+    if (persist_exists(APP_KEY_STATUS_BAR1)) {
+        config.status_bar1 = persist_read_int(APP_KEY_STATUS_BAR1);
+    }
+
+    if (persist_exists(APP_KEY_STATUS_BAR2)) {
+        config.status_bar2 = persist_read_int(APP_KEY_STATUS_BAR2);
+    }
+
+    if (persist_exists(APP_KEY_STATUS_BAR3)) {
+        config.status_bar3 = persist_read_int(APP_KEY_STATUS_BAR3);
     }
 }
 
@@ -100,15 +105,16 @@ void save_config() {
     persist_write_int(APP_KEY_NIGHT_BACKGROUND_COLOR, config.night_background_color);
     persist_write_int(APP_KEY_SUNRISE, config.sunrise);
     persist_write_int(APP_KEY_SUNSET, config.sunset);
-    persist_write_int(APP_KEY_SHOW_AM_PM, config.show_am_pm);
     persist_write_int(APP_KEY_HIDE_BATTERY, config.hide_battery);
     persist_write_int(APP_KEY_VIBRATE_BLUETOOTH, config.vibrate_bluetooth);
-    persist_write_int(APP_KEY_CHARGING_ICON, config.charging_icon);
-    persist_write_int(APP_KEY_BT_DISCONNECT_ICON, config.bt_disconnect_icon);
-    persist_write_int(APP_KEY_BATTERY_PERCENT, config.battery_percent);
     persist_write_int(APP_KEY_LANGUAGE, config.language);
     persist_write_int(APP_KEY_LAYOUT, config.layout);
     persist_write_int(APP_KEY_AIR_QUALITY, config.air_quality);
-    persist_write_int(APP_KEY_AQI_DEGREE, config.aqi_degree);
     persist_write_int(APP_KEY_HOURLY_VIBRATE, config.hourly_vibrate);
+    persist_write_int(APP_KEY_SHOW_STATUS_BAR, config.show_status_bar);
+    persist_write_int(APP_KEY_STATUS_BAR_COLOR, config.status_bar_color);
+    persist_write_int(APP_KEY_STATUS_BAR_TEXT_COLOR, config.status_bar_text_color);
+    persist_write_int(APP_KEY_STATUS_BAR1, config.status_bar1);
+    persist_write_int(APP_KEY_STATUS_BAR2, config.status_bar2);
+    persist_write_int(APP_KEY_STATUS_BAR3, config.status_bar3);
 }
