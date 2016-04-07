@@ -17,10 +17,8 @@ struct Fonts {
     GFont droidsans_32;
     GFont droidsans_bold_14;
     GFont droidsans_mono_20;
-    GFont weather_30;
-    GFont weather_14;
-    GFont material_30;
-    GFont material_14;
+    GFont icons_30;
+    GFont icons_14;
 };
 
 struct Texts {

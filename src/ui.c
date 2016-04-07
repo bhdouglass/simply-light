@@ -10,11 +10,8 @@ bool is_day = true;
 //TODO don't set font if we don't need to
 void ui_set_status_bar_item(int type, char *text) {
     if (config.status_bar1 == type) {
-        if (type == STATUS_BAR_CONDITION) {
-            text_layer_set_font(ui.layers.status_bar1, ui.fonts.weather_14);
-        }
-        else if (type == STATUS_BAR_BLUETOOTH) {
-            text_layer_set_font(ui.layers.status_bar1, ui.fonts.material_14);
+        if (type == STATUS_BAR_CONDITION || type == STATUS_BAR_BLUETOOTH) {
+            text_layer_set_font(ui.layers.status_bar1, ui.fonts.icons_14);
         }
         else {
             text_layer_set_font(ui.layers.status_bar1, ui.fonts.droidsans_bold_14);
@@ -24,11 +21,8 @@ void ui_set_status_bar_item(int type, char *text) {
     }
 
     if (config.status_bar2 == type) {
-        if (type == STATUS_BAR_CONDITION) {
-            text_layer_set_font(ui.layers.status_bar2, ui.fonts.weather_14);
-        }
-        else if (type == STATUS_BAR_BLUETOOTH) {
-            text_layer_set_font(ui.layers.status_bar2, ui.fonts.material_14);
+        if (type == STATUS_BAR_CONDITION || type == STATUS_BAR_BLUETOOTH) {
+            text_layer_set_font(ui.layers.status_bar2, ui.fonts.icons_14);
         }
         else {
             text_layer_set_font(ui.layers.status_bar2, ui.fonts.droidsans_bold_14);
@@ -38,11 +32,8 @@ void ui_set_status_bar_item(int type, char *text) {
     }
 
     if (config.status_bar3 == type) {
-        if (type == STATUS_BAR_CONDITION) {
-            text_layer_set_font(ui.layers.status_bar3, ui.fonts.weather_14);
-        }
-        else if (type == STATUS_BAR_BLUETOOTH) {
-            text_layer_set_font(ui.layers.status_bar3, ui.fonts.material_14);
+        if (type == STATUS_BAR_CONDITION || type == STATUS_BAR_BLUETOOTH) {
+            text_layer_set_font(ui.layers.status_bar3, ui.fonts.icons_14);
         }
         else {
             text_layer_set_font(ui.layers.status_bar3, ui.fonts.droidsans_bold_14);
@@ -95,7 +86,7 @@ void ui_set_datetime(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 void ui_set_temperature(int temp, int error) {
-    if (error == WEATHER_ERROR || error == FETCH_ERROR || temp == -999) {
+    if (error == WEATHER_ERROR || error == FETCH_ERROR || temp == BAD_DATA) {
         strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
     }
     else {
@@ -110,28 +101,29 @@ void ui_set_temperature(int temp, int error) {
 }
 
 void ui_set_condition(int condition, int error) {
-    //TODO show something when bluetooth disconnected & trying to fetch
-
     if (error == FETCH_ERROR) {
-        text_layer_set_font(ui.layers.right_info, ui.fonts.weather_30);
-        strncpy(ui.texts.condition, "\uf03e", sizeof(ui.texts.condition));
+        if (connection_service_peek_pebble_app_connection()) {
+            strncpy(ui.texts.condition, "\uf03e", sizeof(ui.texts.condition));
+        }
+        else {
+            strncpy(ui.texts.condition, "\uf27f", sizeof(ui.texts.condition));
+        }
     }
     else if (error == WEATHER_ERROR) {
-        text_layer_set_font(ui.layers.right_info, ui.fonts.material_30);
         strncpy(ui.texts.condition, "\uf21b", sizeof(ui.texts.condition));
     }
     else if (error == LOCATION_ERROR) {
-        text_layer_set_font(ui.layers.right_info, ui.fonts.material_30);
         strncpy(ui.texts.condition, "\uf1aa", sizeof(ui.texts.condition));
     }
     else if (error == AQI_ERROR) {
-        text_layer_set_font(ui.layers.right_info, ui.fonts.material_30);
         strncpy(ui.texts.condition, "\uf368", sizeof(ui.texts.condition));
     }
     else {
-        text_layer_set_font(ui.layers.right_info, ui.fonts.weather_30);
         weather_set_condition(condition, is_day, ui.texts.condition);
     }
+
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", condition);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, ui.texts.condition);
 
     text_layer_set_text(ui.layers.right_info, ui.texts.condition);
 
@@ -139,7 +131,7 @@ void ui_set_condition(int condition, int error) {
 }
 
 void ui_set_aqi(int aqi, int error) {
-    if (error == AQI_ERROR || error == FETCH_ERROR || aqi == -999) {
+    if (error == AQI_ERROR || error == FETCH_ERROR || aqi == BAD_DATA) {
         strncpy(ui.texts.aqi, "", sizeof(ui.texts.aqi));
     }
     else {
@@ -369,7 +361,7 @@ void ui_window_load(Window *window) {
     ui.layers.right_info = text_layer_init(
         ui.layers.window,
         GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50),
-        ui.fonts.weather_30,
+        ui.fonts.icons_30,
         GColorClear,
         GColorBlack,
         GTextAlignmentCenter
@@ -442,10 +434,8 @@ void ui_init() {
     ui.fonts.droidsans_32 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_32);
     ui.fonts.droidsans_bold_14 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_14);
     ui.fonts.droidsans_mono_20 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_MONO_20);
-    ui.fonts.weather_30 = fonts_load_resource_font(RESOURCE_ID_WEATHER_30);
-    ui.fonts.weather_14 = fonts_load_resource_font(RESOURCE_ID_WEATHER_14);
-    ui.fonts.material_30 = fonts_load_resource_font(RESOURCE_ID_MATERIAL_30);
-    ui.fonts.material_14 = fonts_load_resource_font(RESOURCE_ID_MATERIAL_14);
+    ui.fonts.icons_30 = fonts_load_resource_font(RESOURCE_ID_ICONS_30);
+    ui.fonts.icons_14 = fonts_load_resource_font(RESOURCE_ID_ICONS_14);
 
     strncpy(ui.texts.date, "", sizeof(ui.texts.date));
     strncpy(ui.texts.time, "", sizeof(ui.texts.time));
@@ -479,8 +469,6 @@ void ui_deinit() {
     fonts_unload_custom_font_safe(ui.fonts.droidsans_32);
     fonts_unload_custom_font_safe(ui.fonts.droidsans_bold_14);
     fonts_unload_custom_font_safe(ui.fonts.droidsans_mono_20);
-    fonts_unload_custom_font_safe(ui.fonts.weather_30);
-    fonts_unload_custom_font_safe(ui.fonts.weather_14);
-    fonts_unload_custom_font_safe(ui.fonts.material_30);
-    fonts_unload_custom_font_safe(ui.fonts.material_14);
+    fonts_unload_custom_font_safe(ui.fonts.icons_30);
+    fonts_unload_custom_font_safe(ui.fonts.icons_14);
 }

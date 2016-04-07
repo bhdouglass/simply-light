@@ -15,7 +15,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf00d", size); //wi-day-sunny
         }
         else {
-            strncpy(condition_text, "\uf02e", size); //wi-night-clear
+            strncpy(condition_text, "\uf086", size); //wi-night-alt-clear
         }
     }
     else if (code == CLOUDY) {
@@ -39,7 +39,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf00b", size); //wi-day-sprinkle
         }
         else {
-            strncpy(condition_text, "\uf039", size); //wi-night-sprinkle
+            strncpy(condition_text, "\uf02b", size); //wi-night-alt-sprinkle
         }
     }
     else if (code == RAIN) {
@@ -47,7 +47,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf008", size); //wi-day-rain
         }
         else {
-            strncpy(condition_text, "\uf036", size); //wi-night-rain
+            strncpy(condition_text, "\uf028", size); //wi-night-alt-rain
         }
     }
     else if (code == THUNDERSTORM) {
@@ -55,7 +55,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf010", size); //wi-day-thunderstorm
         }
         else {
-            strncpy(condition_text, "\uf03b", size); //wi-night-thunderstorm
+            strncpy(condition_text, "\uf02d", size); //wi-night-alt-thunderstorm
         }
     }
     else if (code == SNOW) {
@@ -63,7 +63,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf00a", size); //wi-day-snow
         }
         else {
-            strncpy(condition_text, "\uf038", size); //wi-night-snow
+            strncpy(condition_text, "\uf02a", size); //wi-night-alt-snow
         }
     }
     else if (code == HAIL) {
@@ -71,7 +71,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf004", size); //wi-day-hail
         }
         else {
-            strncpy(condition_text, "\uf032", size); //wi-night-hail
+            strncpy(condition_text, "\uf024", size); //wi-night-alt-hail
         }
     }
     else if (code == WIND) {
@@ -97,7 +97,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf06b", size); //wi-day-snow-thunderstorm
         }
         else {
-            strncpy(condition_text, "\uf06c", size); //wi-night-snow-thunderstorm
+            strncpy(condition_text, "\uf06d", size); //wi-night-alt-snow-thunderstorm
         }
     }
 }

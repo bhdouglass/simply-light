@@ -7,3 +7,6 @@
 #define AQI_ERROR 4
 
 #define MAX_RETRIES 10
+
+#define BAD_DATA -999
+#define NO_DATA -998

@@ -80,9 +80,9 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
         //Bluetooth not connected and we need to refresh
         bool refresh = check_refresh(false, false);
         if (refresh) {
-            ui_set_temperature(-999, FETCH_ERROR);
-            ui_set_condition(-999, FETCH_ERROR);
-            ui_set_aqi(-999, FETCH_ERROR);
+            ui_set_temperature(BAD_DATA, FETCH_ERROR);
+            ui_set_condition(BAD_DATA, FETCH_ERROR);
+            ui_set_aqi(BAD_DATA, FETCH_ERROR);
         }
     }
 
@@ -109,7 +109,12 @@ static void msg_failed_handler(DictionaryIterator *iterator, AppMessageResult re
 
 static void handle_bluetooth(bool connected) {
     if (connected) {
-        check_refresh(true, false);
+        bool refresh = check_refresh(true, false);
+        if (refresh) {
+            ui_set_temperature(BAD_DATA, FETCH_ERROR);
+            ui_set_condition(BAD_DATA, FETCH_ERROR);
+            ui_set_aqi(BAD_DATA, FETCH_ERROR);
+        }
     }
     else {
         if (config.vibrate_bluetooth == 1) {
@@ -174,9 +179,9 @@ static void handle_health(HealthEventType event, void *context) {
 }
 
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
-    int temperature = -998; //TODO make -999, -998 defined constants
-    int condition = -998;
-    int aqi = -998;
+    int temperature = NO_DATA;
+    int condition = NO_DATA;
+    int aqi = NO_DATA;
     bool config_update = false;
     bool sun_update = false;
 
@@ -312,15 +317,15 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
         t = dict_read_next(iter);
     }
 
-    if (temperature != -998) {
+    if (temperature != NO_DATA) {
         ui_set_temperature(temperature, error);
     }
 
-    if (condition != -998) {
+    if (condition != NO_DATA) {
         ui_set_condition(condition, error);
     }
 
-    if (aqi != -998) {
+    if (aqi != NO_DATA) {
         ui_set_aqi(aqi, error);
     }
 
@@ -329,7 +334,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
         save_config();
 
         time_t now = time(NULL);
-        struct tm *tick_time = localtime(&now); //TODO do these need to be freed???
+        struct tm *tick_time = localtime(&now);
 
         ui_set_datetime(tick_time, MINUTE_UNIT | DAY_UNIT | MONTH_UNIT);
     }
@@ -347,7 +352,7 @@ static void init(void) {
     load_config();
 
     ui_init();
-    ui_set_condition(-999, error);
+    ui_set_condition(BAD_DATA, error);
     ui_set_bluetooth(connection_service_peek_pebble_app_connection());
 
     handle_battery(battery_state_service_peek());
