@@ -3,6 +3,7 @@
 #include "appinfo.h"
 #include "config.h"
 
+//TODO Change this to use bools where applicable - https://developer.pebble.com/guides/events-and-services/persistent-storage/#versioning-persisted-data
 void load_config() {
     config.sunrise = -1;
     config.sunset = -1;
@@ -24,6 +25,12 @@ void load_config() {
     config.status_bar1 = STATUS_BAR_EMPTY;
     config.status_bar2 = STATUS_BAR_EMPTY;
     config.status_bar3 = STATUS_BAR_EMPTY;
+
+    #ifdef PBL_COLOR
+        config.status_bar_color = 65535; //Cyan
+        config.status_bar_text_color = 5592405; //Dark Gray
+    #endif
+
 
     if (persist_exists(APP_KEY_DAY_TEXT_COLOR)) {
         config.day_text_color = persist_read_int(APP_KEY_DAY_TEXT_COLOR);

@@ -131,7 +131,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         }, {
             label: 'AM/PM',
             value: 6
-        }
+        },
     ];
 
     $scope.config_ints = ['refresh_time', 'wait_time'];
@@ -301,6 +301,25 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         $scope.debug.config = $scope.config;
         $scope.debug.version = $scope.version;
         $scope.debug.platform = $scope.platform;
+
+        if ($scope.platform != "aplite") {
+            $scope.status_items.push({
+                label: 'Steps - Short',
+                value: 7
+            });
+            $scope.status_items.push({
+                label: 'Steps - Full',
+                value: 8
+            });
+            $scope.status_items.push({
+                label: 'Distance Walked',
+                value: 9
+            });
+            $scope.status_items.push({
+                label: 'Calories Burned',
+                value: 10
+            });
+        }
 
         $scope.loaded = true;
     });

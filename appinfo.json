@@ -6,7 +6,8 @@
   "versionCode": 5.0,
   "versionLabel": "5.0",
   "capabilities": [
-    "configurable"
+    "configurable",
+    "health"
   ],
   "watchapp": {
     "watchface": true
@@ -67,18 +68,12 @@
       {
         "name": "DROIDSANS_BOLD_14",
         "file": "fonts/DroidSans-Bold.ttf",
-        "characterRegex": "[0-9%APMDUEPGT\u00b0]",
+        "characterRegex": "[0-9%APMDUEPGT\u00b0.mki]",
         "type": "font"
       },
       {
         "name": "DROIDSANS_MONO_20",
         "file": "fonts/DroidSansMono.ttf",
-        "type": "font"
-      },
-      {
-        "name": "DROIDSANS_BOLD_18",
-        "file": "fonts/DroidSans-Bold.ttf",
-        "characterRegex": "[0-9]",
         "type": "font"
       },
       {

@@ -16,4 +16,4 @@
 #define EXTREME_HEAT 13
 #define SNOW_THUNDERSTORM 14
 
-void weather_set_condition(int code, int is_day, char *condition_text);
+void weather_set_condition(int code, bool is_day, char *condition_text);

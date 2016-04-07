@@ -1,12 +1,17 @@
 #include <pebble.h>
 
+#include "simply_light.h"
 #include "appinfo.h"
 #include "ui.h"
 #include "config.h"
 #include "i18n.h"
 
+int retry_times = MAX_RETRIES;
+int elapsed_time = 0;
+int error = FETCH_ERROR;
+
 //From https://github.com/smallstoneapps/message-queue/blob/master/message-queue.c#L222
-static char *translate_error(AppMessageResult result) {
+/*static char *translate_error(AppMessageResult result) {
     switch (result) {
         case APP_MSG_OK: return "APP_MSG_OK";
         case APP_MSG_SEND_TIMEOUT: return "APP_MSG_SEND_TIMEOUT";
@@ -24,23 +29,23 @@ static char *translate_error(AppMessageResult result) {
         case APP_MSG_INTERNAL_ERROR: return "APP_MSG_INTERNAL_ERROR";
         default: return "UNKNOWN ERROR";
     }
-}
+}*/
 
 static bool check_refresh(bool do_refresh, bool force_refresh) {
     bool refresh = false;
-    if (ui.state.elapsed_time >= config.refresh_time && ui.state.error == NO_ERROR) {
+    if (elapsed_time >= config.refresh_time && error == NO_ERROR) {
         refresh = true;
     }
-    else if (ui.state.elapsed_time >= config.wait_time && ui.state.error != NO_ERROR) {
+    else if (elapsed_time >= config.wait_time && error != NO_ERROR) {
         refresh = true;
     }
 
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh_time: %d, error: %d, elapsed_time: %d, wait_time: %d", config.refresh_time, ui.state.error, ui.state.elapsed_time, config.wait_time);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh_time: %d, error: %d, elapsed_time: %d, wait_time: %d", config.refresh_time, error, elapsed_time, config.wait_time);
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh: %d, do_refresh: %d, force_refresh: %d", refresh, do_refresh, force_refresh);
 
     if ((refresh && do_refresh) || force_refresh) {
-        ui.state.elapsed_time = 0;
-        ui.state.error = FETCH_ERROR;
+        elapsed_time = 0;
+        error = FETCH_ERROR;
 
         Tuplet value = TupletInteger(APP_KEY_FETCH, 1);
         DictionaryIterator *iter;
@@ -62,42 +67,12 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
     return refresh;
 }
 
-static void handle_tick_helper(struct tm *tick_time, TimeUnits units_changed) {
-    if (units_changed & MINUTE_UNIT) {
-        strftime(ui.texts.time, sizeof(ui.texts.time), clock_is_24h_style() ? "%H:%M" : "%I:%M", tick_time);
-
-        //Remove leading 0
-        if (ui.texts.time[0] == '0') {
-            memmove(ui.texts.time, &ui.texts.time[1], sizeof(ui.texts.time) - 1);
-            ui.texts.time_zero = true;
-        }
-        else {
-            ui.texts.time_zero = false;
-        }
-    }
-
-    if (units_changed & DAY_UNIT) {
-        tr_date(tick_time);
-    }
-
-    if (units_changed & MONTH_UNIT) {
-        tr_month(tick_time);
-    }
-
-    tr_am_pm(tick_time);
-    ui_time_update();
-    ui_colorize();
-    ui_status_bar();
-}
-
 static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
-    handle_tick_helper(tick_time, units_changed);
-
     if (units_changed & HOUR_UNIT && config.hourly_vibrate == 1) {
         vibes_short_pulse();
     }
 
-    ui.state.elapsed_time++;
+    elapsed_time++;
     if (connection_service_peek_pebble_app_connection()) {
         check_refresh(true, false);
     }
@@ -105,28 +80,28 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
         //Bluetooth not connected and we need to refresh
         bool refresh = check_refresh(false, false);
         if (refresh) {
-            ui.state.condition = -999;
-            ui.state.temperature = -999;
-            ui.state.air_quality_index = -999;
-            ui.state.error = FETCH_ERROR;
-
-            ui_weather_update();
+            ui_set_temperature(-999, FETCH_ERROR);
+            ui_set_condition(-999, FETCH_ERROR);
+            ui_set_aqi(-999, FETCH_ERROR);
         }
     }
+
+    ui_set_datetime(tick_time, units_changed);
+    ui_colorize(); //TODO only colorize when changing from night to day
 }
 
 static void msg_failed_handler(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "message failed to send: %s", translate_error(reason));
-    ui.state.error = FETCH_ERROR;
-    if (connection_service_peek_pebble_app_connection() && ui.state.retry_times > 0) {
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "message failed to send: %s", translate_error(reason));
+    error = FETCH_ERROR;
+    if (connection_service_peek_pebble_app_connection() && retry_times > 0) {
         check_refresh(true, true);
-        ui.state.retry_times--;
+        retry_times--;
     }
 }
 
-static void msg_droped_handler(AppMessageResult reason, void *context) {
+/*static void msg_droped_handler(AppMessageResult reason, void *context) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "message dropped: %s", translate_error(reason));
-}
+}*/
 
 //static void msg_sent_handler(DictionaryIterator *iterator, void *context) {
 //    APP_LOG(APP_LOG_LEVEL_DEBUG, "message sent sucessfully");
@@ -142,120 +117,194 @@ static void handle_bluetooth(bool connected) {
         }
     }
 
-    ui_status_bar();
+    ui_set_bluetooth(connected);
 }
 
 static void handle_battery(BatteryChargeState battery) {
-    ui_battery_update();
-    ui_weather_update();
+    ui_set_battery_level(battery.charge_percent);
+}
+
+static void health_update() {
+    time_t start = time_start_of_today();
+    time_t end = time(NULL);
+
+    HealthMetric step_metric = HealthMetricStepCount;
+    HealthServiceAccessibilityMask step_mask = health_service_metric_accessible(step_metric, start, end);
+    if (step_mask & HealthServiceAccessibilityMaskAvailable) {
+        int steps = (int) health_service_sum_today(step_metric);
+        ui_set_steps(steps);
+    }
+    else {
+        ui_set_steps(0);
+    }
+
+    HealthMetric distance_metric = HealthMetricWalkedDistanceMeters;
+    HealthServiceAccessibilityMask distance_mask = health_service_metric_accessible(distance_metric, start, end);
+    if (distance_mask & HealthServiceAccessibilityMaskAvailable) {
+        float distance = (float) health_service_sum_today(distance_metric);
+        MeasurementSystem sys = health_service_get_measurement_system_for_display(distance_metric);
+        ui_set_walk_distance(distance, sys);
+    }
+    else {
+        ui_set_walk_distance(0, MeasurementSystemUnknown);
+    }
+
+    HealthMetric calories_metric = HealthMetricActiveKCalories;
+    HealthServiceAccessibilityMask calories_mask = health_service_metric_accessible(calories_metric, start, end);
+    if (calories_mask & HealthServiceAccessibilityMaskAvailable) {
+        int kcal = (int) health_service_sum_today(calories_metric);
+        ui_set_calories(kcal);
+    }
+    else {
+        ui_set_calories(0);
+    }
+}
+
+static void handle_health(HealthEventType event, void *context) {
+    switch(event) {
+        case HealthEventSignificantUpdate:
+        case HealthEventMovementUpdate:
+            health_update();
+
+            break;
+        case HealthEventSleepUpdate:
+            //Nothing to do for now
+            break;
+    }
 }
 
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
+    int temperature = -998; //TODO make -999, -998 defined constants
+    int condition = -998;
+    int aqi = -998;
+    bool config_update = false;
+    bool sun_update = false;
+
     Tuple *t = dict_read_first(iter);
     while(t != NULL) {
         int key = t->key;
         int value = t->value->int32;
         switch(key) {
             case APP_KEY_ERR:
-                ui.state.error = value;
+                error = value;
 
                 break;
 
             case APP_KEY_TEMPERATURE:
-                ui.state.temperature = value;
-                ui.state.elapsed_time = 0;
-                ui.state.retry_times = MAX_RETRIES;
+                temperature = value;
+                elapsed_time = 0;
+                retry_times = MAX_RETRIES;
 
                 break;
 
             case APP_KEY_AIR_QUALITY_INDEX:
-                ui.state.air_quality_index = value;
-                ui.state.elapsed_time = 0;
-                ui.state.retry_times = MAX_RETRIES;
+                aqi = value;
+                elapsed_time = 0;
+                retry_times = MAX_RETRIES;
 
                 break;
 
             case APP_KEY_CONDITION:
-                ui.state.condition = value;
+                condition = value;
                 break;
 
             case APP_KEY_REFRESH_TIME:
+                config_update = true;
                 config.refresh_time = value;
                 break;
 
             case APP_KEY_WAIT_TIME:
+                config_update = true;
                 config.wait_time = value;
                 break;
 
             case APP_KEY_DAY_TEXT_COLOR:
+                config_update = true;
                 config.day_text_color = value;
                 break;
 
             case APP_KEY_DAY_BACKGROUND_COLOR:
+                config_update = true;
                 config.day_background_color = value;
                 break;
 
             case APP_KEY_NIGHT_TEXT_COLOR:
+                config_update = true;
                 config.night_text_color = value;
                 break;
 
             case APP_KEY_NIGHT_BACKGROUND_COLOR:
+                config_update = true;
                 config.night_background_color = value;
                 break;
 
             case APP_KEY_SUNRISE:
+                sun_update = true;
                 config.sunrise = value;
                 break;
 
             case APP_KEY_SUNSET:
+                sun_update = true;
                 config.sunset = value;
                 break;
 
             case APP_KEY_HIDE_BATTERY:
+                config_update = true;
                 config.hide_battery = value;
                 break;
 
             case APP_KEY_VIBRATE_BLUETOOTH:
+                config_update = true;
                 config.vibrate_bluetooth = value;
                 break;
 
             case APP_KEY_LANGUAGE:
+                config_update = true;
                 config.language = value;
                 break;
 
             case APP_KEY_LAYOUT:
+                config_update = true;
                 config.layout = value;
                 break;
 
             case APP_KEY_AIR_QUALITY:
+                config_update = true;
                 config.air_quality = value;
                 break;
 
             case APP_KEY_HOURLY_VIBRATE:
+                config_update = true;
                 config.hourly_vibrate = value;
                 break;
 
             case APP_KEY_SHOW_STATUS_BAR:
+                config_update = true;
                 config.show_status_bar = value;
                 break;
 
             case APP_KEY_STATUS_BAR_COLOR:
+                config_update = true;
                 config.status_bar_color = value;
                 break;
 
             case APP_KEY_STATUS_BAR_TEXT_COLOR:
+                config_update = true;
                 config.status_bar_text_color = value;
                 break;
 
             case APP_KEY_STATUS_BAR1:
+                config_update = true;
                 config.status_bar1 = value;
                 break;
 
             case APP_KEY_STATUS_BAR2:
+                config_update = true;
                 config.status_bar2 = value;
                 break;
 
             case APP_KEY_STATUS_BAR3:
+                config_update = true;
                 config.status_bar3 = value;
                 break;
         }
@@ -263,18 +312,33 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
         t = dict_read_next(iter);
     }
 
-    ui_weather_update();
-    //ui_time_update(); Called in handle_tick_helper
-    ui_battery_update();
-    //ui_colorize(); Called in handle_tick_helper
-    ui_align();
-    ui_status_bar();
+    if (temperature != -998) {
+        ui_set_temperature(temperature, error);
+    }
 
-    time_t now = time(NULL);
-    struct tm *tick_time = localtime(&now);
-    handle_tick_helper(tick_time, SECOND_UNIT | MINUTE_UNIT | HOUR_UNIT | DAY_UNIT | MONTH_UNIT);
+    if (condition != -998) {
+        ui_set_condition(condition, error);
+    }
 
-    save_config();
+    if (aqi != -998) {
+        ui_set_aqi(aqi, error);
+    }
+
+    //TODO have the JS only send sunrise/sunset when it changes
+    if (config_update || sun_update) {
+        save_config();
+
+        time_t now = time(NULL);
+        struct tm *tick_time = localtime(&now); //TODO do these need to be freed???
+
+        ui_set_datetime(tick_time, MINUTE_UNIT | DAY_UNIT | MONTH_UNIT);
+    }
+
+    if (config_update) {
+        ui_layout();
+        ui_colorize();
+        ui_refresh_status_bar();
+    }
 }
 
 static void init(void) {
@@ -283,6 +347,8 @@ static void init(void) {
     load_config();
 
     ui_init();
+    ui_set_condition(-999, error);
+    ui_set_bluetooth(connection_service_peek_pebble_app_connection());
 
     handle_battery(battery_state_service_peek());
 
@@ -294,9 +360,13 @@ static void init(void) {
     battery_state_service_subscribe(&handle_battery);
     bluetooth_connection_service_subscribe(&handle_bluetooth);
 
+    #ifdef PBL_HEALTH
+        health_service_events_subscribe(&handle_health, NULL);
+    #endif
+
     app_message_register_outbox_failed(&msg_failed_handler);
     app_message_register_inbox_received(&msg_received_handler);
-    app_message_register_inbox_dropped(&msg_droped_handler);
+    //app_message_register_inbox_dropped(&msg_droped_handler);
     //app_message_register_outbox_sent(&msg_sent_handler);
     app_message_open(640, 64);
 }
@@ -307,6 +377,7 @@ static void deinit(void) {
     tick_timer_service_unsubscribe();
     battery_state_service_unsubscribe();
     bluetooth_connection_service_unsubscribe();
+    health_service_events_unsubscribe();
     app_message_deregister_callbacks();
 }
 

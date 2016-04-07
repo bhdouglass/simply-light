@@ -1,6 +1,11 @@
 var MessageQueue = require('libs/js-message-queue');
 var constants = require('constants');
 
+var platform = 'aplite';
+if (Pebble.getActiveWatchInfo) {
+    platform = Pebble.getActiveWatchInfo().platform;
+}
+
 var configuration = {
     temperature_units: 'imperial',
     refresh_time: 30,
@@ -27,6 +32,11 @@ var configuration = {
     status_bar2: constants.STATUS_BAR_EMPTY,
     status_bar3: constants.STATUS_BAR_EMPTY,
 };
+
+if (platform != 'aplite') {
+    configuration.status_bar_color = 65535; //Cyan
+    configuration.status_bar_text_color = 5592405; //Dark Gray
+}
 
 var configurationInts = [
     'refresh_time',

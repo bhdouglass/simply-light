@@ -19,3 +19,5 @@ void text_layer_destroy_safe(TextLayer *layer);
 
 GFont fonts_load_resource_font(uint32_t resource_id);
 void fonts_unload_custom_font_safe(GFont font);
+
+GColor get_color(int color);

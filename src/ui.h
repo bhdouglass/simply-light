@@ -2,8 +2,6 @@
 
 #include <pebble.h>
 
-#include "config.h"
-
 #define MARGINTOP 4
 #define STATUS_BAR_MARGINTOP 8
 #define PWIDTH 144
@@ -14,33 +12,31 @@
 #define STATUS_BAR_MARGIN 3
 #define CHARGEUNIT 1.44
 
-#define NO_ERROR 0
-#define FETCH_ERROR 1
-#define WEATHER_ERROR 2
-#define LOCATION_ERROR 3
-#define AQI_ERROR 4
-
-#define MAX_RETRIES 10
-
-struct State {
-    int condition;
-    int temperature;
-    int air_quality_index;
-    int is_day;
-    int elapsed_time;
-    int error;
-    int retry_times;
+struct Fonts {
+    GFont droidsans_bold_50;
+    GFont droidsans_32;
+    GFont droidsans_bold_14;
+    GFont droidsans_mono_20;
+    GFont weather_30;
+    GFont weather_14;
+    GFont material_30;
+    GFont material_14;
 };
 
-struct Fonts {
-    GFont date;
-    GFont time;
-    GFont month;
-    GFont weather;
-    GFont icons;
-    GFont status_bar;
-    GFont status_bar_weather;
-    GFont status_bar_icons;
+struct Texts {
+    char date[10];
+    char time[6];
+    char month[20];
+    char temperature[6];
+    char aqi[4];
+    char condition[4];
+    char ampm[4];
+    char battery_percent[4];
+    char bluetooth[4];
+    char steps_short[6];
+    char steps[8];
+    char distance[6];
+    char calories[6];
 };
 
 struct Layers {
@@ -49,45 +45,35 @@ struct Layers {
     TextLayer *date;
     TextLayer *time;
     TextLayer *month;
-    TextLayer *temperature;
-    TextLayer *condition;
-    Layer *status_bar;
+    TextLayer *left_info;
+    TextLayer *right_info;
+    TextLayer *status_bar;
     TextLayer *status_bar1;
     TextLayer *status_bar2;
     TextLayer *status_bar3;
 };
 
-struct Texts {
-    char date[20];
-    char time[6];
-    bool time_zero;
-    char month[20];
-    char temperature[6];
-    char aqi[6];
-    char condition[5];
-    char am_pm[3];
-    char battery_percent[6];
-    char bluetooth[5];
-};
-
 struct UI {
-    Window        *window;
+    Window *window;
     struct Layers layers;
-    struct Texts  texts;
-    struct Fonts  fonts;
-    struct State  state;
+    struct Fonts fonts;
+    struct Texts texts;
 };
 
-void ui_align();
-void ui_status_bar_item(TextLayer *layer, int item);
-void ui_status_bar();
+void ui_set_datetime(struct tm *tick_time, TimeUnits units_changed);
+void ui_set_temperature(int temp, int error);
+void ui_set_condition(int condition, int error);
+void ui_set_aqi(int aqi, int error);
+void ui_set_bluetooth(bool connected);
+void ui_set_battery_level(int level);
+void ui_set_steps(int steps);
+void ui_set_walk_distance(float distance, MeasurementSystem sys);
+void ui_set_calories(int calories);
+
+void ui_refresh_status_bar();
+void ui_layout();
 void ui_colorize();
-void ui_weather_update();
-void ui_battery_update();
-void ui_battery_dirty(Layer *layer, GContext *ctx);
-void ui_time_update();
-void ui_window_load(Window *window);
-void ui_window_unload(Window *window);
+
 void ui_init();
 void ui_deinit();
 

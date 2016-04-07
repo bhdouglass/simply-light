@@ -4,14 +4,14 @@
 
 //IDs from http://openweathermap.org/weather-conditions
 //Icons from http://erikflowers.github.io/weather-icons/
-void weather_set_condition(int code, int is_day, char *condition_text) {
+void weather_set_condition(int code, bool is_day, char *condition_text) {
     int size = sizeof(condition_text);
 
     //Error or refreshing
     strncpy(condition_text, "\uf03e", size); //wi-cloud-refresh
 
     if (code == CLEAR) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf00d", size); //wi-day-sunny
         }
         else {
@@ -19,7 +19,7 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
         }
     }
     else if (code == CLOUDY) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf002", size); //wi-day-cloudy
         }
         else {
@@ -27,7 +27,7 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
         }
     }
     else if (code == FOG) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf003", size); //wi-day-fog
         }
         else {
@@ -35,7 +35,7 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
         }
     }
     else if (code == LIGHT_RAIN) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf00b", size); //wi-day-sprinkle
         }
         else {
@@ -43,7 +43,7 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
         }
     }
     else if (code == RAIN) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf008", size); //wi-day-rain
         }
         else {
@@ -51,7 +51,7 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
         }
     }
     else if (code == THUNDERSTORM) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf010", size); //wi-day-thunderstorm
         }
         else {
@@ -59,7 +59,7 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
         }
     }
     else if (code == SNOW) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf00a", size); //wi-day-snow
         }
         else {
@@ -67,7 +67,7 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
         }
     }
     else if (code == HAIL) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf004", size); //wi-day-hail
         }
         else {
@@ -93,7 +93,7 @@ void weather_set_condition(int code, int is_day, char *condition_text) {
         strncpy(condition_text, "\uf072", size); //wi-hot
     }
     else if (code == SNOW_THUNDERSTORM) {
-        if (is_day == 1) {
+        if (is_day) {
             strncpy(condition_text, "\uf06b", size); //wi-day-snow-thunderstorm
         }
         else {

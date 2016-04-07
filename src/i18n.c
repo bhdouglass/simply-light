@@ -69,17 +69,17 @@ void tr_month(struct tm *tick_time) {
 }
 
 void tr_am_pm(struct tm *tick_time) {
-    int size = sizeof(ui.texts.am_pm);
+    int size = sizeof(ui.texts.ampm);
 
     if (config.language == 1) { //Hungarian
-        if (tick_time->tm_hour < 12) { strncpy(ui.texts.am_pm, "DE", size); }
-        else { strncpy(ui.texts.am_pm, "DU", size); }
+        if (tick_time->tm_hour < 12) { strncpy(ui.texts.ampm, "DE", size); }
+        else { strncpy(ui.texts.ampm, "DU", size); }
     }
     if (config.language == 2) { //Bahasa Malaysia
-        if (tick_time->tm_hour < 12) { strncpy(ui.texts.am_pm, "PG", size); }
-        else { strncpy(ui.texts.am_pm, "PT", size); }
+        if (tick_time->tm_hour < 12) { strncpy(ui.texts.ampm, "PG", size); }
+        else { strncpy(ui.texts.ampm, "PT", size); }
     }
     else { //Use system language
-        strftime(ui.texts.am_pm, sizeof(ui.texts.am_pm), "%p", tick_time);
+        strftime(ui.texts.ampm, sizeof(ui.texts.ampm), "%p", tick_time);
     }
 }

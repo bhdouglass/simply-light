@@ -15,19 +15,27 @@ void text_layer_move(TextLayer *layer, int x, int y) {
 }
 
 void layer_hide(Layer *layer) {
-    layer_set_hidden(layer, true);
+    if (layer != NULL) {
+        layer_set_hidden(layer, true);
+    }
 }
 
 void text_layer_hide(TextLayer *layer) {
-    layer_hide((Layer *) layer);
+    if (layer != NULL) {
+        layer_hide((Layer *) layer);
+    }
 }
 
 void layer_show(Layer *layer) {
-    layer_set_hidden(layer, false);
+    if (layer != NULL) {
+        layer_set_hidden(layer, false);
+    }
 }
 
 void text_layer_show(TextLayer *layer) {
-    layer_show((Layer *) layer);
+    if (layer != NULL) {
+        layer_show((Layer *) layer);
+    }
 }
 
 Layer *layer_init(Layer *window, GRect frame, LayerUpdateProc update_proc) {
@@ -73,3 +81,25 @@ void fonts_unload_custom_font_safe(GFont font) {
         font = NULL;
     }
 }
+
+GColor get_color(int color) {
+    #ifdef PBL_COLOR
+        if (color == 1) {
+            return GColorWhite;
+        }
+        else {
+            return GColorFromHEX(color);
+        }
+    #else
+        if (color == 0) {
+            return GColorBlack;
+        }
+        else if (color == 2) {
+            return GColorDarkGray;
+        }
+        else {
+            return GColorWhite;
+        }
+    #endif
+}
+

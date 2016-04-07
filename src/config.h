@@ -7,13 +7,16 @@
 #define STATUS_BAR_TEMP 4
 #define STATUS_BAR_CONDITION 5
 #define STATUS_BAR_AMPM 6
+#define STATUS_BAR_STEPS_SHORT 7
+#define STATUS_BAR_STEPS 8
+#define STATUS_BAR_DISTANCE 9
+#define STATUS_BAR_ACTIVE_CAL 10
 
 struct Config {
     int sunrise;
     int sunset;
     int refresh_time;
     int wait_time;
-    int show_am_pm;
     int hide_battery;
     int vibrate_bluetooth;
     int day_text_color;
