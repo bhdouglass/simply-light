@@ -7,6 +7,12 @@
 
 bool is_day = true;
 
+int PWIDTH = 144;
+int HALFPWIDTH = 72;
+int PHEIGHT = 168;
+int HALFPHEIGHT = 84;
+int STATUS_BAR_ITEM_WIDTH = 46;
+
 //TODO don't set font if we don't need to
 void ui_set_status_bar_item(int type, char *text) {
     if (config.status_bar1 == type) {
@@ -122,9 +128,6 @@ void ui_set_condition(int condition, int error) {
         weather_set_condition(condition, is_day, ui.texts.condition);
     }
 
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", condition);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, ui.texts.condition);
-
     text_layer_set_text(ui.layers.right_info, ui.texts.condition);
 
     ui_set_status_bar_item(STATUS_BAR_CONDITION, ui.texts.condition);
@@ -210,7 +213,7 @@ void ui_set_walk_distance(float distance, MeasurementSystem sys) {
 void ui_set_calories(int calories) {
     snprintf(ui.texts.calories, sizeof(ui.texts.calories), "%d", calories);
 
-    ui_set_status_bar_item(STATUS_BAR_ACTIVE_CAL, ui.texts.calories);
+    ui_set_status_bar_item(STATUS_BAR_CAL, ui.texts.calories);
 }
 
 void ui_refresh_status_bar() {
@@ -222,7 +225,7 @@ void ui_refresh_status_bar() {
     ui_set_status_bar_item(STATUS_BAR_STEPS_SHORT, ui.texts.steps_short);
     ui_set_status_bar_item(STATUS_BAR_STEPS, ui.texts.steps);
     ui_set_status_bar_item(STATUS_BAR_DISTANCE, ui.texts.distance);
-    ui_set_status_bar_item(STATUS_BAR_ACTIVE_CAL, ui.texts.calories);
+    ui_set_status_bar_item(STATUS_BAR_CAL, ui.texts.calories);
     ui_set_status_bar_item(STATUS_BAR_AMPM, ui.texts.ampm);
     ui_set_status_bar_item(STATUS_BAR_EMPTY, "");
 }
@@ -230,7 +233,7 @@ void ui_refresh_status_bar() {
 void ui_layout() {
     int top = MARGINTOP;
     if (config.show_status_bar == 1) {
-        top = STATUS_BAR_MARGINTOP;
+        top = MARGINTOP_WITH_STATUS_BAR;
     }
 
     if (config.layout == 1) { //Reverse Classic layout
@@ -238,7 +241,7 @@ void ui_layout() {
         layer_move(ui.layers.battery, 0, PHEIGHT - 90);
         text_layer_move(ui.layers.date, 0, PHEIGHT - 101);
         text_layer_move(ui.layers.month, 0, PHEIGHT - 122);
-        text_layer_move(ui.layers.left_info, 0, PHEIGHT - 157);
+        text_layer_move(ui.layers.left_info, INFO_MARGIN, PHEIGHT - 157);
         text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, PHEIGHT - 154);
     }
     else { //Classic layout
@@ -246,8 +249,8 @@ void ui_layout() {
         layer_move(ui.layers.battery, 0, top + 29);
         text_layer_move(ui.layers.date, 0, top + 60);
         text_layer_move(ui.layers.month, 0, top + 96);
-        text_layer_move(ui.layers.left_info, 0, top + 120);
-        text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, top + 121);
+        text_layer_move(ui.layers.left_info, INFO_MARGIN, top + 118);
+        text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, top + 119);
     }
 
     if (config.hide_battery == 1) {
@@ -301,7 +304,7 @@ void ui_colorize() {
 
 void ui_battery_dirty(Layer *layer, GContext *ctx) {
     BatteryChargeState battery = battery_state_service_peek();
-    int width = battery.charge_percent * CHARGEUNIT;
+    int width = battery.charge_percent * ((float)(PWIDTH) / 10);
 
     int offset = (PWIDTH - width) / 2;
     GColor text_color;
@@ -317,8 +320,17 @@ void ui_battery_dirty(Layer *layer, GContext *ctx) {
     graphics_fill_rect(ctx, GRect(offset, 29, width, 4), 0, GCornerNone);
 }
 
+//TODO set layouts based on percentages
 void ui_window_load(Window *window) {
     ui.layers.window = window_get_root_layer(window);
+
+    //Dynamically set sizes
+    GRect window_bounds = layer_get_bounds(ui.layers.window);
+    PWIDTH = window_bounds.size.w;
+    HALFPWIDTH = window_bounds.size.w / 2;
+    PHEIGHT = window_bounds.size.h;
+    HALFPHEIGHT = window_bounds.size.h / 2;
+    STATUS_BAR_ITEM_WIDTH = (PWIDTH - STATUS_BAR_MARGIN) / 3;
 
     ui.layers.time = text_layer_init(
         ui.layers.window,
@@ -351,7 +363,7 @@ void ui_window_load(Window *window) {
 
     ui.layers.left_info = text_layer_init(
         ui.layers.window,
-        GRect(0, MARGINTOP + 120, HALFPWIDTH, 50),
+        GRect(INFO_MARGIN, MARGINTOP + 118, HALFPWIDTH, 50),
         ui.fonts.droidsans_32,
         GColorClear,
         GColorBlack,
@@ -360,7 +372,7 @@ void ui_window_load(Window *window) {
 
     ui.layers.right_info = text_layer_init(
         ui.layers.window,
-        GRect(HALFPWIDTH + 1, MARGINTOP + 121, HALFPWIDTH, 50),
+        GRect(HALFPWIDTH + 1, MARGINTOP + 119, (HALFPWIDTH - INFO_MARGIN), 50),
         ui.fonts.icons_30,
         GColorClear,
         GColorBlack,
@@ -379,7 +391,7 @@ void ui_window_load(Window *window) {
 
     ui.layers.status_bar1 = text_layer_init(
         ui.layers.window,
-        GRect(STATUS_BAR_MARGIN, 0, STATUS_BAR_ITEM_WIDTH, STATUS_BAR_HEIGHT),
+        GRect(STATUS_BAR_MARGIN, STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
         ui.fonts.droidsans_bold_14,
         GColorClear,
         get_color(config.status_bar_text_color),
@@ -388,7 +400,7 @@ void ui_window_load(Window *window) {
 
     ui.layers.status_bar2 = text_layer_init(
         ui.layers.window,
-        GRect(STATUS_BAR_MARGIN + STATUS_BAR_ITEM_WIDTH, 0, STATUS_BAR_ITEM_WIDTH, STATUS_BAR_HEIGHT),
+        GRect(STATUS_BAR_MARGIN + STATUS_BAR_ITEM_WIDTH, STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
         ui.fonts.droidsans_bold_14,
         GColorClear,
         get_color(config.status_bar_text_color),
@@ -397,7 +409,7 @@ void ui_window_load(Window *window) {
 
     ui.layers.status_bar3 = text_layer_init(
         ui.layers.window,
-        GRect(STATUS_BAR_MARGIN + (STATUS_BAR_ITEM_WIDTH * 2), 0, STATUS_BAR_ITEM_WIDTH, STATUS_BAR_HEIGHT),
+        GRect(STATUS_BAR_MARGIN + (STATUS_BAR_ITEM_WIDTH * 2), STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
         ui.fonts.droidsans_bold_14,
         GColorClear,
         get_color(config.status_bar_text_color),
@@ -429,7 +441,6 @@ void ui_init() {
     ui.texts = texts;
     ui.fonts = fonts;
 
-    //TODO combine material and weather icons
     ui.fonts.droidsans_bold_50 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_50);
     ui.fonts.droidsans_32 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_32);
     ui.fonts.droidsans_bold_14 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_14);

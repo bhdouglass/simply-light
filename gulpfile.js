@@ -54,13 +54,15 @@ var paths = {
 var config = minimist(process.argv.slice(2), {
     default: {
         emulator: false,
-        color: false,
+        aplite: false,
+        basalt: true,
+        chalk: false,
         ip: '192.168.1.21',
         logs: false,
         debug: false,
         config: 'http://simply-light.bhdouglass.com/',
     },
-    boolean: ['emulator', 'color'],
+    boolean: ['emulator', 'aplite', 'basalt', 'chalk'],
     alias: {
         emulator: ['e', 'emu'],
         color: 'c',
@@ -74,11 +76,14 @@ function installCommand(config) {
     if (config.emulator) {
         command += ' --emulator';
 
-        if (config.color) {
-            command += ' basalt';
+        if (config.aplite) {
+            command += ' aplite';
+        }
+        else if (config.chalk) {
+            command += ' chalk';
         }
         else {
-            command += ' aplite';
+            command += ' basalt';
         }
     }
     else {

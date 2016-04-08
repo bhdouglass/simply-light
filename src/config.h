@@ -10,7 +10,7 @@
 #define STATUS_BAR_STEPS_SHORT 7
 #define STATUS_BAR_STEPS 8
 #define STATUS_BAR_DISTANCE 9
-#define STATUS_BAR_ACTIVE_CAL 10
+#define STATUS_BAR_CAL 10
 
 struct Config {
     int sunrise;

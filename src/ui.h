@@ -2,15 +2,21 @@
 
 #include <pebble.h>
 
-#define MARGINTOP 4
-#define STATUS_BAR_MARGINTOP 8
-#define PWIDTH 144
-#define HALFPWIDTH 72
-#define PHEIGHT 168
-#define STATUS_BAR_HEIGHT 16
-#define STATUS_BAR_ITEM_WIDTH 46
+#ifdef PBL_ROUND
+    #define MARGINTOP 12
+    #define MARGINTOP_WITH_STATUS_BAR 12
+    #define STATUS_BAR_MARGINTOP 4
+    #define STATUS_BAR_HEIGHT 20
+    #define INFO_MARGIN 20
+#else
+    #define MARGINTOP 4
+    #define MARGINTOP_WITH_STATUS_BAR 8
+    #define STATUS_BAR_MARGINTOP 0
+    #define STATUS_BAR_HEIGHT 16
+    #define INFO_MARGIN 0
+#endif
+
 #define STATUS_BAR_MARGIN 3
-#define CHARGEUNIT 1.44
 
 struct Fonts {
     GFont droidsans_bold_50;

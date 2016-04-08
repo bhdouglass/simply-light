@@ -154,15 +154,20 @@ static void health_update() {
         ui_set_walk_distance(0, MeasurementSystemUnknown);
     }
 
+    int kcal = 0;
     HealthMetric calories_metric = HealthMetricActiveKCalories;
     HealthServiceAccessibilityMask calories_mask = health_service_metric_accessible(calories_metric, start, end);
     if (calories_mask & HealthServiceAccessibilityMaskAvailable) {
-        int kcal = (int) health_service_sum_today(calories_metric);
-        ui_set_calories(kcal);
+        kcal += (int) health_service_sum_today(calories_metric);
     }
-    else {
-        ui_set_calories(0);
+
+    HealthMetric resting_calories_metric = HealthMetricRestingKCalories;
+    HealthServiceAccessibilityMask resting_calories_mask = health_service_metric_accessible(resting_calories_metric, start, end);
+    if (resting_calories_mask & HealthServiceAccessibilityMaskAvailable) {
+        kcal += (int) health_service_sum_today(resting_calories_metric);
     }
+
+    ui_set_calories(kcal);
 }
 
 static void handle_health(HealthEventType event, void *context) {
