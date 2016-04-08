@@ -171,12 +171,10 @@ void ui_set_battery_level(int level) {
 
 void ui_set_steps(int steps) {
     if (steps >= 1000000) {
-        float msteps = (float)(steps) / 1000000;
-        snprintf(ui.texts.steps_short, sizeof(ui.texts.steps_short), "%d.%dm", (int)(msteps), (int)(msteps * 10) % 10);
+        tr_msteps((float)(steps) / 1000000);
     }
     else if (steps >= 1000) {
-        float ksteps = (float)(steps) / 1000;
-        snprintf(ui.texts.steps_short, sizeof(ui.texts.steps_short), "%d.%dk", (int)(ksteps), (int)(ksteps * 10) % 10);
+        tr_ksteps((float)(steps) / 1000);
     }
     else {
         snprintf(ui.texts.steps_short, sizeof(ui.texts.steps_short), "%d", steps);
@@ -193,13 +191,11 @@ void ui_set_walk_distance(float distance, MeasurementSystem sys) {
 
     switch (sys) {
         case MeasurementSystemMetric:
-            d = distance / 1000;
-            snprintf(ui.texts.distance, sizeof(ui.texts.distance), "%d.%dkm", (int)(d), (int)(d * 10) % 10);
+            tr_kdistance(distance / 1000);
             break;
 
         case MeasurementSystemImperial:
-            d = distance * 0.000621371; //To miles
-            snprintf(ui.texts.distance, sizeof(ui.texts.distance), "%d.%dmi", (int)(d), (int)(d * 10) % 10);
+            tr_midistance(distance * 0.000621371); //Meters to miles
             break;
 
         case MeasurementSystemUnknown:

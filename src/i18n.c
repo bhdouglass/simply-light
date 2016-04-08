@@ -49,7 +49,7 @@ void tr_month(struct tm *tick_time) {
         else if (tick_time->tm_mon == 10) { strncpy(ui.texts.month, "November", size); }
         else if (tick_time->tm_mon == 11) { strncpy(ui.texts.month, "December", size); }
     }
-    if (config.language == 2) { //Bahasa Malaysia
+    else if (config.language == 2) { //Bahasa Malaysia
         if (tick_time->tm_mon == 0) { strncpy(ui.texts.month, "Januari", size); }
         else if (tick_time->tm_mon == 1) { strncpy(ui.texts.month, "Febuari", size); }
         else if (tick_time->tm_mon == 2) { strncpy(ui.texts.month, "Mac", size); }
@@ -75,11 +75,59 @@ void tr_am_pm(struct tm *tick_time) {
         if (tick_time->tm_hour < 12) { strncpy(ui.texts.ampm, "DE", size); }
         else { strncpy(ui.texts.ampm, "DU", size); }
     }
-    if (config.language == 2) { //Bahasa Malaysia
+    else if (config.language == 2) { //Bahasa Malaysia
         if (tick_time->tm_hour < 12) { strncpy(ui.texts.ampm, "PG", size); }
         else { strncpy(ui.texts.ampm, "PT", size); }
     }
     else { //Use system language
         strftime(ui.texts.ampm, sizeof(ui.texts.ampm), "%p", tick_time);
     }
+}
+
+void tr_msteps(float msteps) {
+    /*if (config.language == 1) { //Hungarian
+
+    }
+    else if (config.language == 2) { //Bahasa Malaysia
+
+    }
+    else {*/ //English
+        snprintf(ui.texts.steps_short, sizeof(ui.texts.steps_short), "%d.%dm", (int)(msteps), (int)(msteps * 10) % 10);
+    //}
+}
+
+void tr_ksteps(float ksteps) {
+    /*if (config.language == 1) { //Hungarian
+
+    }
+    else if (config.language == 2) { //Bahasa Malaysia
+
+    }
+    else {*/ //English
+        snprintf(ui.texts.steps_short, sizeof(ui.texts.steps_short), "%d.%dk", (int)(ksteps), (int)(ksteps * 10) % 10);
+    //}
+}
+
+void tr_kdistance(float distance) {
+    /*if (config.language == 1) { //Hungarian
+
+    }
+    else if (config.language == 2) { //Bahasa Malaysia
+
+    }
+    else {*/ //English
+        snprintf(ui.texts.distance, sizeof(ui.texts.distance), "%d.%dkm", (int)(distance), (int)(distance * 10) % 10);
+    //}
+}
+
+void tr_midistance(float distance) {
+    /*if (config.language == 1) { //Hungarian
+
+    }
+    else if (config.language == 2) { //Bahasa Malaysia
+
+    }
+    else {*/ //English
+        snprintf(ui.texts.distance, sizeof(ui.texts.distance), "%d.%dmi", (int)(distance), (int)(distance * 10) % 10);
+    //}
 }
