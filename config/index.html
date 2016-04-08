@@ -181,21 +181,21 @@
                 <color-picker ng-model="config.status_bar_text_color" platform="{{platform}}" title="Status Bar Text Color"></color-picker>
             </div>
 
-            <div class="item-container-content" ng-show="config.show_status_bar">
+            <div class="item-container-content" ng-show="config.show_status_bar && platform != 'chalk'">
                 <label class="item">
                     Status Item Left
                     <select class="item-select" dir="rtl" id="status_bar1" ng-model="config.status_bar1" ng-options="o.value as o.label for o in status_items"></select>
                 </label>
             </div>
 
-            <div class="item-container-content" ng-show="config.show_status_bar">
+            <div class="item-container-content" ng-show="config.show_status_bar && platform != 'chalk'">
                 <label class="item">
                     Status Item Middle
                     <select class="item-select" dir="rtl" id="status_bar2" ng-model="config.status_bar2" ng-options="o.value as o.label for o in status_items"></select>
                 </label>
             </div>
 
-            <div class="item-container-content" ng-show="config.show_status_bar">
+            <div class="item-container-content" ng-show="config.show_status_bar && platform != 'chalk'">
                 <label class="item">
                     Status Item Right
                     <select class="item-select" dir="rtl" id="status_bar3" ng-model="config.status_bar3" ng-options="o.value as o.label for o in status_items"></select>

@@ -68,7 +68,7 @@
       {
         "name": "DROIDSANS_BOLD_14",
         "file": "fonts/DroidSans-Bold.ttf",
-        "characterRegex": "[0-9%APMDUEPGT\u00b0.mki]",
+        "characterRegex": "[0-9%APMDUEPGT\u00b0.mkiba]",
         "type": "font"
       },
       {

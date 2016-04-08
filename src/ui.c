@@ -70,6 +70,14 @@ void ui_set_datetime(struct tm *tick_time, TimeUnits units_changed) {
 
     tr_am_pm(tick_time);
 
+    //For pretty screenshots
+    /*strncpy(ui.texts.time, "9:00", sizeof(ui.texts.time));
+    strncpy(ui.texts.date, "Fri 27", sizeof(ui.texts.date));
+    strncpy(ui.texts.month, "May", sizeof(ui.texts.month));*/
+    /*strncpy(ui.texts.time, "12:15", sizeof(ui.texts.time));
+    strncpy(ui.texts.date, "Mon 5", sizeof(ui.texts.date));
+    strncpy(ui.texts.month, "November", sizeof(ui.texts.month));*/
+
     text_layer_set_text(ui.layers.time, ui.texts.time);
     text_layer_set_text(ui.layers.date, ui.texts.date);
     text_layer_set_text(ui.layers.month, ui.texts.month);
@@ -99,6 +107,9 @@ void ui_set_temperature(int temp, int error) {
         snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", temp);
     }
 
+    //For pretty screenshots
+    //strncpy(ui.texts.temperature, "40\u00b0", sizeof(ui.texts.temperature));
+
     if (!config.air_quality) {
         text_layer_set_text(ui.layers.left_info, ui.texts.temperature);
     }
@@ -127,6 +138,9 @@ void ui_set_condition(int condition, int error) {
     else {
         weather_set_condition(condition, is_day, ui.texts.condition);
     }
+
+    //For pretty screenshots
+    //strncpy(ui.texts.condition, "\uf056", sizeof(ui.texts.condition));
 
     text_layer_set_text(ui.layers.right_info, ui.texts.condition);
 
@@ -170,6 +184,9 @@ void ui_set_battery_level(int level) {
 }
 
 void ui_set_steps(int steps) {
+    //For pretty screenshots
+    //steps = 2600;
+
     if (steps >= 1000000) {
         tr_msteps((float)(steps) / 1000000);
     }
@@ -189,6 +206,9 @@ void ui_set_steps(int steps) {
 void ui_set_walk_distance(float distance, MeasurementSystem sys) {
     float d = 0;
 
+    //For pretty screenshots
+    //distance = 1770.28; //1.1 miles in meters
+
     switch (sys) {
         case MeasurementSystemMetric:
             tr_kdistance(distance / 1000);
@@ -207,6 +227,9 @@ void ui_set_walk_distance(float distance, MeasurementSystem sys) {
 }
 
 void ui_set_calories(int calories) {
+    //For pretty screenshots
+    //calories = 2350;
+
     snprintf(ui.texts.calories, sizeof(ui.texts.calories), "%d", calories);
 
     ui_set_status_bar_item(STATUS_BAR_CAL, ui.texts.calories);
@@ -300,7 +323,7 @@ void ui_colorize() {
 
 void ui_battery_dirty(Layer *layer, GContext *ctx) {
     BatteryChargeState battery = battery_state_service_peek();
-    int width = battery.charge_percent * ((float)(PWIDTH) / 10);
+    int width = battery.charge_percent * ((float)(PWIDTH) / 100);
 
     int offset = (PWIDTH - width) / 2;
     GColor text_color;

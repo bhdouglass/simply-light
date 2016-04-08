@@ -89,7 +89,7 @@ void tr_msteps(float msteps) {
 
     }
     else if (config.language == 2) { //Bahasa Malaysia
-
+        //Same as English
     }
     else {*/ //English
         snprintf(ui.texts.steps_short, sizeof(ui.texts.steps_short), "%d.%dm", (int)(msteps), (int)(msteps * 10) % 10);
@@ -101,7 +101,7 @@ void tr_ksteps(float ksteps) {
 
     }
     else if (config.language == 2) { //Bahasa Malaysia
-
+        //Same as English
     }
     else {*/ //English
         snprintf(ui.texts.steps_short, sizeof(ui.texts.steps_short), "%d.%dk", (int)(ksteps), (int)(ksteps * 10) % 10);
@@ -113,7 +113,7 @@ void tr_kdistance(float distance) {
 
     }
     else if (config.language == 2) { //Bahasa Malaysia
-
+        //Same as English
     }
     else {*/ //English
         snprintf(ui.texts.distance, sizeof(ui.texts.distance), "%d.%dkm", (int)(distance), (int)(distance * 10) % 10);
@@ -124,10 +124,11 @@ void tr_midistance(float distance) {
     /*if (config.language == 1) { //Hungarian
 
     }
-    else if (config.language == 2) { //Bahasa Malaysia
-
+    else*/
+    if (config.language == 2) { //Bahasa Malaysia
+        snprintf(ui.texts.distance, sizeof(ui.texts.distance), "%d.%dba", (int)(distance), (int)(distance * 10) % 10);
     }
-    else {*/ //English
+    else { //English
         snprintf(ui.texts.distance, sizeof(ui.texts.distance), "%d.%dmi", (int)(distance), (int)(distance * 10) % 10);
-    //}
+    }
 }
