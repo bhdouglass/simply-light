@@ -71,6 +71,15 @@ void ui_set_datetime(struct tm *tick_time, TimeUnits units_changed) {
     tr_am_pm(tick_time);
 
     //For pretty screenshots
+    /*strncpy(ui.texts.time, "12:00", sizeof(ui.texts.time));
+    strncpy(ui.texts.date, "Thu 28", sizeof(ui.texts.date));
+    strncpy(ui.texts.month, "May", sizeof(ui.texts.month));*/
+    /*strncpy(ui.texts.time, "6:30", sizeof(ui.texts.time));
+    strncpy(ui.texts.date, "Thu 28", sizeof(ui.texts.date));
+    strncpy(ui.texts.month, "February", sizeof(ui.texts.month));*/
+    /*strncpy(ui.texts.time, "9:00", sizeof(ui.texts.time));
+    strncpy(ui.texts.date, "Fri 27", sizeof(ui.texts.date));
+    strncpy(ui.texts.month, "May", sizeof(ui.texts.month));*/
     /*strncpy(ui.texts.time, "9:00", sizeof(ui.texts.time));
     strncpy(ui.texts.date, "Fri 27", sizeof(ui.texts.date));
     strncpy(ui.texts.month, "May", sizeof(ui.texts.month));*/
@@ -108,6 +117,9 @@ void ui_set_temperature(int temp, int error) {
     }
 
     //For pretty screenshots
+    //strncpy(ui.texts.temperature, "75\u00b0", sizeof(ui.texts.temperature));
+    //strncpy(ui.texts.temperature, "32\u00b0", sizeof(ui.texts.temperature));
+    //strncpy(ui.texts.temperature, "50\u00b0", sizeof(ui.texts.temperature));
     //strncpy(ui.texts.temperature, "40\u00b0", sizeof(ui.texts.temperature));
 
     if (!config.air_quality) {
@@ -140,6 +152,9 @@ void ui_set_condition(int condition, int error) {
     }
 
     //For pretty screenshots
+    //strncpy(ui.texts.condition, "\uf00d", sizeof(ui.texts.condition));
+    //strncpy(ui.texts.condition, "\uf02a", sizeof(ui.texts.condition));
+    //strncpy(ui.texts.condition, "\uf008", sizeof(ui.texts.condition));
     //strncpy(ui.texts.condition, "\uf056", sizeof(ui.texts.condition));
 
     text_layer_set_text(ui.layers.right_info, ui.texts.condition);
@@ -154,6 +169,9 @@ void ui_set_aqi(int aqi, int error) {
     else {
         snprintf(ui.texts.aqi, sizeof(ui.texts.aqi), "%d", aqi);
     }
+
+    //For pretty screenshots
+    //snprintf(ui.texts.aqi, sizeof(ui.texts.aqi), "%d", 30);
 
     if (config.air_quality) {
         text_layer_set_text(ui.layers.left_info, ui.texts.aqi);
