@@ -177,8 +177,10 @@
             </div>
 
             <div ng-if="loaded && config.show_status_bar">
-                <color-picker ng-model="config.status_bar_color" platform="{{platform}}" title="Status Bar Color" background="true"></color-picker>
-                <color-picker ng-model="config.status_bar_text_color" platform="{{platform}}" title="Status Bar Text Color"></color-picker>
+                <color-picker ng-model="config.status_bar_day_color" platform="{{platform}}" title="Status Bar Day Color" background="true"></color-picker>
+                <color-picker ng-model="config.status_bar_day_text_color" platform="{{platform}}" title="Status Bar Day Text Color"></color-picker>
+                <color-picker ng-model="config.status_bar_night_color" platform="{{platform}}" title="Status Bar Night Color" background="true"></color-picker>
+                <color-picker ng-model="config.status_bar_night_text_color" platform="{{platform}}" title="Status Bar Night Text Color"></color-picker>
             </div>
 
             <div class="item-container-content" ng-show="config.show_status_bar && platform != 'chalk'">

@@ -335,8 +335,19 @@ void ui_colorize() {
     text_layer_set_text_color(ui.layers.left_info, text_color);
     text_layer_set_text_color(ui.layers.right_info, text_color);
 
-    GColor status_bar_text_color = get_color(config.status_bar_text_color);
-    GColor status_bar_color = get_color(config.status_bar_color);
+    GColor status_bar_text_color;
+    GColor status_bar_color;
+
+    if (is_day) {
+        status_bar_text_color = get_color(config.status_bar_day_text_color);
+        status_bar_color = get_color(config.status_bar_day_color);
+    }
+    else {
+        status_bar_text_color = get_color(config.status_bar_night_text_color);
+        status_bar_color = get_color(config.status_bar_night_color);
+    }
+
+
     text_layer_set_text_color(ui.layers.status_bar1, status_bar_text_color);
     text_layer_set_text_color(ui.layers.status_bar2, status_bar_text_color);
     text_layer_set_text_color(ui.layers.status_bar3, status_bar_text_color);
@@ -425,8 +436,8 @@ void ui_window_load(Window *window) {
         ui.layers.window,
         GRect(0, 0, PWIDTH, STATUS_BAR_HEIGHT),
         ui.fonts.droidsans_bold_14,
-        get_color(config.status_bar_color),
-        get_color(config.status_bar_text_color),
+        get_color(config.status_bar_day_color),
+        get_color(config.status_bar_day_text_color),
         GTextAlignmentLeft
     );
 
@@ -435,7 +446,7 @@ void ui_window_load(Window *window) {
         GRect(STATUS_BAR_MARGIN, STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
         ui.fonts.droidsans_bold_14,
         GColorClear,
-        get_color(config.status_bar_text_color),
+        get_color(config.status_bar_day_text_color),
         GTextAlignmentLeft
     );
 
@@ -444,7 +455,7 @@ void ui_window_load(Window *window) {
         GRect(STATUS_BAR_MARGIN + STATUS_BAR_ITEM_WIDTH, STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
         ui.fonts.droidsans_bold_14,
         GColorClear,
-        get_color(config.status_bar_text_color),
+        get_color(config.status_bar_day_text_color),
         GTextAlignmentCenter
     );
 
@@ -453,7 +464,7 @@ void ui_window_load(Window *window) {
         GRect(STATUS_BAR_MARGIN + (STATUS_BAR_ITEM_WIDTH * 2), STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
         ui.fonts.droidsans_bold_14,
         GColorClear,
-        get_color(config.status_bar_text_color),
+        get_color(config.status_bar_day_text_color),
         GTextAlignmentRight
     );
 

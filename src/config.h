@@ -28,8 +28,10 @@ struct Config {
     int air_quality;
     int hourly_vibrate;
     int show_status_bar;
-    int status_bar_color;
-    int status_bar_text_color;
+    int status_bar_day_color;
+    int status_bar_day_text_color;
+    int status_bar_night_color;
+    int status_bar_night_text_color;
     int status_bar1;
     int status_bar2;
     int status_bar3;

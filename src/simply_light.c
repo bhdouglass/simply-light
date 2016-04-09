@@ -293,14 +293,24 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 config.show_status_bar = value;
                 break;
 
-            case APP_KEY_STATUS_BAR_COLOR:
+            case APP_KEY_STATUS_BAR_DAY_COLOR:
                 config_update = true;
-                config.status_bar_color = value;
+                config.status_bar_day_color = value;
                 break;
 
-            case APP_KEY_STATUS_BAR_TEXT_COLOR:
+            case APP_KEY_STATUS_BAR_DAY_TEXT_COLOR:
                 config_update = true;
-                config.status_bar_text_color = value;
+                config.status_bar_day_text_color = value;
+                break;
+
+            case APP_KEY_STATUS_BAR_NIGHT_COLOR:
+                config_update = true;
+                config.status_bar_night_color = value;
+                break;
+
+            case APP_KEY_STATUS_BAR_NIGHT_TEXT_COLOR:
+                config_update = true;
+                config.status_bar_night_text_color = value;
                 break;
 
             case APP_KEY_STATUS_BAR1:

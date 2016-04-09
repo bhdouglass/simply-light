@@ -40,11 +40,13 @@
     "aqi_degree": 24,
     "hourly_vibrate": 25,
     "show_status_bar": 26,
-    "status_bar_color": 27,
-    "status_bar_text_color": 28,
+    "status_bar_day_color": 27,
+    "status_bar_day_text_color": 28,
     "status_bar1": 29,
     "status_bar2": 30,
-    "status_bar3": 31
+    "status_bar3": 31,
+    "status_bar_night_color": 32,
+    "status_bar_night_text_color": 33
   },
   "resources": {
     "media": [

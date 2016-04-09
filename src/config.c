@@ -20,17 +20,20 @@ void load_config() {
     config.air_quality = 0;
     config.hourly_vibrate = 0;
     config.show_status_bar = 1;
-    config.status_bar_color = 0;
-    config.status_bar_text_color = 1;
+    config.status_bar_day_color = 0;
+    config.status_bar_day_text_color = 1;
+    config.status_bar_night_color = 0;
+    config.status_bar_night_text_color = 1;
     config.status_bar1 = STATUS_BAR_EMPTY;
     config.status_bar2 = STATUS_BAR_EMPTY;
     config.status_bar3 = STATUS_BAR_EMPTY;
 
     #ifdef PBL_COLOR
-        config.status_bar_color = 65535; //Cyan
-        config.status_bar_text_color = 5592405; //Dark Gray
+        config.status_bar_day_color = 65535; //Cyan
+        config.status_bar_day_text_color = 5592405; //Dark Gray
+        config.status_bar_night_color = 65535; //Cyan
+        config.status_bar_night_text_color = 5592405; //Dark Gray
     #endif
-
 
     if (persist_exists(APP_KEY_DAY_TEXT_COLOR)) {
         config.day_text_color = persist_read_int(APP_KEY_DAY_TEXT_COLOR);
@@ -84,12 +87,20 @@ void load_config() {
         config.show_status_bar = persist_read_int(APP_KEY_SHOW_STATUS_BAR);
     }
 
-    if (persist_exists(APP_KEY_STATUS_BAR_COLOR)) {
-        config.status_bar_color = persist_read_int(APP_KEY_STATUS_BAR_COLOR);
+    if (persist_exists(APP_KEY_STATUS_BAR_DAY_COLOR)) {
+        config.status_bar_day_color = persist_read_int(APP_KEY_STATUS_BAR_DAY_COLOR);
     }
 
-    if (persist_exists(APP_KEY_STATUS_BAR_TEXT_COLOR)) {
-        config.status_bar_text_color = persist_read_int(APP_KEY_STATUS_BAR_TEXT_COLOR);
+    if (persist_exists(APP_KEY_STATUS_BAR_DAY_TEXT_COLOR)) {
+        config.status_bar_day_text_color = persist_read_int(APP_KEY_STATUS_BAR_DAY_TEXT_COLOR);
+    }
+
+    if (persist_exists(APP_KEY_STATUS_BAR_NIGHT_COLOR)) {
+        config.status_bar_night_color = persist_read_int(APP_KEY_STATUS_BAR_NIGHT_COLOR);
+    }
+
+    if (persist_exists(APP_KEY_STATUS_BAR_NIGHT_TEXT_COLOR)) {
+        config.status_bar_night_text_color = persist_read_int(APP_KEY_STATUS_BAR_NIGHT_TEXT_COLOR);
     }
 
     if (persist_exists(APP_KEY_STATUS_BAR1)) {
@@ -119,8 +130,10 @@ void save_config() {
     persist_write_int(APP_KEY_AIR_QUALITY, config.air_quality);
     persist_write_int(APP_KEY_HOURLY_VIBRATE, config.hourly_vibrate);
     persist_write_int(APP_KEY_SHOW_STATUS_BAR, config.show_status_bar);
-    persist_write_int(APP_KEY_STATUS_BAR_COLOR, config.status_bar_color);
-    persist_write_int(APP_KEY_STATUS_BAR_TEXT_COLOR, config.status_bar_text_color);
+    persist_write_int(APP_KEY_STATUS_BAR_DAY_COLOR, config.status_bar_day_color);
+    persist_write_int(APP_KEY_STATUS_BAR_DAY_TEXT_COLOR, config.status_bar_day_text_color);
+    persist_write_int(APP_KEY_STATUS_BAR_NIGHT_COLOR, config.status_bar_night_color);
+    persist_write_int(APP_KEY_STATUS_BAR_NIGHT_TEXT_COLOR, config.status_bar_night_text_color);
     persist_write_int(APP_KEY_STATUS_BAR1, config.status_bar1);
     persist_write_int(APP_KEY_STATUS_BAR2, config.status_bar2);
     persist_write_int(APP_KEY_STATUS_BAR3, config.status_bar3);

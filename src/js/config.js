@@ -26,16 +26,20 @@ var configuration = {
     openweathermap_api_key: '',
     forecastio_api_key: '',
     show_status_bar: 1,
-    status_bar_color: 0,
-    status_bar_text_color: 1,
+    status_bar_day_color: 0,
+    status_bar_day_text_color: 1,
+    status_bar_night_color: 0,
+    status_bar_night_text_color: 1,
     status_bar1: constants.STATUS_BAR_EMPTY,
     status_bar2: constants.STATUS_BAR_EMPTY,
     status_bar3: constants.STATUS_BAR_EMPTY,
 };
 
 if (platform != 'aplite') {
-    configuration.status_bar_color = 65535; //Cyan
-    configuration.status_bar_text_color = 5592405; //Dark Gray
+    configuration.status_bar_day_color = 65535; //Cyan
+    configuration.status_bar_day_text_color = 5592405; //Dark Gray
+    configuration.status_bar_night_color = 65535; //Cyan
+    configuration.status_bar_night_text_color = 5592405; //Dark Gray
 }
 
 var configurationInts = [
@@ -55,8 +59,10 @@ var configurationInts = [
     'air_quality',
     'hourly_vibrate',
     'show_status_bar',
-    'status_bar_color',
-    'status_bar_text_color',
+    'status_bar_day_color',
+    'status_bar_day_text_color',
+    'status_bar_night_day_color',
+    'status_bar_night_text_color',
     'status_bar1',
     'status_bar2',
     'status_bar3',
@@ -85,8 +91,10 @@ function send() {
         air_quality: configuration.air_quality,
         hourly_vibrate: configuration.hourly_vibrate,
         show_status_bar: configuration.show_status_bar,
-        status_bar_color: configuration.status_bar_color,
-        status_bar_text_color: configuration.status_bar_text_color,
+        status_bar_day_color: configuration.status_bar_day_color,
+        status_bar_day_text_color: configuration.status_bar_day_text_color,
+        status_bar_night_color: configuration.status_bar_night_color,
+        status_bar_night_text_color: configuration.status_bar_night_text_color,
         status_bar1: configuration.status_bar1,
         status_bar2: configuration.status_bar2,
         status_bar3: configuration.status_bar3,
