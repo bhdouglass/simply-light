@@ -204,8 +204,6 @@ void ui_set_steps(int steps) {
 }
 
 void ui_set_walk_distance(float distance, MeasurementSystem sys) {
-    float d = 0;
-
     //For pretty screenshots
     //distance = 1770.28; //1.1 miles in meters
 
@@ -281,9 +279,15 @@ void ui_layout() {
 
     if (config.show_status_bar == 1) {
         text_layer_show(ui.layers.status_bar);
-        text_layer_show(ui.layers.status_bar1);
         text_layer_show(ui.layers.status_bar2);
-        text_layer_show(ui.layers.status_bar3);
+
+        #ifdef PBL_ROUND
+            text_layer_hide(ui.layers.status_bar1);
+            text_layer_hide(ui.layers.status_bar3);
+        #else
+            text_layer_show(ui.layers.status_bar1);
+            text_layer_show(ui.layers.status_bar3);
+        #endif
     }
     else {
         text_layer_hide(ui.layers.status_bar);
