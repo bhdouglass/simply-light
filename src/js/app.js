@@ -169,9 +169,15 @@ function fetchWeather(pos) {
             conditions[WeatherMan.EXTREME_HEAT] = constants.EXTREME_HEAT;
             conditions[WeatherMan.SNOW_THUNDERSTORM] = constants.SNOW_THUNDERSTORM;
 
+            var cond = conditions[condition] ? conditions[condition] : constants.CLEAR;
+            console.log('temp: ' + temp);
+            console.log('condition: ' + cond);
+            console.log('sunrise: ' + result.getSunriseFormatted());
+            console.log('sunset: ' + result.getSunsetFormatted());
+
             fetchAirQuality(pos, {
                 temperature: temp,
-                condition: conditions[condition] ? conditions[condition] : constants.CLEAR,
+                condition: cond,
                 sunrise: result.getSunrise(),
                 sunset: result.getSunset(),
                 err: constants.NO_ERROR,
