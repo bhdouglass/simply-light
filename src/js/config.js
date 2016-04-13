@@ -2,7 +2,7 @@ var MessageQueue = require('libs/js-message-queue');
 var constants = require('constants');
 
 var platform = 'aplite';
-if (Pebble.getActiveWatchInfo) {
+if (Pebble.getActiveWatchInfo && Pebble.getActiveWatchInfo()) {
     platform = Pebble.getActiveWatchInfo().platform;
 }
 
