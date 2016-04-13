@@ -171,7 +171,7 @@ function fetchWeather(pos) {
 
             var cond = conditions[condition] ? conditions[condition] : constants.CLEAR;
             console.log('temp: ' + temp);
-            console.log('condition: ' + cond);
+            console.log('condition: ' + cond + ' (' + condition + ')');
             console.log('sunrise: ' + result.getSunriseFormatted());
             console.log('sunset: ' + result.getSunsetFormatted());
 

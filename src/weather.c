@@ -15,7 +15,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf00d", size); //wi-day-sunny
         }
         else {
-            strncpy(condition_text, "\uf086", size); //wi-night-alt-clear
+            strncpy(condition_text, "\uf02e", size); //wi-night-clear
         }
     }
     else if (code == CLOUDY) {
@@ -23,7 +23,7 @@ void weather_set_condition(int code, bool is_day, char *condition_text) {
             strncpy(condition_text, "\uf002", size); //wi-day-cloudy
         }
         else {
-            strncpy(condition_text, "\uf031", size); //wi-night-cloudy
+            strncpy(condition_text, "\uf086", size); //wi-night-alt-cloudy
         }
     }
     else if (code == FOG) {
