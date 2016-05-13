@@ -61,7 +61,7 @@ var configurationInts = [
     'show_status_bar',
     'status_bar_day_color',
     'status_bar_day_text_color',
-    'status_bar_night_day_color',
+    'status_bar_night_color',
     'status_bar_night_text_color',
     'status_bar1',
     'status_bar2',

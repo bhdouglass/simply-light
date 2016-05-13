@@ -194,6 +194,9 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
     while(t != NULL) {
         int key = t->key;
         int value = t->value->int32;
+
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox %d => %d", key, value);
+
         switch(key) {
             case APP_KEY_ERR:
                 error = value;
