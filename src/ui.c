@@ -16,7 +16,7 @@ int STATUS_BAR_ITEM_WIDTH = 46;
 //TODO don't set font if we don't need to
 void ui_set_status_bar_item(int type, char *text) {
     if (config.status_bar1 == type) {
-        if (type == STATUS_BAR_CONDITION || type == STATUS_BAR_BLUETOOTH) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
             text_layer_set_font(ui.layers.status_bar1, ui.fonts.icons_14);
         }
         else {
@@ -27,7 +27,7 @@ void ui_set_status_bar_item(int type, char *text) {
     }
 
     if (config.status_bar2 == type) {
-        if (type == STATUS_BAR_CONDITION || type == STATUS_BAR_BLUETOOTH) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
             text_layer_set_font(ui.layers.status_bar2, ui.fonts.icons_14);
         }
         else {
@@ -38,7 +38,7 @@ void ui_set_status_bar_item(int type, char *text) {
     }
 
     if (config.status_bar3 == type) {
-        if (type == STATUS_BAR_CONDITION || type == STATUS_BAR_BLUETOOTH) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
             text_layer_set_font(ui.layers.status_bar3, ui.fonts.icons_14);
         }
         else {
@@ -90,7 +90,7 @@ void ui_set_datetime(struct tm *tick_time, TimeUnits units_changed) {
     text_layer_set_text(ui.layers.time, ui.texts.time);
     text_layer_set_text(ui.layers.date, ui.texts.date);
     text_layer_set_text(ui.layers.month, ui.texts.month);
-    ui_set_status_bar_item(STATUS_BAR_AMPM, ui.texts.ampm);
+    ui_set_status_bar_item(STATUS_ITEMS_AMPM, ui.texts.ampm);
 
     //Update day/night flag
     if (config.sunrise > 0 && config.sunset > 0) {
@@ -126,7 +126,7 @@ void ui_set_temperature(int temp, int error) {
         text_layer_set_text(ui.layers.left_info, ui.texts.temperature);
     }
 
-    ui_set_status_bar_item(STATUS_BAR_TEMP, ui.texts.temperature);
+    ui_set_status_bar_item(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
 }
 
 void ui_set_condition(int condition, int error) {
@@ -159,7 +159,7 @@ void ui_set_condition(int condition, int error) {
 
     text_layer_set_text(ui.layers.right_info, ui.texts.condition);
 
-    ui_set_status_bar_item(STATUS_BAR_CONDITION, ui.texts.condition);
+    ui_set_status_bar_item(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
 }
 
 void ui_set_aqi(int aqi, int error) {
@@ -177,7 +177,7 @@ void ui_set_aqi(int aqi, int error) {
         text_layer_set_text(ui.layers.left_info, ui.texts.aqi);
     }
 
-    ui_set_status_bar_item(STATUS_BAR_AQI, ui.texts.aqi);
+    ui_set_status_bar_item(STATUS_ITEMS_AIR_QUALITY_INDEX, ui.texts.aqi);
 }
 
 void ui_set_bluetooth(bool connected) {
@@ -188,7 +188,7 @@ void ui_set_bluetooth(bool connected) {
         strncpy(ui.texts.bluetooth, "\uf27f", sizeof(ui.texts.bluetooth));
     }
 
-    ui_set_status_bar_item(STATUS_BAR_BLUETOOTH, ui.texts.bluetooth);
+    ui_set_status_bar_item(STATUS_ITEMS_BLUETOOTH_STATUS, ui.texts.bluetooth);
 }
 
 void ui_set_battery_level(int level) {
@@ -198,7 +198,7 @@ void ui_set_battery_level(int level) {
         layer_mark_dirty(ui.layers.battery);
     }
 
-    ui_set_status_bar_item(STATUS_BAR_BATTERY_LEVEL, ui.texts.battery_percent);
+    ui_set_status_bar_item(STATUS_ITEMS_BATTERY_LEVEL, ui.texts.battery_percent);
 }
 
 void ui_set_steps(int steps) {
@@ -217,8 +217,8 @@ void ui_set_steps(int steps) {
 
     snprintf(ui.texts.steps, sizeof(ui.texts.steps), "%d", steps);
 
-    ui_set_status_bar_item(STATUS_BAR_STEPS_SHORT, ui.texts.steps_short);
-    ui_set_status_bar_item(STATUS_BAR_STEPS, ui.texts.steps);
+    ui_set_status_bar_item(STATUS_ITEMS_STEPS_SHORT, ui.texts.steps_short);
+    ui_set_status_bar_item(STATUS_ITEMS_STEPS_FULL, ui.texts.steps);
 }
 
 void ui_set_walk_distance(float distance, MeasurementSystem sys) {
@@ -239,7 +239,7 @@ void ui_set_walk_distance(float distance, MeasurementSystem sys) {
             break;
     }
 
-    ui_set_status_bar_item(STATUS_BAR_DISTANCE, ui.texts.distance);
+    ui_set_status_bar_item(STATUS_ITEMS_DISTANCE_WALKED, ui.texts.distance);
 }
 
 void ui_set_calories(int calories) {
@@ -248,21 +248,21 @@ void ui_set_calories(int calories) {
 
     snprintf(ui.texts.calories, sizeof(ui.texts.calories), "%d", calories);
 
-    ui_set_status_bar_item(STATUS_BAR_CAL, ui.texts.calories);
+    ui_set_status_bar_item(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
 }
 
 void ui_refresh_status_bar() {
-    ui_set_status_bar_item(STATUS_BAR_TEMP, ui.texts.temperature);
-    ui_set_status_bar_item(STATUS_BAR_CONDITION, ui.texts.condition);
-    ui_set_status_bar_item(STATUS_BAR_AQI, ui.texts.aqi);
-    ui_set_status_bar_item(STATUS_BAR_BLUETOOTH, ui.texts.bluetooth);
-    ui_set_status_bar_item(STATUS_BAR_BATTERY_LEVEL, ui.texts.battery_percent);
-    ui_set_status_bar_item(STATUS_BAR_STEPS_SHORT, ui.texts.steps_short);
-    ui_set_status_bar_item(STATUS_BAR_STEPS, ui.texts.steps);
-    ui_set_status_bar_item(STATUS_BAR_DISTANCE, ui.texts.distance);
-    ui_set_status_bar_item(STATUS_BAR_CAL, ui.texts.calories);
-    ui_set_status_bar_item(STATUS_BAR_AMPM, ui.texts.ampm);
-    ui_set_status_bar_item(STATUS_BAR_EMPTY, "");
+    ui_set_status_bar_item(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
+    ui_set_status_bar_item(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
+    ui_set_status_bar_item(STATUS_ITEMS_AIR_QUALITY_INDEX, ui.texts.aqi);
+    ui_set_status_bar_item(STATUS_ITEMS_BLUETOOTH_STATUS, ui.texts.bluetooth);
+    ui_set_status_bar_item(STATUS_ITEMS_BATTERY_LEVEL, ui.texts.battery_percent);
+    ui_set_status_bar_item(STATUS_ITEMS_STEPS_SHORT, ui.texts.steps_short);
+    ui_set_status_bar_item(STATUS_ITEMS_STEPS_FULL, ui.texts.steps);
+    ui_set_status_bar_item(STATUS_ITEMS_DISTANCE_WALKED, ui.texts.distance);
+    ui_set_status_bar_item(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
+    ui_set_status_bar_item(STATUS_ITEMS_AMPM, ui.texts.ampm);
+    ui_set_status_bar_item(STATUS_ITEMS_EMPTY, "");
 }
 
 void ui_layout() {

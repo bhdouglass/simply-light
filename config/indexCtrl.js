@@ -28,6 +28,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                 .replace(/-/g, '')
                 .replace(/'/g, '')
                 .replace(/\./g, '')
+                .replace(/\//g, '')
                 .replace(/\s\s+/g, ' ')
                 .trim()
                 .replace(/ /g, '_')

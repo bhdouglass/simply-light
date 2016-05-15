@@ -188,16 +188,81 @@ gulp.task('build-pebble-js', function() {
         .pipe(gulp.dest(paths.pebble.jsdist));
 });
 
-gulp.task('build-pebble-c', function() {
+gulp.task('build-pebble-c', function() { //TODO split gulp file into multiple files
     var keys = '';
     for (var key in appinfo.appKeys) {
         keys += '#define APP_KEY_' + key.toUpperCase() + ' ' + appinfo.appKeys[key] + '\n';
+    }
+
+    var config_struct = '';
+    var config_defaults = '';
+    var config_reads = '';
+    var config_writes = '';
+    var config_messages = '';
+
+    for (var index in configuration_meta.config) {
+        var meta = configuration_meta.config[index];
+
+        if (meta.only != 'js') {
+            //TODO handle booleans as real booleans
+            config_struct += '    int ' + meta.name + ';\n';
+            config_reads += '    if (persist_exists(APP_KEY_' + meta.name.toUpperCase() + ')) {\n        config.day_text_color = persist_read_int(APP_KEY_' + meta.name.toUpperCase() + ');\n    }\n\n';
+            config_writes += '    persist_write_int(APP_KEY_' + meta.name.toUpperCase() + ', config.' + meta.name + ');\n';
+            config_messages += '            case APP_KEY_' + meta.name.toUpperCase() + ':\n                config_update = true;\n                config.' + meta.name + ' = value;\n                break;\n\n';
+
+            if (meta.type == 'enum' || meta.type == 'enum+string') {
+                var enum_value = configuration_meta.enums[meta['enum']][meta['default']];
+                config_defaults += '    config.' + meta.name + ' = ' + enum_value + ';\n';
+            }
+            else {
+                if (typeof meta['default'] == 'object') {
+                    var aplite = (meta['default'].aplite === undefined) ? null : meta['default'].aplite;
+                    var basalt = (meta['default'].basalt === undefined) ? null : meta['default'].basalt;
+                    var chalk = (meta['default'].chalk === undefined) ? null : meta['default'].chalk;
+
+                    config_defaults += '#ifdef PBL_PLATFORM_APLITE\n    config.' + meta.name + ' = ' + aplite + ';\n#endif\n';
+                    config_defaults += '#ifdef PBL_PLATFORM_BASALT\n    config.' + meta.name + ' = ' + basalt + ';\n#endif\n';
+                    config_defaults += '#ifdef PBL_PLATFORM_CHALK\n    config.' + meta.name + ' = ' + chalk + ';\n#endif\n';
+                }
+                else {
+                    var value = (meta['default'] === undefined) ? null : meta['default'];
+                    config_defaults += '    config.' + meta.name + ' = ' + value + ';\n';
+                }
+            }
+        }
+    }
+
+    config_defaults = config_defaults.replace(/true/g, '1').replace(/false/g, '0');
+
+    var constants = '';
+    for (var name in configuration_meta.enums) {
+        var e = configuration_meta.enums[name];
+
+        for (var ekey in e) {
+            var constant_key = ekey
+                .replace(/-/g, '')
+                .replace(/'/g, '')
+                .replace(/\./g, '')
+                .replace(/\//g, '')
+                .replace(/\s\s+/g, ' ')
+                .trim()
+                .replace(/ /g, '_')
+                .toUpperCase();
+
+            constants += '#define ' + name.toUpperCase() + '_' + constant_key + ' ' + e[ekey] + '\n';
+        }
     }
 
     return gulp.src(paths.pebble.c, {base: '.'})
         .pipe(template({
             version: appinfo.versionLabel,
             keys: keys,
+            config_struct: config_struct,
+            constants: constants,
+            config_defaults: config_defaults,
+            config_reads: config_reads,
+            config_writes: config_writes,
+            config_messages: config_messages,
         }))
         .pipe(gulp.dest(paths.pebble.cdist));
 });

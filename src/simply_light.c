@@ -221,36 +221,6 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 condition = value;
                 break;
 
-            case APP_KEY_REFRESH_TIME:
-                config_update = true;
-                config.refresh_time = value;
-                break;
-
-            case APP_KEY_WAIT_TIME:
-                config_update = true;
-                config.wait_time = value;
-                break;
-
-            case APP_KEY_DAY_TEXT_COLOR:
-                config_update = true;
-                config.day_text_color = value;
-                break;
-
-            case APP_KEY_DAY_BACKGROUND_COLOR:
-                config_update = true;
-                config.day_background_color = value;
-                break;
-
-            case APP_KEY_NIGHT_TEXT_COLOR:
-                config_update = true;
-                config.night_text_color = value;
-                break;
-
-            case APP_KEY_NIGHT_BACKGROUND_COLOR:
-                config_update = true;
-                config.night_background_color = value;
-                break;
-
             case APP_KEY_SUNRISE:
                 sun_update = true;
                 config.sunrise = value;
@@ -261,75 +231,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 config.sunset = value;
                 break;
 
-            case APP_KEY_HIDE_BATTERY:
-                config_update = true;
-                config.hide_battery = value;
-                break;
-
-            case APP_KEY_VIBRATE_BLUETOOTH:
-                config_update = true;
-                config.vibrate_bluetooth = value;
-                break;
-
-            case APP_KEY_LANGUAGE:
-                config_update = true;
-                config.language = value;
-                break;
-
-            case APP_KEY_LAYOUT:
-                config_update = true;
-                config.layout = value;
-                break;
-
-            case APP_KEY_AIR_QUALITY:
-                config_update = true;
-                config.air_quality = value;
-                break;
-
-            case APP_KEY_HOURLY_VIBRATE:
-                config_update = true;
-                config.hourly_vibrate = value;
-                break;
-
-            case APP_KEY_SHOW_STATUS_BAR:
-                config_update = true;
-                config.show_status_bar = value;
-                break;
-
-            case APP_KEY_STATUS_BAR_DAY_COLOR:
-                config_update = true;
-                config.status_bar_day_color = value;
-                break;
-
-            case APP_KEY_STATUS_BAR_DAY_TEXT_COLOR:
-                config_update = true;
-                config.status_bar_day_text_color = value;
-                break;
-
-            case APP_KEY_STATUS_BAR_NIGHT_COLOR:
-                config_update = true;
-                config.status_bar_night_color = value;
-                break;
-
-            case APP_KEY_STATUS_BAR_NIGHT_TEXT_COLOR:
-                config_update = true;
-                config.status_bar_night_text_color = value;
-                break;
-
-            case APP_KEY_STATUS_BAR1:
-                config_update = true;
-                config.status_bar1 = value;
-                break;
-
-            case APP_KEY_STATUS_BAR2:
-                config_update = true;
-                config.status_bar2 = value;
-                break;
-
-            case APP_KEY_STATUS_BAR3:
-                config_update = true;
-                config.status_bar3 = value;
-                break;
+<%= config_messages %>
         }
 
         t = dict_read_next(iter);
