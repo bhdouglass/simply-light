@@ -1,0 +1,179 @@
+{
+    "enums": {
+        "weather_provider": {
+            "OpenWeatherMap": 0,
+            "Yahoo Weather": 2,
+            "Yr.no": 3,
+            "Forecast.io": 4
+        },
+        "status_items": {
+            "Empty": 0,
+            "Bluetooth Status": 1,
+            "Battery Level": 2,
+            "Air Quality Index": 3,
+            "Temperature": 4,
+            "Weather Condition": 5,
+            "AM/PM": 6,
+            "Steps - Short": 7,
+            "Steps - Full": 8,
+            "Distance Walked": 9,
+            "Calories Burned": 10
+        },
+        "temperature_units": {
+            "Fahrenheit": "imperial",
+            "Celsius": "metric",
+            "Kelvin": "kelvin"
+        },
+        "feels_like": {
+            "Normal": 0,
+            "Wind Chill": 1,
+            "Heat Index": 2
+        },
+        "language": {
+            "Pebble's Settings": 0,
+            "Bahasa Malaysia": 2,
+            "Hungarian": 1
+        },
+        "layout": {
+            "Standard": 0,
+            "Reverse": 1
+        }
+    },
+    "config": [
+        {
+            "name": "temperature_units",
+            "type": "enum+string",
+            "enum": "temperature_units",
+            "only": "js",
+            "default": "Fahrenheit"
+        }, {
+            "name": "refresh_time",
+            "type": "int",
+            "default": 30
+        }, {
+            "name": "wait_time",
+            "type": "int",
+            "default": 1
+        }, {
+            "name": "hide_battery",
+            "type": "bool",
+            "default": false
+        }, {
+            "name": "weather_provider",
+            "type": "enum",
+            "enum": "weather_provider",
+            "only": "js",
+            "default": "Yr.no"
+        }, {
+            "name": "feels_like",
+            "type": "enum",
+            "enum": "feels_like",
+            "only": "js",
+            "default": "Normal"
+        }, {
+            "name": "vibrate_bluetooth",
+            "type": "bool",
+            "default": false
+        }, {
+            "name": "day_text_color",
+            "type": "int",
+            "default": 0
+        }, {
+            "name": "day_background_color",
+            "type": "int",
+            "default": 1
+        }, {
+            "name": "night_text_color",
+            "type": "int",
+            "default": 0
+        }, {
+            "name": "night_background_color",
+            "type": "int",
+            "default": 1
+        }, {
+            "name": "language",
+            "type": "enum",
+            "enum": "language",
+            "default": "Pebble's Settings"
+        }, {
+            "name": "layout",
+            "type": "enum",
+            "enum": "layout",
+            "default": "Standard"
+        }, {
+            "name": "air_quality",
+            "type": "bool",
+            "default": false
+        }, {
+            "name": "last_aqi_location",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
+            "name": "hourly_vibrate",
+            "type": "bool",
+            "default": false
+        }, {
+            "name": "openweathermap_api_key",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
+            "name": "forecastio_api_key",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
+            "name": "show_status_bar",
+            "type": "bool",
+            "default": true
+        }, {
+            "name": "status_bar_day_color",
+            "type": "int",
+            "default": {
+                "aplite": 0,
+                "basalt": 65535,
+                "chalk": 65535
+            }
+        }, {
+            "name": "status_bar_day_text_color",
+            "type": "int",
+            "default": {
+                "aplite": 1,
+                "basalt": 5592405,
+                "chalk": 5592405
+            }
+        }, {
+            "name": "status_bar_night_color",
+            "type": "int",
+            "default": {
+                "aplite": 0,
+                "basalt": 65535,
+                "chalk": 65535
+            }
+        }, {
+            "name": "status_bar_night_text_color",
+            "type": "int",
+            "default": {
+                "aplite": 1,
+                "basalt": 5592405,
+                "chalk": 5592405
+            }
+        }, {
+            "name": "status_bar1",
+            "type": "enum",
+            "enum": "status_items",
+            "default": "Empty"
+        }, {
+            "name": "status_bar2",
+            "type": "enum",
+            "enum": "status_items",
+            "default": "Empty"
+        }, {
+            "name": "status_bar3",
+            "type": "enum",
+            "enum": "status_items",
+            "default": "Empty"
+        }
+    ]
+}

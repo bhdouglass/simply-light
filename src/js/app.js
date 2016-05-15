@@ -109,7 +109,7 @@ function fetchWeather(pos) {
 
         logger.log(logger.OPENWEATHERMAP);
     }
-    else if (config.configuration.weather_provider === constants.YAHOO) {
+    else if (config.configuration.weather_provider === constants.YAHOO_WEATHER) {
         wm = new WeatherMan(WeatherMan.YAHOO);
 
         logger.log(logger.YAHOO_WEATHER);

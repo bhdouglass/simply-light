@@ -1,4 +1,5 @@
 var appinfo = require('./appinfo.json');
+var configuration_meta = require('./configuration.json');
 var gulp = require('gulp');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
@@ -18,7 +19,7 @@ var minimist = require('minimist');
 var fs = require('fs');
 
 var paths = {
-    jslint: ['src/js/*.js', 'gulpfile.js', 'config/*.js', '!config/colors.js'],
+    jslint: ['src/js/*.js', 'gulpfile.js', 'config/*.js', '!config/colors.js', '!src/js/configMeta.js', '!config/configMeta.js'],
     pebble: {
         js: ['src/js/*.js', 'src/js/libs/*.js'],
         jsdist: 'dist/pebble/src/js/',
@@ -65,7 +66,6 @@ var config = minimist(process.argv.slice(2), {
     boolean: ['emulator', 'aplite', 'basalt', 'chalk'],
     alias: {
         emulator: ['e', 'emu'],
-        color: 'c',
         logs: 'l',
         debug: 'd',
     }
@@ -118,6 +118,7 @@ gulp.task('build-js', function() {
     return gulp.src(paths.config.js)
         .pipe(template({
             version: appinfo.versionLabel,
+            configuration_meta: JSON.stringify(configuration_meta),
         }))
         .pipe(sourcemaps.init())
         .pipe(concat('app.js'))
@@ -182,6 +183,7 @@ gulp.task('build-pebble-js', function() {
         .pipe(template({
             version: appinfo.versionLabel,
             config_url: config.config,
+            configuration_meta: JSON.stringify(configuration_meta),
         }))
         .pipe(gulp.dest(paths.pebble.jsdist));
 });

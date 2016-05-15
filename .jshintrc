@@ -4,7 +4,8 @@
     "angular": true,
     "aplite_colors": true,
     "aplite_colors_background": true,
-    "basalt_colors": true
+    "basalt_colors": true,
+    "configuration_meta": true
   },
   "browser": true,
   "devel": true,
