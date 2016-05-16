@@ -178,6 +178,11 @@
             "name": "auto_sleep_mode",
             "type": "bool",
             "default": false
+        }, {
+            "name": "last_fetch",
+            "type": "obj",
+            "only": "js",
+            "default": null
         }
     ]
 }

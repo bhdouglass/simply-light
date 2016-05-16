@@ -12,12 +12,12 @@ var configuration = {};
 for (var index in configuration_meta.config) {
     var meta = configuration_meta.config[index];
 
-    if (meta.only != 'phone') {
+    if (meta.only != 'pebble') {
         if (meta.type == 'enum' || meta.type == 'enum+string') {
             configuration[meta.name] = configuration_meta.enums[meta['enum']][meta['default']];
         }
         else {
-            if (typeof meta['default'] == 'object') {
+            if (typeof meta['default'] == 'object' && meta['default'] !== null) {
                 configuration[meta.name] = (meta['default'][platform] === undefined) ? null : meta['default'][platform];
             }
             else {
@@ -65,6 +65,14 @@ function load() {
             else if (meta.type == 'bool') {
                 configuration[meta.name] = (value == '1' || value == 'true');
             }
+            else if (meta.type == 'obj') {
+                try {
+                    configuration[meta.name] = JSON.parse(value);
+                }
+                catch (err) {
+                    configuration[meta.name] = {};
+                }
+            }
             else {
                 configuration[meta.name] = value;
             }
@@ -82,7 +90,21 @@ function save(new_configuration) {
 }
 
 function saveSingle(key) {
-    window.localStorage.setItem(key, configuration[key]);
+    var type = 'int';
+    for (var index in configuration_meta.config) {
+        var meta = configuration_meta.config[index];
+
+        if (key == meta.name) {
+            type = meta.type;
+        }
+    }
+
+    var value = configuration[key];
+    if (type == 'obj') {
+        value = JSON.stringify(value);
+    }
+
+    window.localStorage.setItem(key, value);
 }
 
 module.exports = {

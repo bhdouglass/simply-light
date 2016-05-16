@@ -23,6 +23,7 @@ module.exports = {
     AQI_SUCCESS: 'r',
     AQI_ERROR: 's',
     NO_FETCH_AQI: 't',
+    SKIP_FETCH: 'u',
 
     log: function(msg) {
         if (datalog.length > 100) {
