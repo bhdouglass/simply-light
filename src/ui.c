@@ -6,6 +6,7 @@
 #include "i18n.h"
 
 bool is_day = true;
+bool is_sleeping = false;
 
 int PWIDTH = 144;
 int HALFPWIDTH = 72;
@@ -251,6 +252,12 @@ void ui_set_calories(int calories) {
     ui_set_status_bar_item(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
 }
 
+void ui_set_sleeping(bool sleeping) {
+    is_sleeping = sleeping;
+
+    ui_layout();
+}
+
 void ui_refresh_status_bar() {
     ui_set_status_bar_item(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
     ui_set_status_bar_item(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
@@ -267,51 +274,72 @@ void ui_refresh_status_bar() {
 
 void ui_layout() {
     int top = MARGINTOP;
-    if (config.show_status_bar == 1) {
-        top = MARGINTOP_WITH_STATUS_BAR;
-    }
 
-    if (config.layout == 1) { //Reverse Classic layout
-        text_layer_move(ui.layers.time, 0, PHEIGHT - 64);
-        layer_move(ui.layers.battery, 0, PHEIGHT - 90);
-        text_layer_move(ui.layers.date, 0, PHEIGHT - 101);
-        text_layer_move(ui.layers.month, 0, PHEIGHT - 122);
-        text_layer_move(ui.layers.left_info, INFO_MARGIN, PHEIGHT - 157);
-        text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, PHEIGHT - 154);
-    }
-    else { //Classic layout
-        text_layer_move(ui.layers.time, 0, top);
-        layer_move(ui.layers.battery, 0, top + 29);
-        text_layer_move(ui.layers.date, 0, top + 60);
-        text_layer_move(ui.layers.month, 0, top + 96);
-        text_layer_move(ui.layers.left_info, INFO_MARGIN, top + 118);
-        text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, top + 119);
-    }
+    if (is_sleeping && config.auto_sleep_mode) {
+        text_layer_move(ui.layers.time, 0, (PHEIGHT / 2) - 35); //centered
 
-    if (config.hide_battery == 1) {
-        layer_hide(ui.layers.battery);
-    }
-    else {
-        layer_show(ui.layers.battery);
-    }
-
-    if (config.show_status_bar == 1) {
-        text_layer_show(ui.layers.status_bar);
-        text_layer_show(ui.layers.status_bar2);
-
-        #ifdef PBL_ROUND
-            text_layer_hide(ui.layers.status_bar1);
-            text_layer_hide(ui.layers.status_bar3);
-        #else
-            text_layer_show(ui.layers.status_bar1);
-            text_layer_show(ui.layers.status_bar3);
-        #endif
-    }
-    else {
         text_layer_hide(ui.layers.status_bar);
         text_layer_hide(ui.layers.status_bar1);
         text_layer_hide(ui.layers.status_bar2);
         text_layer_hide(ui.layers.status_bar3);
+        layer_hide(ui.layers.battery);
+        text_layer_hide(ui.layers.date);
+        text_layer_hide(ui.layers.month);
+        text_layer_hide(ui.layers.left_info);
+        text_layer_hide(ui.layers.right_info);
+    }
+    else {
+        text_layer_show(ui.layers.date);
+        text_layer_show(ui.layers.month);
+        text_layer_show(ui.layers.left_info);
+        text_layer_show(ui.layers.right_info);
+
+        if (config.show_status_bar == 1) {
+            top = MARGINTOP_WITH_STATUS_BAR;
+        }
+
+        if (config.layout == 1) { //Reverse Classic layout
+            text_layer_move(ui.layers.time, 0, PHEIGHT - 64);
+            layer_move(ui.layers.battery, 0, PHEIGHT - 90);
+            text_layer_move(ui.layers.date, 0, PHEIGHT - 101);
+            text_layer_move(ui.layers.month, 0, PHEIGHT - 122);
+            text_layer_move(ui.layers.left_info, INFO_MARGIN, PHEIGHT - 157);
+            text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, PHEIGHT - 154);
+        }
+        else { //Classic layout
+            text_layer_move(ui.layers.time, 0, top);
+            layer_move(ui.layers.battery, 0, top + 29);
+            text_layer_move(ui.layers.date, 0, top + 60);
+            text_layer_move(ui.layers.month, 0, top + 96);
+            text_layer_move(ui.layers.left_info, INFO_MARGIN, top + 118);
+            text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, top + 119);
+        }
+
+        if (config.hide_battery == 1) {
+            layer_hide(ui.layers.battery);
+        }
+        else {
+            layer_show(ui.layers.battery);
+        }
+
+        if (config.show_status_bar == 1) {
+            text_layer_show(ui.layers.status_bar);
+            text_layer_show(ui.layers.status_bar2);
+
+            #ifdef PBL_ROUND
+                text_layer_hide(ui.layers.status_bar1);
+                text_layer_hide(ui.layers.status_bar3);
+            #else
+                text_layer_show(ui.layers.status_bar1);
+                text_layer_show(ui.layers.status_bar3);
+            #endif
+        }
+        else {
+            text_layer_hide(ui.layers.status_bar);
+            text_layer_hide(ui.layers.status_bar1);
+            text_layer_hide(ui.layers.status_bar2);
+            text_layer_hide(ui.layers.status_bar3);
+        }
     }
 }
 

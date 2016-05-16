@@ -284,3 +284,10 @@ gulp.task('deploy-config', ['build-config'], function() {
         domain: fs.readFileSync('CNAME', 'utf-8'),
     });
 });
+
+gulp.task('deploy-config-dev', ['build-config'], function() {
+    return surge({
+        project: paths.config.dist,
+        domain: 'dev-' + fs.readFileSync('CNAME', 'utf-8'),
+    });
+});

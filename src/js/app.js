@@ -53,7 +53,7 @@ Pebble.addEventListener('showConfiguration', function(e) {
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
-    if (e.response == 'cancel') {
+    if (!e.response || e.response == 'cancel') {
         logger.log(logger.CONFIGURATION_CANCELED);
         console.log('config canceled');
     }

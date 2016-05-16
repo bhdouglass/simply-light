@@ -9,6 +9,7 @@
 int retry_times = MAX_RETRIES;
 int elapsed_time = 0;
 int error = FETCH_ERROR;
+bool sleeping = false;
 
 //From https://github.com/smallstoneapps/message-queue/blob/master/message-queue.c#L222
 /*static char *translate_error(AppMessageResult result) {
@@ -43,7 +44,15 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh_time: %d, error: %d, elapsed_time: %d, wait_time: %d", config.refresh_time, error, elapsed_time, config.wait_time);
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh: %d, do_refresh: %d, force_refresh: %d", refresh, do_refresh, force_refresh);
 
+    if (sleeping && config.auto_sleep_mode) {
+        force_refresh = false;
+        do_refresh = false;
+        error = NO_ERROR;
+    }
+
     if ((refresh && do_refresh) || force_refresh) {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "refreshing");
+
         elapsed_time = 0;
         error = FETCH_ERROR;
 
@@ -170,15 +179,46 @@ static void health_update() {
     ui_set_calories(kcal);
 }
 
+static void sleep_update() {
+    time_t start = time(NULL) - SECONDS_PER_HOUR; //An hour ago
+    time_t end = time(NULL);
+    HealthServiceAccessibilityMask activity_mask = health_service_any_activity_accessible(HealthActivityMaskAll, start, end);
+
+    if (activity_mask & HealthServiceAccessibilityMaskAvailable) {
+        HealthActivityMask activities = health_service_peek_current_activities();
+
+        if (activities & HealthActivitySleep || activities & HealthActivityRestfulSleep) {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is sleeping");
+            sleeping = true;
+        }
+        else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is not sleeping");
+            sleeping = false;
+        }
+
+        ui_set_sleeping(sleeping);
+    }
+    else {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "No activities");
+        sleeping = false;
+        ui_set_sleeping(sleeping);
+    }
+}
+
 static void handle_health(HealthEventType event, void *context) {
     switch(event) {
         case HealthEventSignificantUpdate:
-        case HealthEventMovementUpdate:
+            sleep_update();
             health_update();
-
             break;
+
+        case HealthEventMovementUpdate:
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Movement!");
+            health_update();
+            break;
+
         case HealthEventSleepUpdate:
-            //Nothing to do for now
+            sleep_update();
             break;
     }
 }
