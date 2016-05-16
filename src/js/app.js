@@ -70,6 +70,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
 function fetch(force) {
     fetchLocation(function(pos) {
         var update = true;
+        var diff = 0;
 
         if (!config.configuration.last_fetch) {
             config.configuration.last_fetch = {};
@@ -82,8 +83,8 @@ function fetch(force) {
             tenth = (tenth < 1) ? 1 : tenth;
             var compare = config.configuration.refresh_time - tenth;
 
-            var diff = Math.abs(now.diff(config.configuration.last_fetch.date, 'minutes'));
-            if (diff <= compare) {
+            diff = Math.abs(now.diff(config.configuration.last_fetch.date, 'minutes'));
+            if (diff < compare) {
                 //Check if position was close enough
 
                 var x1 = pos.coords.latitude;
@@ -97,7 +98,7 @@ function fetch(force) {
 
                 if (distance < 5) { //The user hasn't moved much
                     update = false;
-                    console.log('no need to fetch data yet (' + diff + '/' + compare + ')');
+                    console.log('no need to fetch data yet (' + diff + '/' + compare + '/' + config.configuration.refresh_time + ')');
                     logger.log(logger.SKIP_FETCH);
                 }
             }
@@ -107,11 +108,11 @@ function fetch(force) {
             fetchWeather(pos);
         }
         else {
-            //TODO alert the watch to this fact and make it request new data sooner
             MessageQueue.sendAppMessage({
                 temperature: config.configuration.last_fetch.temperature,
                 condition: config.configuration.last_fetch.condition,
                 air_quality_index: config.configuration.last_fetch.air_quality_index,
+                elapsed_time: diff, //alert the watch to this fact and make it request new data sooner
                 err: constants.NO_ERROR,
             }, ack, nack);
         }

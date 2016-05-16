@@ -229,6 +229,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
     int aqi = NO_DATA;
     bool config_update = false;
     bool sun_update = false;
+    int e_time = 0;
 
     Tuple *t = dict_read_first(iter);
     while(t != NULL) {
@@ -271,10 +272,19 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 config.sunset = value;
                 break;
 
+            case APP_KEY_ELAPSED_TIME:
+                e_time = value;
+                break;
+
 <%= config_messages %>
         }
 
         t = dict_read_next(iter);
+    }
+
+    if (e_time != 0) {
+        elapsed_time = e_time;
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "elapsed_time: %d", elapsed_time);
     }
 
     if (temperature != NO_DATA) {
