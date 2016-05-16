@@ -10,6 +10,7 @@ int retry_times = MAX_RETRIES;
 int elapsed_time = 0;
 int error = FETCH_ERROR;
 bool sleeping = false;
+int sleeping_movements = 0;
 
 //From https://github.com/smallstoneapps/message-queue/blob/master/message-queue.c#L222
 /*static char *translate_error(AppMessageResult result) {
@@ -190,6 +191,7 @@ static void sleep_update() {
         if (activities & HealthActivitySleep || activities & HealthActivityRestfulSleep) {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is sleeping");
             sleeping = true;
+            sleeping_movements = 0;
         }
         else {
             APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is not sleeping");
@@ -214,6 +216,18 @@ static void handle_health(HealthEventType event, void *context) {
 
         case HealthEventMovementUpdate:
             APP_LOG(APP_LOG_LEVEL_DEBUG, "Movement!");
+            if (sleeping) {
+                sleeping_movements++;
+
+                if (sleeping_movements > 2) {
+                    APP_LOG(APP_LOG_LEVEL_DEBUG, "The user has moved too much and is likely awake");
+
+                    sleeping_movements = 0;
+                    sleeping = false;
+                    ui_set_sleeping(sleeping);
+                }
+            }
+
             health_update();
             break;
 
