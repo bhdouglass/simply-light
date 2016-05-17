@@ -285,6 +285,17 @@ function fetchAirQuality(pos, data) {
             data.air_quality_index = result.getAQI();
             MessageQueue.sendAppMessage(data, ack, nack);
 
+            if (data.err == constants.NO_ERROR) {
+                config.configuration.last_fetch.date = moment().valueOf();
+                config.configuration.last_fetch.temperature = data.temperature;
+                config.configuration.last_fetch.condition = data.condition;
+                config.configuration.last_fetch.air_quality_index = data.air_quality_index;
+                config.configuration.last_fetch.latitude = pos.coords.latitude;
+                config.configuration.last_fetch.longitude = pos.coords.longitude;
+
+                config.saveSingle('last_fetch');
+            }
+
         }).catch(function(result) {
             logger.log(logger.AQI_ERROR);
             console.warn('aqi error: ' + JSON.stringify(result));
@@ -304,14 +315,5 @@ function fetchAirQuality(pos, data) {
         MessageQueue.sendAppMessage(data, ack, nack);
     }
 
-    if (data.err == constants.NO_ERROR) {
-        config.configuration.last_fetch.date = moment().valueOf();
-        config.configuration.last_fetch.temperature = data.temperature;
-        config.configuration.last_fetch.condition = data.condition;
-        config.configuration.last_fetch.air_quality_index = data.air_quality_index;
-        config.configuration.last_fetch.latitude = pos.coords.latitude;
-        config.configuration.last_fetch.longitude = pos.coords.longitude;
 
-        config.saveSingle('last_fetch');
-    }
 }
