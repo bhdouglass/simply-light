@@ -206,7 +206,7 @@ gulp.task('build-pebble-c', function() { //TODO split gulp file into multiple fi
         if (meta.only != 'js') {
             //TODO handle booleans as real booleans
             config_struct += '    int ' + meta.name + ';\n';
-            config_reads += '    if (persist_exists(APP_KEY_' + meta.name.toUpperCase() + ')) {\n        config.day_text_color = persist_read_int(APP_KEY_' + meta.name.toUpperCase() + ');\n    }\n\n';
+            config_reads += '    if (persist_exists(APP_KEY_' + meta.name.toUpperCase() + ')) {\n        config.' + meta.name + ' = persist_read_int(APP_KEY_' + meta.name.toUpperCase() + ');\n    }\n\n';
             config_writes += '    persist_write_int(APP_KEY_' + meta.name.toUpperCase() + ', config.' + meta.name + ');\n';
             config_messages += '            case APP_KEY_' + meta.name.toUpperCase() + ':\n                config_update = true;\n                config.' + meta.name + ' = value;\n                break;\n\n';
 
