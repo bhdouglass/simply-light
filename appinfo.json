@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 5.1,
-  "versionLabel": "5.1",
+  "versionCode": 5.10,
+  "versionLabel": "5.10",
   "capabilities": [
     "configurable",
     "health"
