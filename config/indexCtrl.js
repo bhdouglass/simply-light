@@ -14,197 +14,35 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         last_location_error_code: -1,
         platform: '',
     };
+    $scope.config = {};
 
-    $scope.OPENWEATHERMAP = 0;
-    $scope.OLDYAHOO = 1;
-    $scope.YAHOO = 2;
-    $scope.YRNO = 3;
-    $scope.FORECASTIO = 4;
+    //Load enums into the scope
+    $scope.constants = {};
+    for (var name in configuration_meta.enums) {
+        var e = configuration_meta.enums[name];
+        $scope.constants[name] = {};
 
-    $scope.temperature_units = [
-        {
-            label: 'Fahrenheit',
-            value: 'imperial'
-        }, {
-            label: 'Celsius',
-            value: 'metric'
-        }, {
-            label: 'Kelvin',
-            value: ''
-        }
-    ];
+        var enum_ = [];
+        for (var key in e) {
+            var constant_key = key
+                .replace(/-/g, '')
+                .replace(/'/g, '')
+                .replace(/\./g, '')
+                .replace(/\//g, '')
+                .replace(/\s\s+/g, ' ')
+                .trim()
+                .replace(/ /g, '_')
+                .toUpperCase();
+            $scope.constants[name][constant_key] = e[key];
 
-    $scope.old_weather_provider = [
-        {
-            label: 'OpenWeatherMap',
-            value: $scope.OPENWEATHERMAP
-        }, {
-            label: 'Yahoo Weather',
-            value: $scope.OLDYAHOO
-        }
-    ];
-
-    $scope.weather_provider = [
-        {
-            label: 'Yr.no',
-            value: $scope.YRNO
-        }, {
-            label: 'OpenWeatherMap',
-            value: $scope.OPENWEATHERMAP
-        }, {
-            label: 'Forecast.io',
-            value: $scope.FORECASTIO
-        }, {
-            label: 'Yahoo Weather',
-            value: $scope.YAHOO
-        }
-    ];
-
-    $scope.feels_like = [
-        {
-            label: 'Normal',
-            value: 0
-        }, {
-            label: 'Wind Chill',
-            value: 1
-        }, {
-            label: 'Heat Index',
-            value: 2
-        }
-    ];
-
-    $scope.battery_percent = [
-        {
-            label: 'Hide',
-            value: 0
-        }, {
-            label: 'Top Right Corner',
-            value: 1
-        }, {
-            label: 'Top Left Corner',
-            value: 2
-        }
-    ];
-
-    $scope.language = [
-        {
-            label: 'Pebble\'s Settings',
-            value: 0
-        }, {
-            label: 'Bahasa Malaysia',
-            value: 2
-        }, {
-            label: 'Hungarian',
-            value: 1
-        }
-    ];
-
-    $scope.layout = [
-        {
-            label: 'Standard',
-            value: 0
-        }, {
-            label: 'Reverse',
-            value: 1
-        }
-    ];
-
-    $scope.status_items = [
-        {
-            label: 'Empty',
-            value: 0
-        }, {
-            label: 'Bluetooth Status',
-            value: 1
-        }, {
-            label: 'Battery Level',
-            value: 2
-        }, {
-            label: 'Air Quality Index',
-            value: 3
-        }, {
-            label: 'Temperature',
-            value: 4
-        }, {
-            label: 'Weather Condition',
-            value: 5
-        }, {
-            label: 'AM/PM',
-            value: 6
-        },
-    ];
-
-    $scope.config_ints = ['refresh_time', 'wait_time'];
-    $scope.config_bools = [
-        'air_quality', 'show_am_pm', 'hide_battery', 'charging_icon',
-        'bt_disconnect_icon', 'vibrate_bluetooth', 'aqi_degree',
-        'hourly_vibrate', 'show_status_bar'
-    ];
-
-    $scope.config = {
-        temperature_units: 'imperial',
-        refresh_time: 30,
-        wait_time: 1,
-        show_am_pm: false,
-        hide_battery: false,
-        weather_provider: $scope.YRNO,
-        feels_like: 0,
-        vibrate_bluetooth: false,
-        charging_icon: true,
-        bt_disconnect_icon: false,
-        battery_percent: 0,
-        day_text_color: 0,
-        day_background_color: 1,
-        night_text_color: 0,
-        night_background_color: 1,
-        language: 0,
-        layout: 0,
-        air_quality: false,
-        last_aqi_location: null,
-        aqi_degree: false,
-        hourly_vibrate: false,
-        openweathermap_api_key: '',
-        forecastio_api_key: '',
-        show_status_bar: true,
-        status_bar_day_color: 1,
-        status_bar_day_text_color: 0,
-        status_bar_night_color: 1,
-        status_bar_night_text_color: 0,
-        status_bar1: 0,
-        status_bar2: 0,
-        status_bar3: 0,
-    };
-
-    $scope.errors = {
-        refresh_time: false,
-        wait_time: false,
-    };
-
-    function validateInt(value, error) {
-        if (parseInt(value) === value && parseInt(value) > 0 && value !== null && value !== undefined) {
-            value = parseInt(value);
-
-            if (error) {
-                $scope.errors[error] = false;
-            }
-        }
-        else {
-            value = 1;
-
-            if (error) {
-                $scope.errors[error] = true;
-            }
+            enum_.push({
+                label: key,
+                value: e[key],
+            });
         }
 
-        return value;
+        $scope[name] = enum_;
     }
-
-    angular.forEach($scope.config_ints, function(name) {
-        $scope.$watch('config.' + name, function() {
-            $scope.errors[name] = false;
-            validateInt($scope.config[name], name);
-        });
-    });
 
     $scope.cancel = function() {
         if ($scope.saving) {
@@ -231,11 +69,15 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         $scope.saving = false;
         if (!error) {
             var config = angular.copy($scope.config);
-            angular.forEach($scope.config_bools, function(key) {
-                config[key] = config[key] ? 1 : 0;
-            });
-
             delete config.last_aqi_location;
+
+            for (var index in configuration_meta.config) {
+                var meta = configuration_meta.config[index];
+
+                if (meta.type == 'int') {
+                    config[meta.name] = Math.abs(parseInt(config[meta.name]));
+                }
+            }
 
             console.log(config);
             window.location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(config));
@@ -270,31 +112,11 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         var hash = $location.hash();
         if (hash) {
             var config = JSON.parse(decodeURIComponent(hash));
-            console.log(config);
 
-            angular.forEach(config, function(value, key) {
-                if ($scope.config[key] !== undefined) {
-                    if ($scope.config_ints.indexOf(key) >= 0) {
-                        $scope.config[key] = validateInt(value);
-                    }
-                    else if ($scope.config_bools.indexOf(key) >= 0) {
-                        $scope.config[key] = !!value;
-                    }
-                    else {
-                        $scope.config[key] = value;
-                    }
-                }
-            });
+            for (var index in configuration_meta.config) {
+                var meta = configuration_meta.config[index];
 
-            if ($scope.version >= 4.0) {
-                if (
-                    $scope.config.weather_provider !== $scope.OPENWEATHERMAP &&
-                    $scope.config.weather_provider != $scope.YAHOO &&
-                    $scope.config.weather_provider != $scope.YRNO &&
-                    $scope.config.weather_provider != $scope.FORECASTIO
-                ) {
-                    $scope.config.weather_provider = $scope.YRNO;
-                }
+                $scope.config[meta.name] = (config[meta.name] === undefined) ? null : config[meta.name];
             }
 
             console.log($scope.config);
@@ -304,23 +126,8 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         $scope.debug.version = $scope.version;
         $scope.debug.platform = $scope.platform;
 
-        if ($scope.platform != "aplite") {
-            $scope.status_items.push({
-                label: 'Steps - Short',
-                value: 7
-            });
-            $scope.status_items.push({
-                label: 'Steps - Full',
-                value: 8
-            });
-            $scope.status_items.push({
-                label: 'Distance Walked',
-                value: 9
-            });
-            $scope.status_items.push({
-                label: 'Calories Burned',
-                value: 10
-            });
+        if ($scope.platform == "aplite") { //Don't show health options
+            $scope.status_items = $scope.status_items.slice(0, 7);
         }
 
         $scope.loaded = true;

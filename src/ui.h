@@ -73,6 +73,7 @@ void ui_set_battery_level(int level);
 void ui_set_steps(int steps);
 void ui_set_walk_distance(float distance, MeasurementSystem sys);
 void ui_set_calories(int calories);
+void ui_set_sleeping(bool sleeping);
 
 void ui_refresh_status_bar();
 void ui_layout();

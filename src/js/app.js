@@ -3,6 +3,7 @@ document.createElement = null; //shim to trick the browserify shims, yay! (also 
 
 var MessageQueue = require('libs/js-message-queue');
 var WeatherMan = require('libs/weather-man');
+var moment = require('libs/moment');
 var config = require('config');
 var constants = require('constants');
 var logger = require('logger');
@@ -22,7 +23,7 @@ Pebble.addEventListener('ready', function(e) {
     config.load();
     config.send();
     logger.load();
-    fetchLocation();
+    fetch();
 });
 
 Pebble.addEventListener('appmessage', function(e) {
@@ -30,7 +31,7 @@ Pebble.addEventListener('appmessage', function(e) {
     if (e.payload.fetch) {
         logger.log(logger.FETCH_MESSAGE);
 
-        fetchLocation();
+        fetch();
     }
 });
 
@@ -53,7 +54,7 @@ Pebble.addEventListener('showConfiguration', function(e) {
 });
 
 Pebble.addEventListener('webviewclosed', function(e) {
-    if (e.response == 'cancel') {
+    if (!e.response || e.response == 'cancel') {
         logger.log(logger.CONFIGURATION_CANCELED);
         console.log('config canceled');
     }
@@ -62,11 +63,71 @@ Pebble.addEventListener('webviewclosed', function(e) {
 
         config.save(JSON.parse(decodeURIComponent(e.response)));
         config.send();
-        fetchLocation();
+        fetch(true);
     }
 });
 
-function fetchLocation() {
+function fetch(force) {
+    fetchLocation(function(pos) {
+        var update = true;
+        var diff = 0;
+
+        if (!config.configuration.last_fetch) {
+            config.configuration.last_fetch = {};
+        }
+
+        if (config.configuration.last_fetch.date && !force) {
+            //Check if last update was recent-ish (based on refresh_time)
+            var now = moment();
+            var tenth = (config.configuration.refresh_time / 10);
+            tenth = (tenth < 1) ? 1 : tenth;
+            var compare = config.configuration.refresh_time - tenth;
+
+            diff = Math.abs(now.diff(config.configuration.last_fetch.date, 'minutes'));
+            if (diff < compare) {
+                //Check if position was close enough
+
+                var x1 = pos.coords.latitude;
+                var y1 = pos.coords.longitude;
+                var x2 = config.configuration.last_fetch.latitude;
+                var y2 = config.configuration.last_fetch.longitude;
+
+                //Not using a fancy geo calculation here, it's just a rough guess
+                var distance = Math.sqrt((x1-x2) * (x1-x2) + (y1-y2) * (y1-y2));
+                distance = distance * 111; //To km
+
+                if (distance < 5) { //The user hasn't moved much
+                    update = false;
+                    console.log('no need to fetch data yet (' + diff + '/' + compare + '/' + config.configuration.refresh_time + ')');
+                    logger.log(logger.SKIP_FETCH);
+                }
+            }
+        }
+
+        if (update || force) {
+            fetchWeather(pos);
+        }
+        else {
+            MessageQueue.sendAppMessage({
+                temperature: config.configuration.last_fetch.temperature,
+                condition: config.configuration.last_fetch.condition,
+                air_quality_index: config.configuration.last_fetch.air_quality_index,
+                elapsed_time: diff, //alert the watch to this fact and make it request new data sooner
+                err: constants.NO_ERROR,
+            }, ack, nack);
+        }
+
+    }, function() {
+        MessageQueue.sendAppMessage({
+            temperature: -999,
+            condition: -999,
+            air_quality_index: -999,
+            err: constants.LOCATION_ERROR,
+        }, ack, nack);
+    });
+}
+
+function fetchLocation(callback, error_callback) {
     logger.log(logger.FETCH_LOCATION);
 
     window.navigator.geolocation.getCurrentPosition(function(pos) { //Success
@@ -75,7 +136,7 @@ function fetchLocation() {
         console.log('lat: ' + pos.coords.latitude);
         console.log('lng: ' + pos.coords.longitude);
 
-        fetchWeather(pos);
+        callback(pos);
 
     }, function(err) { //Error
         logger.log(logger.LOCATION_ERROR);
@@ -83,12 +144,7 @@ function fetchLocation() {
 
         console.warn('location error: ' + err.code + ' - ' + err.message);
 
-        MessageQueue.sendAppMessage({
-            temperature: -999,
-            condition: -999,
-            air_quality_index: -999,
-            err: constants.LOCATION_ERROR,
-        }, ack, nack);
+        error_callback();
 
     }, { //Options
         timeout: 30000, //30 seconds
@@ -109,7 +165,7 @@ function fetchWeather(pos) {
 
         logger.log(logger.OPENWEATHERMAP);
     }
-    else if (config.configuration.weather_provider === constants.YAHOO) {
+    else if (config.configuration.weather_provider === constants.YAHOO_WEATHER) {
         wm = new WeatherMan(WeatherMan.YAHOO);
 
         logger.log(logger.YAHOO_WEATHER);
@@ -210,7 +266,7 @@ function fetchWeather(pos) {
 function fetchAirQuality(pos, data) {
     var fetch = config.configuration.air_quality;
     for (var i = 1; i <= 5; i++) {
-        if (config.configuration['status_bar' + i] == constants.STATUS_BAR_AQI) {
+        if (config.configuration['status_bar' + i] == constants.AIR_QUALITY_INDEX) {
             fetch = true;
         }
     }
@@ -228,6 +284,17 @@ function fetchAirQuality(pos, data) {
 
             data.air_quality_index = result.getAQI();
             MessageQueue.sendAppMessage(data, ack, nack);
+
+            if (data.err == constants.NO_ERROR) {
+                config.configuration.last_fetch.date = moment().valueOf();
+                config.configuration.last_fetch.temperature = data.temperature;
+                config.configuration.last_fetch.condition = data.condition;
+                config.configuration.last_fetch.air_quality_index = data.air_quality_index;
+                config.configuration.last_fetch.latitude = pos.coords.latitude;
+                config.configuration.last_fetch.longitude = pos.coords.longitude;
+
+                config.saveSingle('last_fetch');
+            }
 
         }).catch(function(result) {
             logger.log(logger.AQI_ERROR);

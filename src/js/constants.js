@@ -1,4 +1,6 @@
-module.exports = {
+var configuration_meta = require('configMeta');
+
+var constants = {
     //Errors
     NO_ERROR: 0,
     FETCH_ERROR: 1,
@@ -22,24 +24,21 @@ module.exports = {
     EXTREME_COLD: 12,
     EXTREME_HEAT: 13,
     SNOW_THUNDERSTORM: 14,
-
-    //Weather Providers
-    OPENWEATHERMAP: 0,
-    //OLDYAHOO: 1,
-    YAHOO: 2,
-    YRNO: 3,
-    FORECASTIO: 4,
-
-    //Status bar items
-    STATUS_BAR_EMPTY: 0,
-    STATUS_BAR_BLUETOOTH: 1,
-    STATUS_BAR_BATTERY_LEVEL: 2,
-    STATUS_BAR_AQI: 3,
-    STATUS_BAR_TEMP: 4,
-    STATUS_BAR_CONDITION: 5,
-    STATUS_BAR_AMPM: 6,
-    STATUS_BAR_STEPS_SHORT: 7,
-    STATUS_BAR_STEPS: 8,
-    STATUS_BAR_DISTANCE: 9,
-    STATUS_BAR_CAL: 10,
 };
+
+for (var enum_ in configuration_meta.enums) {
+    var e = configuration_meta.enums[enum_];
+    for (var key in e) {
+        var constant_key = key
+            .replace(/-/g, '')
+            .replace(/'/g, '')
+            .replace(/\./g, '')
+            .replace(/\s\s+/g, ' ')
+            .trim()
+            .replace(/ /g, '_')
+            .toUpperCase();
+        constants[constant_key] = e[key];
+    }
+}
+
+module.exports = constants;

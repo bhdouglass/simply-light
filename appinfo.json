@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 5.04,
-  "versionLabel": "5.04",
+  "versionCode": 5.11,
+  "versionLabel": "5.11",
   "capabilities": [
     "configurable",
     "health"
@@ -46,7 +46,9 @@
     "status_bar2": 30,
     "status_bar3": 31,
     "status_bar_night_color": 32,
-    "status_bar_night_text_color": 33
+    "status_bar_night_text_color": 33,
+    "auto_sleep_mode": 34,
+    "elapsed_time": 35
   },
   "resources": {
     "media": [
@@ -70,7 +72,7 @@
       {
         "name": "DROIDSANS_BOLD_14",
         "file": "fonts/DroidSans-Bold.ttf",
-        "characterRegex": "[0-9%APMDUEPGT\u00b0.mkiba]",
+        "characterRegex": "[0-9%APMDUEPGT\u00b0.mkibaMI]",
         "type": "font"
       },
       {

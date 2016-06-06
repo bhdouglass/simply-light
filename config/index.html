@@ -32,21 +32,14 @@
                 </label>
             </div>
 
-            <div class="item-container-content" ng-show="version < 4.0">
-                <label class="item">
-                    Weather Provider
-                    <select class="item-select" dir="rtl" id="weather_provider" ng-model="config.weather_provider" ng-options="o.value as o.label for o in old_weather_provider"></select>
-                </label>
-            </div>
-
-            <div class="item-container-content" ng-show="version >= 4.0">
+            <div class="item-container-content">
                 <label class="item">
                     Weather Provider
                     <select class="item-select" dir="rtl" id="weather_provider" ng-model="config.weather_provider" ng-options="o.value as o.label for o in weather_provider"></select>
                 </label>
             </div>
 
-            <div class="item-container-content" ng-show="version >= 4.0 && config.weather_provider == OPENWEATHERMAP">
+            <div class="item-container-content" ng-show="config.weather_provider == constants.weather_provider.OPENWEATHERMAP">
                 <label class="item">
                     Open Weather Map API Key
                     <div class="item-input-wrapper">
@@ -55,7 +48,7 @@
                 </label>
             </div>
 
-            <div class="item-container-content" ng-show="version >= 4.0 && config.weather_provider == FORECASTIO">
+            <div class="item-container-content" ng-show="config.weather_provider == constants.weather_provider.FORECASTIO">
                 <label class="item">
                     Forecast.io API Key
                     <div class="item-input-wrapper">
@@ -64,19 +57,19 @@
                 </label>
             </div>
 
-            <div class="item-container-footer" ng-show="version >= 4.0">
-                <p ng-if="config.weather_provider == OPENWEATHERMAP">
+            <div class="item-container-footer">
+                <p ng-if="config.weather_provider == constants.weather_provider.OPENWEATHERMAP">
                     Leave blank to use the community API key. Using the community key can possibly lead to
                     errors accessing the weather (as there are limits on the key). If you want to sign up for a key
                     visit <a href="http://openweathermap.org/appid">OpenWeatherMap.org</a> and then enter your key here.
                 </p>
-                <p ng-if="config.weather_provider == YAHOO">
+                <p ng-if="config.weather_provider == constants.weather_provider.YAHOO_WEATHER">
                     <a href="https://www.yahoo.com/?ilc=401" target="_blank"><img src="https://poweredby.yahoo.com/purple.png" width="134" height="29"/></a>
                 </p>
-                <p ng-if="config.weather_provider == YRNO">
+                <p ng-if="config.weather_provider == constants.weather_provider.YRNO">
                     <a href="http://m.yr.no/">Weather forecast from Yr, delivered by the Norwegian Meteorological Institute and NRK.</a>
                 </p>
-                <p ng-if="config.weather_provider == FORECASTIO">
+                <p ng-if="config.weather_provider == constants.weather_provider.FORECASTIO">
                     <a href="http://forecast.io/">Powered by Forecast</a>
                     <br/>
                     Simply Light does not provide an API key for Forecast.io, you must provide your own key.
@@ -90,7 +83,7 @@
                 </label>
             </div>
             <div class="item-container-content">
-                <label class="item" ng-class="{'error': errors.refresh_time}">
+                <label class="item" ng-class="{'error': !config.refresh_time}">
                     Refresh Time (Minutes)
                     <div class="item-input-wrapper">
                         <input type="number" class="item-input" id="refresh_time" ng-model="config.refresh_time" min="1" />
@@ -99,7 +92,7 @@
             </div>
 
             <div class="item-container-content">
-                <label class="item" ng-class="{'error': errors.wait_time}">
+                <label class="item" ng-class="{'error': !config.wait_time}">
                     Time to Wait After Error (Minutes)
                     <div class="item-input-wrapper">
                         <input type="number" class="item-input" id="wait_time" ng-model="config.wait_time" min="1" />
@@ -111,13 +104,13 @@
         <div class="item-container ng-cloak">
             <div class="item-container-header">Air Quality Options</div>
 
-            <div class="item-container-content" ng-show="version >= 2.9">
+            <div class="item-container-content">
                 <label class="item">
                     Air Quality
                     <input type="checkbox" class="item-toggle" id="air_quality" ng-model="config.air_quality" />
                 </label>
             </div>
-            <div class="item-container-footer" ng-show="version >= 2.9">
+            <div class="item-container-footer">
                 <p>
                     When enabled, the current air quality index replaces the temperature.
                     Air Quality information comes from <a href="http://aqicn.org/">aqicn.org</a>
@@ -125,30 +118,6 @@
                 <p ng-if="config.last_aqi_location">
                     Last AQI came from "{{config.last_aqi_location}}"
                 </p>
-            </div>
-
-            <div class="item-container-content" ng-show="version >= 3.2 && version < 5 && config.air_quality">
-                <label class="item">
-                    AQI as Degree Icon
-                    <input type="checkbox" class="item-toggle" id="aqi_degree" ng-model="config.aqi_degree" />
-                </label>
-            </div>
-            <div class="item-container-footer" ng-show="version >= 3.2 && version < 5 && config.air_quality">
-                <p>
-                    When enabled, the current air quality index replaces the
-                    degree icon for the temperature.
-                </p>
-            </div>
-
-            <div class="item-container" ng-show="version == 2.9 && version < 5 && config.air_quality == 1">
-                <div class="item-container-content">
-                    <label class="item" ng-class="{'error': errors.aq_refresh_time}">
-                        Air Quality Refresh Time (Minutes)
-                        <div class="item-input-wrapper">
-                            <input type="number" class="item-input" id="aq_refresh_time" ng-model="config.aq_refresh_time" min="2" />
-                        </div>
-                    </label>
-                </div>
             </div>
         </div>
 
@@ -166,7 +135,7 @@
             </div>
         </div>
 
-        <div class="item-container ng-cloak" ng-show="version >= 5">
+        <div class="item-container ng-cloak">
             <div class="item-container-header">Status Bar Options</div>
 
             <div class="item-container-content">
@@ -206,6 +175,23 @@
         </div>
 
         <div class="item-container ng-cloak">
+            <div class="item-container-header">Low Power Mode</div>
+
+            <div class="item-container-content">
+                <label class="item">
+                    Low Power when I'm sleeping
+                    <input type="checkbox" class="item-toggle" id="auto_sleep_mode" ng-model="config.auto_sleep_mode" />
+                </label>
+            </div>
+
+            <div class="item-container-footer">
+                <p>
+                    *Note: it may take a few minutes for your smart watch to realize you are awake.
+                </p>
+            </div>
+        </div>
+
+        <div class="item-container ng-cloak">
             <div class="item-container-header">Watchface Options</div>
 
             <div class="item-container-content">
@@ -225,38 +211,10 @@
                 </label>
             </div>
 
-            <div class="item-container-content" ng-show="version < 5">
-                <label class="item">
-                    Show AM/PM
-                    <input type="checkbox" class="item-toggle" id="show_am_pm" ng-model="config.show_am_pm" />
-                </label>
-            </div>
-
             <div class="item-container-content">
                 <label class="item">
                     Hide Battery Status Bar
                     <input type="checkbox" class="item-toggle" id="hide_battery" ng-model="config.hide_battery" />
-                </label>
-            </div>
-
-            <div class="item-container-content" ng-show="version < 5">
-                <label class="item">
-                    Show Charging Icon
-                    <input type="checkbox" class="item-toggle" id="charging_icon" ng-model="config.charging_icon" />
-                </label>
-            </div>
-
-            <div class="item-container-content" ng-show="version < 5">
-                <label class="item">
-                    Show BT Disconnected Icon
-                    <input type="checkbox" class="item-toggle" id="bt_disconnect_icon" ng-model="config.bt_disconnect_icon" />
-                </label>
-            </div>
-
-            <div class="item-container-content" ng-show="version < 5">
-                <label class="item">
-                    Show Battery Percent
-                    <select class="item-select" dir="rtl" id="battery_percent" ng-model="config.battery_percent" ng-options="o.value as o.label for o in battery_percent"></select>
                 </label>
             </div>
 
@@ -267,7 +225,7 @@
                 </label>
             </div>
 
-            <div class="item-container-content" ng-show="version >= 3.6">
+            <div class="item-container-content">
                 <label class="item">
                     Vibrate on the Hour
                     <input type="checkbox" class="item-toggle" id="hourly_vibrate" ng-model="config.hourly_vibrate" />
@@ -410,7 +368,7 @@
                 </label>
             </div>
 
-            <div class="item-container-content" ng-if="version >= 4.3">
+            <div class="item-container-content">
                 <label class="item">
                     Debug Information
 

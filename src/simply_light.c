@@ -9,6 +9,8 @@
 int retry_times = MAX_RETRIES;
 int elapsed_time = 0;
 int error = FETCH_ERROR;
+bool sleeping = false;
+int sleeping_movements = 0;
 
 //From https://github.com/smallstoneapps/message-queue/blob/master/message-queue.c#L222
 /*static char *translate_error(AppMessageResult result) {
@@ -43,7 +45,15 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh_time: %d, error: %d, elapsed_time: %d, wait_time: %d", config.refresh_time, error, elapsed_time, config.wait_time);
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh: %d, do_refresh: %d, force_refresh: %d", refresh, do_refresh, force_refresh);
 
+    if (sleeping && config.auto_sleep_mode) {
+        force_refresh = false;
+        do_refresh = false;
+        error = NO_ERROR;
+    }
+
     if ((refresh && do_refresh) || force_refresh) {
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "refreshing");
+
         elapsed_time = 0;
         error = FETCH_ERROR;
 
@@ -170,15 +180,59 @@ static void health_update() {
     ui_set_calories(kcal);
 }
 
+static void sleep_update() {
+    time_t start = time(NULL) - SECONDS_PER_HOUR; //An hour ago
+    time_t end = time(NULL);
+    HealthServiceAccessibilityMask activity_mask = health_service_any_activity_accessible(HealthActivityMaskAll, start, end);
+
+    if (activity_mask & HealthServiceAccessibilityMaskAvailable) {
+        HealthActivityMask activities = health_service_peek_current_activities();
+
+        if (activities & HealthActivitySleep || activities & HealthActivityRestfulSleep) {
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is sleeping");
+            sleeping = true;
+            sleeping_movements = 0;
+        }
+        else {
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is not sleeping");
+            sleeping = false;
+        }
+
+        ui_set_sleeping(sleeping);
+    }
+    else {
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "No activities");
+        sleeping = false;
+        ui_set_sleeping(sleeping);
+    }
+}
+
 static void handle_health(HealthEventType event, void *context) {
     switch(event) {
         case HealthEventSignificantUpdate:
-        case HealthEventMovementUpdate:
+            sleep_update();
             health_update();
-
             break;
+
+        case HealthEventMovementUpdate:
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "Movement!");
+            if (sleeping) {
+                sleeping_movements++;
+
+                if (sleeping_movements > 2) {
+                    //APP_LOG(APP_LOG_LEVEL_DEBUG, "The user has moved too much and is likely awake");
+
+                    sleeping_movements = 0;
+                    sleeping = false;
+                    ui_set_sleeping(sleeping);
+                }
+            }
+
+            health_update();
+            break;
+
         case HealthEventSleepUpdate:
-            //Nothing to do for now
+            sleep_update();
             break;
     }
 }
@@ -189,6 +243,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
     int aqi = NO_DATA;
     bool config_update = false;
     bool sun_update = false;
+    int e_time = 0;
 
     Tuple *t = dict_read_first(iter);
     while(t != NULL) {
@@ -221,36 +276,6 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 condition = value;
                 break;
 
-            case APP_KEY_REFRESH_TIME:
-                config_update = true;
-                config.refresh_time = value;
-                break;
-
-            case APP_KEY_WAIT_TIME:
-                config_update = true;
-                config.wait_time = value;
-                break;
-
-            case APP_KEY_DAY_TEXT_COLOR:
-                config_update = true;
-                config.day_text_color = value;
-                break;
-
-            case APP_KEY_DAY_BACKGROUND_COLOR:
-                config_update = true;
-                config.day_background_color = value;
-                break;
-
-            case APP_KEY_NIGHT_TEXT_COLOR:
-                config_update = true;
-                config.night_text_color = value;
-                break;
-
-            case APP_KEY_NIGHT_BACKGROUND_COLOR:
-                config_update = true;
-                config.night_background_color = value;
-                break;
-
             case APP_KEY_SUNRISE:
                 sun_update = true;
                 config.sunrise = value;
@@ -261,78 +286,18 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
                 config.sunset = value;
                 break;
 
-            case APP_KEY_HIDE_BATTERY:
-                config_update = true;
-                config.hide_battery = value;
+            case APP_KEY_ELAPSED_TIME:
+                e_time = value;
                 break;
 
-            case APP_KEY_VIBRATE_BLUETOOTH:
-                config_update = true;
-                config.vibrate_bluetooth = value;
-                break;
-
-            case APP_KEY_LANGUAGE:
-                config_update = true;
-                config.language = value;
-                break;
-
-            case APP_KEY_LAYOUT:
-                config_update = true;
-                config.layout = value;
-                break;
-
-            case APP_KEY_AIR_QUALITY:
-                config_update = true;
-                config.air_quality = value;
-                break;
-
-            case APP_KEY_HOURLY_VIBRATE:
-                config_update = true;
-                config.hourly_vibrate = value;
-                break;
-
-            case APP_KEY_SHOW_STATUS_BAR:
-                config_update = true;
-                config.show_status_bar = value;
-                break;
-
-            case APP_KEY_STATUS_BAR_DAY_COLOR:
-                config_update = true;
-                config.status_bar_day_color = value;
-                break;
-
-            case APP_KEY_STATUS_BAR_DAY_TEXT_COLOR:
-                config_update = true;
-                config.status_bar_day_text_color = value;
-                break;
-
-            case APP_KEY_STATUS_BAR_NIGHT_COLOR:
-                config_update = true;
-                config.status_bar_night_color = value;
-                break;
-
-            case APP_KEY_STATUS_BAR_NIGHT_TEXT_COLOR:
-                config_update = true;
-                config.status_bar_night_text_color = value;
-                break;
-
-            case APP_KEY_STATUS_BAR1:
-                config_update = true;
-                config.status_bar1 = value;
-                break;
-
-            case APP_KEY_STATUS_BAR2:
-                config_update = true;
-                config.status_bar2 = value;
-                break;
-
-            case APP_KEY_STATUS_BAR3:
-                config_update = true;
-                config.status_bar3 = value;
-                break;
+<%= config_messages %>
         }
 
         t = dict_read_next(iter);
+    }
+
+    if (e_time != 0) {
+        elapsed_time = e_time;
     }
 
     if (temperature != NO_DATA) {
