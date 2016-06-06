@@ -507,6 +507,7 @@ void ui_window_unload(Window *window) {
     text_layer_destroy_safe(ui.layers.month);
     text_layer_destroy_safe(ui.layers.left_info);
     text_layer_destroy_safe(ui.layers.right_info);
+    text_layer_destroy_safe(ui.layers.status_bar);
     text_layer_destroy_safe(ui.layers.status_bar1);
     text_layer_destroy_safe(ui.layers.status_bar2);
     text_layer_destroy_safe(ui.layers.status_bar3);

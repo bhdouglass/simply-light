@@ -52,7 +52,7 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
     }
 
     if ((refresh && do_refresh) || force_refresh) {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "refreshing");
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "refreshing");
 
         elapsed_time = 0;
         error = FETCH_ERROR;
@@ -189,19 +189,19 @@ static void sleep_update() {
         HealthActivityMask activities = health_service_peek_current_activities();
 
         if (activities & HealthActivitySleep || activities & HealthActivityRestfulSleep) {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is sleeping");
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is sleeping");
             sleeping = true;
             sleeping_movements = 0;
         }
         else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is not sleeping");
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is not sleeping");
             sleeping = false;
         }
 
         ui_set_sleeping(sleeping);
     }
     else {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "No activities");
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "No activities");
         sleeping = false;
         ui_set_sleeping(sleeping);
     }
@@ -215,12 +215,12 @@ static void handle_health(HealthEventType event, void *context) {
             break;
 
         case HealthEventMovementUpdate:
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Movement!");
+            //APP_LOG(APP_LOG_LEVEL_DEBUG, "Movement!");
             if (sleeping) {
                 sleeping_movements++;
 
                 if (sleeping_movements > 2) {
-                    APP_LOG(APP_LOG_LEVEL_DEBUG, "The user has moved too much and is likely awake");
+                    //APP_LOG(APP_LOG_LEVEL_DEBUG, "The user has moved too much and is likely awake");
 
                     sleeping_movements = 0;
                     sleeping = false;
@@ -298,7 +298,6 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
 
     if (e_time != 0) {
         elapsed_time = e_time;
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "elapsed_time: %d", elapsed_time);
     }
 
     if (temperature != NO_DATA) {

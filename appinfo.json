@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 5.10,
-  "versionLabel": "5.10",
+  "versionCode": 5.11,
+  "versionLabel": "5.11",
   "capabilities": [
     "configurable",
     "health"
@@ -72,7 +72,7 @@
       {
         "name": "DROIDSANS_BOLD_14",
         "file": "fonts/DroidSans-Bold.ttf",
-        "characterRegex": "[0-9%APMDUEPGT\u00b0.mkiba]",
+        "characterRegex": "[0-9%APMDUEPGT\u00b0.mkibaMI]",
         "type": "font"
       },
       {

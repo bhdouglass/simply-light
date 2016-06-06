@@ -314,6 +314,4 @@ function fetchAirQuality(pos, data) {
         logger.log(logger.NO_FETCH_AQI);
         MessageQueue.sendAppMessage(data, ack, nack);
     }
-
-
 }
