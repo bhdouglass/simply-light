@@ -1,7 +1,7 @@
-var constants = require('constants');
-var configuration_meta = require('configMeta');
+var constants = require('./constants');
+var configuration_meta = require('./configMeta');
 
-var MessageQueue = require('libs/js-message-queue');
+var MessageQueue = require('./libs/js-message-queue');
 
 var platform = 'aplite';
 if (Pebble.getActiveWatchInfo && Pebble.getActiveWatchInfo()) {

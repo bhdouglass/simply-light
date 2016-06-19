@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app').directive('colorPicker', function() {
+angular.module('app').directive('customColorPicker', function() {
     return {
         restrict: 'E',
         scope: {},

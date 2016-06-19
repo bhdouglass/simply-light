@@ -184,6 +184,11 @@
             "type": "obj",
             "only": "js",
             "default": null
+        }, {
+            "name": "master_key_logged_in",
+            "type": "bool",
+            "only": "js",
+            "default": false
         }
     ]
 }

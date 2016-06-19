@@ -1,12 +1,12 @@
 window.location = {}; //shim for iOS
 document.createElement = null; //shim to trick the browserify shims, yay! (also for iOS, yay!)
 
-var MessageQueue = require('libs/js-message-queue');
-var WeatherMan = require('libs/weather-man');
-var moment = require('libs/moment');
-var config = require('config');
-var constants = require('constants');
-var logger = require('logger');
+var MessageQueue = require('./libs/js-message-queue');
+var WeatherMan = require('./libs/weather-man');
+var moment = require('./libs/moment');
+var config = require('./config');
+var constants = require('./constants');
+var logger = require('./logger');
 
 function ack(e) {
     console.log('Successfully delivered message with transactionId=' + e.data.transactionId);

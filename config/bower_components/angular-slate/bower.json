@@ -1,0 +1,30 @@
+{
+  "name": "angular-slate",
+  "authors": [
+    "Brian Douglass"
+  ],
+  "description": "Angular bindings for the Pebble Slate framework",
+  "keywords": [
+    "angular",
+    "pebble",
+    "slate"
+  ],
+  "license": "GPL-3.0",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demo.js",
+    "CNAME",
+    "gulpfile.js",
+    "index.html",
+    ".surgeignore"
+  ],
+  "dependencies": {
+    "angular": "^1.5.5",
+    "Slate": "pebble-slate#^0.0.3"
+  }
+}

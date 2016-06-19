@@ -15,6 +15,19 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         platform: '',
     };
     $scope.config = {};
+    $scope.master_key_data = {};
+
+    $scope.$watch('master_key_data', function() {
+        if ($scope.master_key_data && $scope.master_key_data.weather) {
+            if ($scope.master_key_data.weather.owm) {
+                $scope.config.openweathermap_api_key = $scope.master_key_data.weather.owm;
+            }
+
+            if ($scope.master_key_data.weather.forecast) {
+                $scope.config.forecastio_api_key = $scope.master_key_data.weather.forecast;
+            }
+        }
+    }, true);
 
     //Load enums into the scope
     $scope.constants = {};

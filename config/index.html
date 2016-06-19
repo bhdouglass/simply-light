@@ -23,6 +23,18 @@
         </div>
 
         <div class="item-container ng-cloak clear-fix">
+            <div class="item-container-content">
+                <master-key ng-model="master_key_data" logged-in="config.master_key_logged_in"></master-key>
+            </div>
+            <div class="item-container-footer">
+                Master Key (<a href="https://www.pmkey.xyz" target="_blank">pmkey.xyz</a>)
+                is a service that allows you to easily use your api keys between
+                different watchfaces and apps. It is not required to use Simply
+                Light.
+            </div>
+        </div>
+
+        <div class="item-container ng-cloak clear-fix">
             <div class="item-container-header">Weather Options</div>
 
             <div class="item-container-content">
@@ -125,10 +137,10 @@
             <div class="item-container-header">Color Options</div>
 
             <div ng-if="loaded">
-                <color-picker ng-model="config.day_text_color" platform="{{platform}}" title="Day Text Color"></color-picker>
-                <color-picker ng-model="config.day_background_color" platform="{{platform}}" title="Day Background Color" background="true"></color-picker>
-                <color-picker ng-model="config.night_text_color" platform="{{platform}}" title="Night Text Color"></color-picker>
-                <color-picker ng-model="config.night_background_color" platform="{{platform}}" title="Night Background Color" background="true"></color-picker>
+                <custom-color-picker ng-model="config.day_text_color" platform="{{platform}}" title="Day Text Color"></custom-color-picker>
+                <custom-color-picker ng-model="config.day_background_color" platform="{{platform}}" title="Day Background Color" background="true"></custom-color-picker>
+                <custom-color-picker ng-model="config.night_text_color" platform="{{platform}}" title="Night Text Color"></custom-color-picker>
+                <custom-color-picker ng-model="config.night_background_color" platform="{{platform}}" title="Night Background Color" background="true"></custom-color-picker>
                 <div class="item-container-footer">
                     Sunset data is based on your location
                 </div>
@@ -146,10 +158,10 @@
             </div>
 
             <div ng-if="loaded && config.show_status_bar">
-                <color-picker ng-model="config.status_bar_day_color" platform="{{platform}}" title="Status Bar Day Color" background="true"></color-picker>
-                <color-picker ng-model="config.status_bar_day_text_color" platform="{{platform}}" title="Status Bar Day Text Color"></color-picker>
-                <color-picker ng-model="config.status_bar_night_color" platform="{{platform}}" title="Status Bar Night Color" background="true"></color-picker>
-                <color-picker ng-model="config.status_bar_night_text_color" platform="{{platform}}" title="Status Bar Night Text Color"></color-picker>
+                <custom-color-picker ng-model="config.status_bar_day_color" platform="{{platform}}" title="Status Bar Day Color" background="true"></custom-color-picker>
+                <custom-color-picker ng-model="config.status_bar_day_text_color" platform="{{platform}}" title="Status Bar Day Text Color"></custom-color-picker>
+                <custom-color-picker ng-model="config.status_bar_night_color" platform="{{platform}}" title="Status Bar Night Color" background="true"></custom-color-picker>
+                <custom-color-picker ng-model="config.status_bar_night_text_color" platform="{{platform}}" title="Status Bar Night Text Color"></custom-color-picker>
             </div>
 
             <div class="item-container-content" ng-show="config.show_status_bar && platform != 'chalk'">

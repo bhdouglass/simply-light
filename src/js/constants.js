@@ -1,4 +1,4 @@
-var configuration_meta = require('configMeta');
+var configuration_meta = require('./configMeta');
 
 var constants = {
     //Errors

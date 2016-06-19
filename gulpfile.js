@@ -33,12 +33,14 @@ var paths = {
         js: [
             'config/bower_components/pebble-slate/dist/js/slate.min.js',
             'config/bower_components/angular/angular.min.js',
+            'config/bower_components/angular-slate/dist/js/angular-slate.js',
             'config/*.js',
         ],
         css: [
             'config/bower_components/pebble-slate/dist/css/slate.min.css',
             'config/bower_components/weather-icons/css/weather-icons.min.css',
             'config/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css',
+            'config/bower_components/angular-slate/dist/css/angular-slate.css',
             'config/*.css',
         ],
         fonts: [

@@ -1,0 +1,27 @@
+{
+  "name": "angular-slate",
+  "version": "1.2.0",
+  "description": "Angular bindings for the Pebble Slate framework",
+  "keywords": [
+    "angular",
+    "pebble",
+    "slate"
+  ],
+  "author": "Brian Douglass",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^2.0.7",
+    "gulp-concat": "^2.6.0",
+    "gulp-connect": "^4.0.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-ng-annotate": "^2.0.0",
+    "gulp-open": "^2.0.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-surge": "^0.1.0",
+    "gulp-uglify": "^1.5.3",
+    "jshint": "^2.9.2",
+    "jshint-stylish": "^2.2.0"
+  }
+}

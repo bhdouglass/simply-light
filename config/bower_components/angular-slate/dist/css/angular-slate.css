@@ -1,0 +1,52 @@
+/**
+ * Copyright (C) 2016  Brian Douglass (bhdouglass.com)
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License version 3, as published by the Free
+ * Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranties of MERCHANTABILITY, SATISFACTORY
+ * QUALITY, or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.angular-slate .color {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    float: right;
+    margin-right: 80px;
+}
+
+.angular-slate .color-name {
+    display: inline-block;
+    float: right;
+    margin-right: 70px;
+    text-align: right;
+    padding-top: 5px;
+}
+
+.angular-slate .color-box {
+    width: 11.11111111111111%;
+    height: 11.11111111111111%;
+}
+
+.angular-slate .transparent {
+    background: transparent;
+    cursor: none;
+}
+
+.angular-slate .clear-left {
+    clear: left;
+}
+
+.selectable {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}
