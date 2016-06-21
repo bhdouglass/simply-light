@@ -74,9 +74,9 @@ and add `angular-slate` to your angular app's dependencies.
     title="{{optional message}}"
     email-placeholder="{{optional message}}"
     pin-placeholder="{{optional message}}"
-    fetch-button="{{optional message}}"
+    sync-button="{{optional message}}"
     logged-in-text="{{optional message}}"
-    fetch-again-button="{{optional message}}"
+    sync-again-button="{{optional message}}"
 ></master-key>
 ```
 
@@ -85,9 +85,9 @@ and add `angular-slate` to your angular app's dependencies.
 - `title` is an optional message to show instead of "Master Key"
 - `email-placeholder` is an optional message to show instead of "Master Key Email"
 - `pin-placeholder` is an optional message to show instead of "Master Key Pin"
-- `fetch-button` is an optional message to show instead of "Fetch Keys"
+- `sync-button` is an optional message to show instead of "Sync"
 - `logged-in-text` is an optional message to show instead of "Your Master Key data has been saved."
-- `fetch-again-button` is an optional message to show instead of "Fetch Keys Again"
+- `sync-again-button` is an optional message to show instead of "Sync Keys Again"
 
 ## License
 

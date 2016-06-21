@@ -583,9 +583,9 @@ angular.module('angular-slate').directive('masterKey', ["$http", function($http)
             title: '@title',
             email_placeholder: '@emailPlaceholder',
             pin_placeholder: '@pinPlaceholder',
-            fetch_button: '@fetchButton',
+            sync_button: '@syncButton',
             logged_in_text: '@loggedInText',
-            fetch_again_button: '@fetchAgainButton',
+            sync_again_button: '@syncAgainButton',
         },
         replace: true,
         template: '<div class="item-container-content angular-slate">' +
@@ -594,21 +594,19 @@ angular.module('angular-slate').directive('masterKey', ["$http", function($http)
                 '<div ng-if="logged_in">' +
                     '{{logged_in_text || \'Your Master Key data has been saved.\'}}' +
                     '<div class="button-container">' +
-                        '<input type="button" class="item-button clickable" value="{{fetch_again_button || \'Fetch Keys Again\'}}" ng-click="logout()" />' +
+                        '<input type="button" class="item-button clickable" value="{{sync_again_button || \'Sync Keys Again\'}}" ng-click="logout()" />' +
                     '</div>' +
                 '</div>' +
-                '<div ng-if="!logged_in">' +
-                    '<div class="item-input-wrapper">' +
-                        '<input type="text" class="item-input" id="master_key_email" ng-model="master_key.email" placeholder="{{email_placeholder || \'Master Key Email\'}}" />' +
-                    '</div>' +
-                    '<div class="item-input-wrapper">' +
-                        '<input type="number" class="item-input" id="master_key_pin" ng-model="master_key.pin" placeholder="{{pin_placeholder || \'Master Key Pin\'}}" />' +
-                    '</div>' +
-                    '<div class="button-container">' +
-                        '<input type="button" class="item-button clickable" value="{{fetch_button || \'Fetch Keys\'}}" ng-click="fetch()" />' +
-                    '</div>' +
+                '<div class="item-input-wrapper" ng-if="!logged_in">' +
+                    '<input type="text" class="item-input" id="master_key_email" ng-model="master_key.email" placeholder="{{email_placeholder || \'Master Key Email\'}}" />' +
                 '</div>' +
             '</label>' +
+            '<div class="item" ng-if="!logged_in">' +
+                '<div class="item-input-wrapper item-input-wrapper-button">' +
+                    '<input type="number" class="item-input" id="master_key_pin" ng-model="master_key.pin" placeholder="{{pin_placeholder || \'Master Key Pin\'}}" />' +
+                '</div>' +
+                '<input type="button" class="item-button item-input-button clickable" value="{{sync_button || \'Sync\'}}" ng-click="sync()" />' +
+            '</div>' +
         '</div>',
         link: function($scope) {
             $scope.master_key = {
@@ -620,17 +618,17 @@ angular.module('angular-slate').directive('masterKey', ["$http", function($http)
                 $scope.logged_in = false;
             };
 
-            $scope.fetch = function() {
+            $scope.sync = function() {
                 $http.get('https://pmkey.xyz/search/?email=' + $scope.master_key.email + '&pin=' + $scope.master_key.pin).then(function(res) {
                     if (res.data.success && res.data.keys) {
                         $scope.model = res.data.keys;
                         $scope.logged_in = true;
                     }
                     else {
-                        console.error('An error occured fetching master key data', res);
+                        console.error('An error occured syncing master key data', res);
                     }
                 }, function(err) {
-                    console.error('An error occured fetching master key data', err);
+                    console.error('An error occured syncing master key data', err);
                 });
             };
         }

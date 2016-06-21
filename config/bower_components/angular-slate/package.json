@@ -1,6 +1,6 @@
 {
   "name": "angular-slate",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Angular bindings for the Pebble Slate framework",
   "keywords": [
     "angular",

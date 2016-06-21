@@ -27,15 +27,15 @@
     "angular": "^1.5.5",
     "Slate": "pebble-slate#^0.0.3"
   },
-  "version": "1.2.0",
-  "_release": "1.2.0",
+  "version": "1.2.1",
+  "_release": "1.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "v1.2.0",
-    "commit": "41d6786cef852ea0e743084111a82ecb0ebc253b"
+    "tag": "v1.2.1",
+    "commit": "8875565660e75b95daa91bc56cda4506e82774ce"
   },
   "_source": "https://github.com/bhdouglass/angular-slate.git",
-  "_target": "^1.2.0",
+  "_target": "1.2.1",
   "_originalSource": "angular-slate",
   "_direct": true
 }
