@@ -172,7 +172,7 @@ function fetchWeather(pos) {
     }
     else if (config.configuration.weather_provider === constants.FORECASTIO) {
         if (config.configuration.forecastio_api_key && config.configuration.forecastio_api_key.length > 0) {
-            wm = new WeatherMan(WeatherMan.FORECASTIO, config.configuration.forecastio_api_key);
+            wm = new WeatherMan(WeatherMan.DARKSKY, config.configuration.forecastio_api_key);
 
             logger.log(logger.FORECASTIO_WEATHER);
         }

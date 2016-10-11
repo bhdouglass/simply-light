@@ -48,8 +48,14 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                 .toUpperCase();
             $scope.constants[name][constant_key] = e[key];
 
+            var label = key;
+            if (label == 'Forecast.io' && name == 'weather_provider') {
+                //Hack to not break the auto generation code
+                label = 'Dark Sky / Forecast.io';
+            }
+
             enum_.push({
-                label: key,
+                label: label,
                 value: e[key],
             });
         }
