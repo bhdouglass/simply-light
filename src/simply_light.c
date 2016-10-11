@@ -234,6 +234,14 @@ static void handle_health(HealthEventType event, void *context) {
         case HealthEventSleepUpdate:
             sleep_update();
             break;
+
+        case HealthEventMetricAlert:
+            //Not yet supported
+            break;
+
+        case HealthEventHeartRateUpdate:
+            //Not yet supported
+            break;
     }
 }
 
