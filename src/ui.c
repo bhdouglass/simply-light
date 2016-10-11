@@ -7,6 +7,7 @@
 
 bool is_day = true;
 bool is_sleeping = false;
+bool is_obstructed = false;
 
 int PWIDTH = 144;
 int HALFPWIDTH = 72;
@@ -258,6 +259,20 @@ void ui_set_sleeping(bool sleeping) {
     ui_layout();
 }
 
+void ui_set_unobstructed_area(GRect unobstructed_area) {
+    bool new_is_obstructed = true;
+
+    if (unobstructed_area.size.w == PWIDTH && unobstructed_area.size.h == PHEIGHT) {
+        new_is_obstructed = false;
+    }
+
+    if (new_is_obstructed != is_obstructed) {
+        is_obstructed = new_is_obstructed;
+
+        ui_layout();
+    }
+}
+
 void ui_refresh_status_bar() {
     ui_set_status_bar_item(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
     ui_set_status_bar_item(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
@@ -339,6 +354,17 @@ void ui_layout() {
             text_layer_hide(ui.layers.status_bar1);
             text_layer_hide(ui.layers.status_bar2);
             text_layer_hide(ui.layers.status_bar3);
+        }
+
+        if (is_obstructed) {
+            text_layer_hide(ui.layers.left_info);
+            text_layer_hide(ui.layers.right_info);
+            text_layer_hide(ui.layers.month);
+        }
+        else {
+            text_layer_show(ui.layers.left_info);
+            text_layer_show(ui.layers.right_info);
+            text_layer_show(ui.layers.month);
         }
     }
 }

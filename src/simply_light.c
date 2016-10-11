@@ -245,6 +245,12 @@ static void handle_health(HealthEventType event, void *context) {
     }
 }
 
+static void handle_obstruction(GRect final_unobstructed_screen_area, void *context) {
+    //TODO smartly handle this, rather than just hide stuff
+
+    ui_set_unobstructed_area(final_unobstructed_screen_area);
+}
+
 static void msg_received_handler(DictionaryIterator *iter, void *context) {
     int temperature = NO_DATA;
     int condition = NO_DATA;
@@ -360,6 +366,11 @@ static void init(void) {
         health_service_events_subscribe(&handle_health, NULL);
     #endif
 
+    UnobstructedAreaHandlers unobstructed_area_handlers = {
+        .will_change = handle_obstruction,
+    };
+    unobstructed_area_service_subscribe(unobstructed_area_handlers, NULL);
+
     app_message_register_outbox_failed(&msg_failed_handler);
     app_message_register_inbox_received(&msg_received_handler);
     //app_message_register_inbox_dropped(&msg_droped_handler);
@@ -374,6 +385,7 @@ static void deinit(void) {
     battery_state_service_unsubscribe();
     bluetooth_connection_service_unsubscribe();
     health_service_events_unsubscribe();
+    unobstructed_area_service_unsubscribe();
     app_message_deregister_callbacks();
 }
 
