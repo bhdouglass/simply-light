@@ -116,6 +116,8 @@ gulp.task('serve', ['build-config', 'watch-config'], function() {
         }));
 });
 
+gulp.task('server', ['serve']);
+
 gulp.task('build-js', function() {
     return gulp.src(paths.config.js)
         .pipe(template({

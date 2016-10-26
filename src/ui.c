@@ -16,7 +16,7 @@ int HALFPHEIGHT = 84;
 int STATUS_BAR_ITEM_WIDTH = 46;
 
 //TODO don't set font if we don't need to
-void ui_set_status_bar_item(int type, char *text) {
+void ui_set_info(int type, char *text) {
     if (config.status_bar1 == type) {
         if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
             text_layer_set_font(ui.layers.status_bar1, ui.fonts.icons_14);
@@ -48,6 +48,28 @@ void ui_set_status_bar_item(int type, char *text) {
         }
 
         text_layer_set_text(ui.layers.status_bar3, text);
+    }
+
+    if (config.info_box_left == type) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
+            text_layer_set_font(ui.layers.info_box_left, ui.fonts.icons_30);
+        }
+        else {
+            text_layer_set_font(ui.layers.info_box_left, ui.fonts.droidsans_32);
+        }
+
+        text_layer_set_text(ui.layers.info_box_left, text);
+    }
+
+    if (config.info_box_right == type) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
+            text_layer_set_font(ui.layers.info_box_right, ui.fonts.icons_30);
+        }
+        else {
+            text_layer_set_font(ui.layers.info_box_right, ui.fonts.droidsans_32);
+        }
+
+        text_layer_set_text(ui.layers.info_box_right, text);
     }
 }
 
@@ -92,7 +114,7 @@ void ui_set_datetime(struct tm *tick_time, TimeUnits units_changed) {
     text_layer_set_text(ui.layers.time, ui.texts.time);
     text_layer_set_text(ui.layers.date, ui.texts.date);
     text_layer_set_text(ui.layers.month, ui.texts.month);
-    ui_set_status_bar_item(STATUS_ITEMS_AMPM, ui.texts.ampm);
+    ui_set_info(STATUS_ITEMS_AMPM, ui.texts.ampm);
 
     //Update day/night flag
     if (config.sunrise > 0 && config.sunset > 0) {
@@ -124,11 +146,7 @@ void ui_set_temperature(int temp, int error) {
     //strncpy(ui.texts.temperature, "50\u00b0", sizeof(ui.texts.temperature));
     //strncpy(ui.texts.temperature, "40\u00b0", sizeof(ui.texts.temperature));
 
-    if (!config.air_quality) {
-        text_layer_set_text(ui.layers.left_info, ui.texts.temperature);
-    }
-
-    ui_set_status_bar_item(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
+    ui_set_info(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
 }
 
 void ui_set_condition(int condition, int error) {
@@ -159,9 +177,7 @@ void ui_set_condition(int condition, int error) {
     //strncpy(ui.texts.condition, "\uf008", sizeof(ui.texts.condition));
     //strncpy(ui.texts.condition, "\uf056", sizeof(ui.texts.condition));
 
-    text_layer_set_text(ui.layers.right_info, ui.texts.condition);
-
-    ui_set_status_bar_item(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
+    ui_set_info(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
 }
 
 void ui_set_aqi(int aqi, int error) {
@@ -175,11 +191,7 @@ void ui_set_aqi(int aqi, int error) {
     //For pretty screenshots
     //snprintf(ui.texts.aqi, sizeof(ui.texts.aqi), "%d", 30);
 
-    if (config.air_quality) {
-        text_layer_set_text(ui.layers.left_info, ui.texts.aqi);
-    }
-
-    ui_set_status_bar_item(STATUS_ITEMS_AIR_QUALITY_INDEX, ui.texts.aqi);
+    ui_set_info(STATUS_ITEMS_AIR_QUALITY_INDEX, ui.texts.aqi);
 }
 
 void ui_set_bluetooth(bool connected) {
@@ -190,7 +202,7 @@ void ui_set_bluetooth(bool connected) {
         strncpy(ui.texts.bluetooth, "\uf27f", sizeof(ui.texts.bluetooth));
     }
 
-    ui_set_status_bar_item(STATUS_ITEMS_BLUETOOTH_STATUS, ui.texts.bluetooth);
+    ui_set_info(STATUS_ITEMS_BLUETOOTH_STATUS, ui.texts.bluetooth);
 }
 
 void ui_set_battery_level(int level) {
@@ -200,7 +212,7 @@ void ui_set_battery_level(int level) {
         layer_mark_dirty(ui.layers.battery);
     }
 
-    ui_set_status_bar_item(STATUS_ITEMS_BATTERY_LEVEL, ui.texts.battery_percent);
+    ui_set_info(STATUS_ITEMS_BATTERY_LEVEL, ui.texts.battery_percent);
 }
 
 void ui_set_steps(int steps) {
@@ -219,8 +231,8 @@ void ui_set_steps(int steps) {
 
     snprintf(ui.texts.steps, sizeof(ui.texts.steps), "%d", steps);
 
-    ui_set_status_bar_item(STATUS_ITEMS_STEPS_SHORT, ui.texts.steps_short);
-    ui_set_status_bar_item(STATUS_ITEMS_STEPS_FULL, ui.texts.steps);
+    ui_set_info(STATUS_ITEMS_STEPS_SHORT, ui.texts.steps_short);
+    ui_set_info(STATUS_ITEMS_STEPS_FULL, ui.texts.steps);
 }
 
 void ui_set_walk_distance(float distance, MeasurementSystem sys) {
@@ -241,7 +253,7 @@ void ui_set_walk_distance(float distance, MeasurementSystem sys) {
             break;
     }
 
-    ui_set_status_bar_item(STATUS_ITEMS_DISTANCE_WALKED, ui.texts.distance);
+    ui_set_info(STATUS_ITEMS_DISTANCE_WALKED, ui.texts.distance);
 }
 
 void ui_set_calories(int calories) {
@@ -250,7 +262,7 @@ void ui_set_calories(int calories) {
 
     snprintf(ui.texts.calories, sizeof(ui.texts.calories), "%d", calories);
 
-    ui_set_status_bar_item(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
+    ui_set_info(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
 }
 
 void ui_set_sleeping(bool sleeping) {
@@ -273,18 +285,18 @@ void ui_set_unobstructed_area(GRect unobstructed_area) {
     }
 }
 
-void ui_refresh_status_bar() {
-    ui_set_status_bar_item(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
-    ui_set_status_bar_item(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
-    ui_set_status_bar_item(STATUS_ITEMS_AIR_QUALITY_INDEX, ui.texts.aqi);
-    ui_set_status_bar_item(STATUS_ITEMS_BLUETOOTH_STATUS, ui.texts.bluetooth);
-    ui_set_status_bar_item(STATUS_ITEMS_BATTERY_LEVEL, ui.texts.battery_percent);
-    ui_set_status_bar_item(STATUS_ITEMS_STEPS_SHORT, ui.texts.steps_short);
-    ui_set_status_bar_item(STATUS_ITEMS_STEPS_FULL, ui.texts.steps);
-    ui_set_status_bar_item(STATUS_ITEMS_DISTANCE_WALKED, ui.texts.distance);
-    ui_set_status_bar_item(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
-    ui_set_status_bar_item(STATUS_ITEMS_AMPM, ui.texts.ampm);
-    ui_set_status_bar_item(STATUS_ITEMS_EMPTY, "");
+void ui_refresh_info() {
+    ui_set_info(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
+    ui_set_info(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
+    ui_set_info(STATUS_ITEMS_AIR_QUALITY_INDEX, ui.texts.aqi);
+    ui_set_info(STATUS_ITEMS_BLUETOOTH_STATUS, ui.texts.bluetooth);
+    ui_set_info(STATUS_ITEMS_BATTERY_LEVEL, ui.texts.battery_percent);
+    ui_set_info(STATUS_ITEMS_STEPS_SHORT, ui.texts.steps_short);
+    ui_set_info(STATUS_ITEMS_STEPS_FULL, ui.texts.steps);
+    ui_set_info(STATUS_ITEMS_DISTANCE_WALKED, ui.texts.distance);
+    ui_set_info(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
+    ui_set_info(STATUS_ITEMS_AMPM, ui.texts.ampm);
+    ui_set_info(STATUS_ITEMS_EMPTY, "");
 }
 
 void ui_layout() {
@@ -300,14 +312,14 @@ void ui_layout() {
         layer_hide(ui.layers.battery);
         text_layer_hide(ui.layers.date);
         text_layer_hide(ui.layers.month);
-        text_layer_hide(ui.layers.left_info);
-        text_layer_hide(ui.layers.right_info);
+        text_layer_hide(ui.layers.info_box_left);
+        text_layer_hide(ui.layers.info_box_right);
     }
     else {
         text_layer_show(ui.layers.date);
         text_layer_show(ui.layers.month);
-        text_layer_show(ui.layers.left_info);
-        text_layer_show(ui.layers.right_info);
+        text_layer_show(ui.layers.info_box_left);
+        text_layer_show(ui.layers.info_box_right);
 
         if (config.show_status_bar == 1) {
             top = MARGINTOP_WITH_STATUS_BAR;
@@ -318,16 +330,16 @@ void ui_layout() {
             layer_move(ui.layers.battery, 0, PHEIGHT - 90);
             text_layer_move(ui.layers.date, 0, PHEIGHT - 101);
             text_layer_move(ui.layers.month, 0, PHEIGHT - 122);
-            text_layer_move(ui.layers.left_info, INFO_MARGIN, PHEIGHT - 157);
-            text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, PHEIGHT - 154);
+            text_layer_move(ui.layers.info_box_left, INFO_MARGIN, PHEIGHT - 157);
+            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, PHEIGHT - 154);
         }
         else { //Classic layout
             text_layer_move(ui.layers.time, 0, top);
             layer_move(ui.layers.battery, 0, top + 29);
             text_layer_move(ui.layers.date, 0, top + 60);
             text_layer_move(ui.layers.month, 0, top + 96);
-            text_layer_move(ui.layers.left_info, INFO_MARGIN, top + 118);
-            text_layer_move(ui.layers.right_info, HALFPWIDTH + 1, top + 119);
+            text_layer_move(ui.layers.info_box_left, INFO_MARGIN, top + 118);
+            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, top + 119);
         }
 
         if (config.hide_battery == 1) {
@@ -357,13 +369,13 @@ void ui_layout() {
         }
 
         if (is_obstructed) {
-            text_layer_hide(ui.layers.left_info);
-            text_layer_hide(ui.layers.right_info);
+            text_layer_hide(ui.layers.info_box_left);
+            text_layer_hide(ui.layers.info_box_right);
             text_layer_hide(ui.layers.month);
         }
         else {
-            text_layer_show(ui.layers.left_info);
-            text_layer_show(ui.layers.right_info);
+            text_layer_show(ui.layers.info_box_left);
+            text_layer_show(ui.layers.info_box_right);
             text_layer_show(ui.layers.month);
         }
     }
@@ -386,8 +398,8 @@ void ui_colorize() {
     layer_mark_dirty(ui.layers.battery);
     text_layer_set_text_color(ui.layers.date, text_color);
     text_layer_set_text_color(ui.layers.month, text_color);
-    text_layer_set_text_color(ui.layers.left_info, text_color);
-    text_layer_set_text_color(ui.layers.right_info, text_color);
+    text_layer_set_text_color(ui.layers.info_box_left, text_color);
+    text_layer_set_text_color(ui.layers.info_box_right, text_color);
 
     GColor status_bar_text_color;
     GColor status_bar_color;
@@ -400,7 +412,6 @@ void ui_colorize() {
         status_bar_text_color = get_color(config.status_bar_night_text_color);
         status_bar_color = get_color(config.status_bar_night_color);
     }
-
 
     text_layer_set_text_color(ui.layers.status_bar1, status_bar_text_color);
     text_layer_set_text_color(ui.layers.status_bar2, status_bar_text_color);
@@ -467,16 +478,16 @@ void ui_window_load(Window *window) {
         GTextAlignmentCenter
     );
 
-    ui.layers.left_info = text_layer_init(
+    ui.layers.info_box_left = text_layer_init(
         ui.layers.window,
-        GRect(INFO_MARGIN, MARGINTOP + 118, HALFPWIDTH, 50),
+        GRect(INFO_MARGIN, MARGINTOP + 118, HALFPWIDTH + 10, 50),
         ui.fonts.droidsans_32,
         GColorClear,
         GColorBlack,
         GTextAlignmentCenter
     );
 
-    ui.layers.right_info = text_layer_init(
+    ui.layers.info_box_right = text_layer_init(
         ui.layers.window,
         GRect(HALFPWIDTH + 1, MARGINTOP + 119, (HALFPWIDTH - INFO_MARGIN), 50),
         ui.fonts.icons_30,
@@ -531,8 +542,8 @@ void ui_window_unload(Window *window) {
     layer_destroy_safe(ui.layers.battery);
     text_layer_destroy_safe(ui.layers.date);
     text_layer_destroy_safe(ui.layers.month);
-    text_layer_destroy_safe(ui.layers.left_info);
-    text_layer_destroy_safe(ui.layers.right_info);
+    text_layer_destroy_safe(ui.layers.info_box_left);
+    text_layer_destroy_safe(ui.layers.info_box_right);
     text_layer_destroy_safe(ui.layers.status_bar);
     text_layer_destroy_safe(ui.layers.status_bar1);
     text_layer_destroy_safe(ui.layers.status_bar2);

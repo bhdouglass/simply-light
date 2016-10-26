@@ -264,8 +264,12 @@ function fetchWeather(pos) {
 }
 
 function fetchAirQuality(pos, data) {
-    var fetch = config.configuration.air_quality;
-    for (var i = 1; i <= 5; i++) {
+    var fetch = (
+        config.configuration.info_box_left == constants.AIR_QUALITY_INDEX ||
+        config.configuration.info_box_right == constants.AIR_QUALITY_INDEX
+    );
+
+    for (var i = 1; i <= 3; i++) {
         if (config.configuration['status_bar' + i] == constants.AIR_QUALITY_INDEX) {
             fetch = true;
         }

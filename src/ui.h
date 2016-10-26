@@ -49,8 +49,8 @@ struct Layers {
     TextLayer *date;
     TextLayer *time;
     TextLayer *month;
-    TextLayer *left_info;
-    TextLayer *right_info;
+    TextLayer *info_box_left;
+    TextLayer *info_box_right;
     TextLayer *status_bar;
     TextLayer *status_bar1;
     TextLayer *status_bar2;
@@ -76,7 +76,7 @@ void ui_set_calories(int calories);
 void ui_set_sleeping(bool sleeping);
 void ui_set_unobstructed_area(GRect unobstructed_area);
 
-void ui_refresh_status_bar();
+void ui_refresh_info();
 void ui_layout();
 void ui_colorize();
 

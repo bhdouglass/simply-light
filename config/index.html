@@ -113,7 +113,25 @@
             </div>
         </div>
 
-        <div class="item-container ng-cloak">
+
+        <div class="item-container ng-cloak" ng-if="version > 5.31">
+            <div class="item-container-header">Info Box Options</div>
+
+            <div class="item-container-content">
+                <label class="item">
+                    Info Box Left
+                    <select class="item-select" dir="rtl" id="info_box_left" ng-model="config.info_box_left" ng-options="o.value as o.label for o in status_items"></select>
+                </label>
+            </div>
+            <div class="item-container-content">
+                <label class="item">
+                    Info Box Right
+                    <select class="item-select" dir="rtl" id="info_box_right" ng-model="config.info_box_right" ng-options="o.value as o.label for o in status_items"></select>
+                </label>
+            </div>
+        </div>
+
+        <div class="item-container ng-cloak" ng-if="version <= 5.31">
             <div class="item-container-header">Air Quality Options</div>
 
             <div class="item-container-content">

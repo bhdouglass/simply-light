@@ -189,6 +189,16 @@
             "type": "bool",
             "only": "js",
             "default": false
+        }, {
+            "name": "info_box_left",
+            "type": "enum",
+            "enum": "status_items",
+            "default": "Temperature"
+        }, {
+            "name": "info_box_right",
+            "type": "enum",
+            "enum": "status_items",
+            "default": "Weather Condition"
         }
     ]
 }

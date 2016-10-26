@@ -339,7 +339,7 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
     if (config_update) {
         ui_layout();
         ui_colorize();
-        ui_refresh_status_bar();
+        ui_refresh_info();
     }
 }
 
