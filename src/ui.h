@@ -36,6 +36,7 @@ struct Texts {
     char condition[4];
     char ampm[4];
     char battery_percent[5];
+    char battery_icon[4];
     char bluetooth[4];
     char steps_short[6];
     char steps[8];

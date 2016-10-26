@@ -10,6 +10,7 @@
             "Empty": 0,
             "Bluetooth Status": 1,
             "Battery Level": 2,
+            "Battery Level Icon": 11,
             "Air Quality Index": 3,
             "Temperature": 4,
             "Weather Condition": 5,

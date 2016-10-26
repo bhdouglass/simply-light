@@ -18,7 +18,7 @@ int STATUS_BAR_ITEM_WIDTH = 46;
 //TODO don't set font if we don't need to
 void ui_set_info(int type, char *text) {
     if (config.status_bar1 == type) {
-        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
             text_layer_set_font(ui.layers.status_bar1, ui.fonts.icons_14);
         }
         else {
@@ -29,7 +29,7 @@ void ui_set_info(int type, char *text) {
     }
 
     if (config.status_bar2 == type) {
-        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
             text_layer_set_font(ui.layers.status_bar2, ui.fonts.icons_14);
         }
         else {
@@ -40,7 +40,7 @@ void ui_set_info(int type, char *text) {
     }
 
     if (config.status_bar3 == type) {
-        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
             text_layer_set_font(ui.layers.status_bar3, ui.fonts.icons_14);
         }
         else {
@@ -51,7 +51,7 @@ void ui_set_info(int type, char *text) {
     }
 
     if (config.info_box_left == type) {
-        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
             text_layer_set_font(ui.layers.info_box_left, ui.fonts.icons_30);
         }
         else {
@@ -62,7 +62,7 @@ void ui_set_info(int type, char *text) {
     }
 
     if (config.info_box_right == type) {
-        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS) {
+        if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
             text_layer_set_font(ui.layers.info_box_right, ui.fonts.icons_30);
         }
         else {
@@ -212,7 +212,24 @@ void ui_set_battery_level(int level) {
         layer_mark_dirty(ui.layers.battery);
     }
 
+    if (level >= 80) {
+        strncpy(ui.texts.battery_icon, "\uf240", sizeof(ui.texts.battery_icon));
+    }
+    else if (level >= 60) {
+        strncpy(ui.texts.battery_icon, "\uf241", sizeof(ui.texts.battery_icon));
+    }
+    else if (level >= 40) {
+        strncpy(ui.texts.battery_icon, "\uf242", sizeof(ui.texts.battery_icon));
+    }
+    else if (level >= 20) {
+        strncpy(ui.texts.battery_icon, "\uf243", sizeof(ui.texts.battery_icon));
+    }
+    else {
+        strncpy(ui.texts.battery_icon, "\uf244", sizeof(ui.texts.battery_icon));
+    }
+
     ui_set_info(STATUS_ITEMS_BATTERY_LEVEL, ui.texts.battery_percent);
+    ui_set_info(STATUS_ITEMS_BATTERY_LEVEL_ICON, ui.texts.battery_icon);
 }
 
 void ui_set_steps(int steps) {
@@ -291,6 +308,7 @@ void ui_refresh_info() {
     ui_set_info(STATUS_ITEMS_AIR_QUALITY_INDEX, ui.texts.aqi);
     ui_set_info(STATUS_ITEMS_BLUETOOTH_STATUS, ui.texts.bluetooth);
     ui_set_info(STATUS_ITEMS_BATTERY_LEVEL, ui.texts.battery_percent);
+    ui_set_info(STATUS_ITEMS_BATTERY_LEVEL_ICON, ui.texts.battery_icon);
     ui_set_info(STATUS_ITEMS_STEPS_SHORT, ui.texts.steps_short);
     ui_set_info(STATUS_ITEMS_STEPS_FULL, ui.texts.steps);
     ui_set_info(STATUS_ITEMS_DISTANCE_WALKED, ui.texts.distance);
@@ -447,7 +465,7 @@ void ui_window_load(Window *window) {
     HALFPWIDTH = window_bounds.size.w / 2;
     PHEIGHT = window_bounds.size.h;
     HALFPHEIGHT = window_bounds.size.h / 2;
-    STATUS_BAR_ITEM_WIDTH = (PWIDTH - STATUS_BAR_MARGIN) / 3;
+    STATUS_BAR_ITEM_WIDTH = (PWIDTH - (STATUS_BAR_MARGIN * 2)) / 3;
 
     ui.layers.time = text_layer_init(
         ui.layers.window,
@@ -574,6 +592,7 @@ void ui_init() {
     strncpy(ui.texts.condition, "", sizeof(ui.texts.condition));
     strncpy(ui.texts.ampm, "", sizeof(ui.texts.ampm));
     strncpy(ui.texts.battery_percent, "", sizeof(ui.texts.battery_percent));
+    strncpy(ui.texts.battery_icon, "", sizeof(ui.texts.battery_icon));
     strncpy(ui.texts.bluetooth, "", sizeof(ui.texts.bluetooth));
     strncpy(ui.texts.steps_short, "", sizeof(ui.texts.steps_short));
     strncpy(ui.texts.steps, "", sizeof(ui.texts.steps));
