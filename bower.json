@@ -10,6 +10,7 @@
     "angular": "~1.4.1",
     "material-design-iconic-font": "~2.1.2",
     "pebble-slate": "~0.0.3",
-    "weather-icons": "~2.0.10"
+    "weather-icons": "~2.0.10",
+    "font-awesome": "fontawesome#^4.7.0"
   }
 }
