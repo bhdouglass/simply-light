@@ -583,6 +583,9 @@ void ui_window_load(Window *window) {
 
     ui_layout();
     ui_colorize();
+
+    //Check if we ar obstructed
+    ui_set_unobstructed_area(layer_get_unobstructed_bounds(ui.layers.window));
 }
 
 void ui_window_unload(Window *window) {
