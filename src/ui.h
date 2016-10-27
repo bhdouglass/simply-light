@@ -42,6 +42,7 @@ struct Texts {
     char steps[8];
     char distance[6];
     char calories[6];
+    char sleep_time[6];
 };
 
 struct Layers {
@@ -74,7 +75,7 @@ void ui_set_battery_level(int level);
 void ui_set_steps(int steps);
 void ui_set_walk_distance(float distance, MeasurementSystem sys);
 void ui_set_calories(int calories);
-void ui_set_sleeping(bool sleeping);
+void ui_set_sleeping(bool sleeping, int sleep_time);
 void ui_set_unobstructed_area(GRect unobstructed_area);
 
 void ui_refresh_info();

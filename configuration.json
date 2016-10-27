@@ -18,7 +18,8 @@
             "Steps - Short": 7,
             "Steps - Full": 8,
             "Distance Walked": 9,
-            "Calories Burned": 10
+            "Calories Burned": 10,
+            "Sleep Time": 12
         },
         "temperature_units": {
             "Fahrenheit": "imperial",

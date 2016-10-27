@@ -182,6 +182,7 @@ static void health_update() {
 
 static void sleep_update() {
     time_t start = time(NULL) - SECONDS_PER_HOUR; //An hour ago
+    time_t start_today = time_start_of_today();
     time_t end = time(NULL);
     HealthServiceAccessibilityMask activity_mask = health_service_any_activity_accessible(HealthActivityMaskAll, start, end);
 
@@ -197,14 +198,27 @@ static void sleep_update() {
             //APP_LOG(APP_LOG_LEVEL_DEBUG, "The user is not sleeping");
             sleeping = false;
         }
-
-        ui_set_sleeping(sleeping);
     }
     else {
         //APP_LOG(APP_LOG_LEVEL_DEBUG, "No activities");
         sleeping = false;
-        ui_set_sleeping(sleeping);
     }
+
+    int sleep_time = 0;
+    HealthMetric sleep_metric = HealthMetricSleepSeconds;
+    HealthServiceAccessibilityMask sleep_mask = health_service_metric_accessible(sleep_metric, start_today, end);
+    if (sleep_mask & HealthServiceAccessibilityMaskAvailable) {
+        sleep_time += (int) health_service_sum_today(sleep_metric);
+    }
+
+    //HealthMetricSleepSeconds seems to include the restful sleep
+    /*HealthMetric resting_sleep_metric = HealthMetricSleepRestfulSeconds;
+    HealthServiceAccessibilityMask resting_sleep_mask = health_service_metric_accessible(resting_sleep_metric, start_today, end);
+    if (resting_sleep_mask & HealthServiceAccessibilityMaskAvailable) {
+        sleep_time += (int) health_service_sum_today(resting_sleep_metric);
+    }*/
+
+    ui_set_sleeping(sleeping, sleep_time);
 }
 
 static void handle_health(HealthEventType event, void *context) {
@@ -224,7 +238,7 @@ static void handle_health(HealthEventType event, void *context) {
 
                     sleeping_movements = 0;
                     sleeping = false;
-                    ui_set_sleeping(sleeping);
+                    ui_set_sleeping(sleeping, -1);
                 }
             }
 
