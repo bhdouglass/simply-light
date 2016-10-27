@@ -211,14 +211,14 @@ static void sleep_update() {
         sleep_time += (int) health_service_sum_today(sleep_metric);
     }
 
-    //HealthMetricSleepSeconds seems to include the restful sleep
-    /*HealthMetric resting_sleep_metric = HealthMetricSleepRestfulSeconds;
+    int restful_sleep_time = 0;
+    HealthMetric resting_sleep_metric = HealthMetricSleepRestfulSeconds;
     HealthServiceAccessibilityMask resting_sleep_mask = health_service_metric_accessible(resting_sleep_metric, start_today, end);
     if (resting_sleep_mask & HealthServiceAccessibilityMaskAvailable) {
-        sleep_time += (int) health_service_sum_today(resting_sleep_metric);
-    }*/
+        restful_sleep_time += (int) health_service_sum_today(resting_sleep_metric);
+    }
 
-    ui_set_sleeping(sleeping, sleep_time);
+    ui_set_sleeping(sleeping, sleep_time, restful_sleep_time);
 }
 
 static void handle_health(HealthEventType event, void *context) {
@@ -238,7 +238,7 @@ static void handle_health(HealthEventType event, void *context) {
 
                     sleeping_movements = 0;
                     sleeping = false;
-                    ui_set_sleeping(sleeping, -1);
+                    ui_set_sleeping(sleeping, -1, -1);
                 }
             }
 

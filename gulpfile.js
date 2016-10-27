@@ -62,16 +62,16 @@ var config = minimist(process.argv.slice(2), {
         aplite: false,
         basalt: true,
         chalk: false,
+        diorite: false,
+        emery: false,
         ip: '192.168.1.21',
         logs: false,
-        debug: false,
         config: 'http://simply-light.bhdouglass.com/',
     },
-    boolean: ['emulator', 'aplite', 'basalt', 'chalk'],
+    boolean: ['emulator', 'aplite', 'basalt', 'chalk', 'diorite', 'emery'],
     alias: {
         emulator: ['e', 'emu'],
         logs: 'l',
-        debug: 'd',
     }
 });
 
@@ -86,6 +86,12 @@ function installCommand(config) {
         else if (config.chalk) {
             command += ' chalk';
         }
+        else if (config.diorite) {
+            command += ' diorite';
+        }
+        else if (config.emery) {
+            command += ' emery';
+        }
         else {
             command += ' basalt';
         }
@@ -96,10 +102,6 @@ function installCommand(config) {
 
     if (config.logs) {
         command += ' --logs';
-    }
-
-    if (config.debug) {
-        command += ' --debug';
     }
 
     return command;
@@ -225,10 +227,14 @@ gulp.task('build-pebble-c', function() { //TODO split gulp file into multiple fi
                     var aplite = (meta['default'].aplite === undefined) ? null : meta['default'].aplite;
                     var basalt = (meta['default'].basalt === undefined) ? null : meta['default'].basalt;
                     var chalk = (meta['default'].chalk === undefined) ? null : meta['default'].chalk;
+                    var diorite = (meta['default'].diorite === undefined) ? null : meta['default'].diorite;
+                    var emery = (meta['default'].emery === undefined) ? null : meta['default'].emery;
 
                     config_defaults += '#ifdef PBL_PLATFORM_APLITE\n    config.' + meta.name + ' = ' + aplite + ';\n#endif\n';
                     config_defaults += '#ifdef PBL_PLATFORM_BASALT\n    config.' + meta.name + ' = ' + basalt + ';\n#endif\n';
                     config_defaults += '#ifdef PBL_PLATFORM_CHALK\n    config.' + meta.name + ' = ' + chalk + ';\n#endif\n';
+                    config_defaults += '#ifdef PBL_PLATFORM_DIORITE\n    config.' + meta.name + ' = ' + diorite + ';\n#endif\n';
+                    config_defaults += '#ifdef PBL_PLATFORM_EMERY\n    config.' + meta.name + ' = ' + emery + ';\n#endif\n';
                 }
                 else {
                     var value = (meta['default'] === undefined) ? null : meta['default'];

@@ -19,7 +19,8 @@
             "Steps - Full": 8,
             "Distance Walked": 9,
             "Calories Burned": 10,
-            "Sleep Time": 12
+            "Sleep Time": 12,
+            "Restful Sleep Time": 13
         },
         "temperature_units": {
             "Fahrenheit": "imperial",
@@ -136,7 +137,9 @@
             "default": {
                 "aplite": 0,
                 "basalt": 65535,
-                "chalk": 65535
+                "chalk": 65535,
+                "diorite": 0,
+                "emery": 65535
             }
         }, {
             "name": "status_bar_day_text_color",
@@ -144,7 +147,9 @@
             "default": {
                 "aplite": 1,
                 "basalt": 5592405,
-                "chalk": 5592405
+                "chalk": 5592405,
+                "diorite": 1,
+                "emery": 5592405
             }
         }, {
             "name": "status_bar_night_color",
@@ -152,7 +157,9 @@
             "default": {
                 "aplite": 0,
                 "basalt": 65535,
-                "chalk": 65535
+                "chalk": 65535,
+                "diorite": 0,
+                "emery": 65535
             }
         }, {
             "name": "status_bar_night_text_color",
@@ -160,7 +167,9 @@
             "default": {
                 "aplite": 1,
                 "basalt": 5592405,
-                "chalk": 5592405
+                "chalk": 5592405,
+                "diorite": 1,
+                "emery": 5592405
             }
         }, {
             "name": "status_bar1",
@@ -171,7 +180,7 @@
             "name": "status_bar2",
             "type": "enum",
             "enum": "status_items",
-            "default": "Empty"
+            "default": "Bluetooth Status"
         }, {
             "name": "status_bar3",
             "type": "enum",

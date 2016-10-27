@@ -282,7 +282,7 @@ void ui_set_calories(int calories) {
     ui_set_info(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
 }
 
-void ui_set_sleeping(bool sleeping, int sleep_time) {
+void ui_set_sleeping(bool sleeping, int sleep_time, int restful_sleep_time) {
     is_sleeping = sleeping;
 
     if (sleep_time != -1) { //So is_sleeping can be updated without the sleep time
@@ -290,6 +290,13 @@ void ui_set_sleeping(bool sleeping, int sleep_time) {
 
         snprintf(ui.texts.sleep_time, sizeof(ui.texts.sleep_time), "%d.%d", (int)(sleep_hours), (int)(sleep_hours * 10) % 10);
         ui_set_info(STATUS_ITEMS_SLEEP_TIME, ui.texts.sleep_time);
+    }
+
+    if (restful_sleep_time != -1) { //So is_sleeping can be updated without the sleep time
+        float restful_sleep_hours = (float) restful_sleep_time / SECONDS_PER_HOUR;
+
+        snprintf(ui.texts.restful_sleep_time, sizeof(ui.texts.restful_sleep_time), "%d.%d", (int)(restful_sleep_hours), (int)(restful_sleep_hours * 10) % 10);
+        ui_set_info(STATUS_ITEMS_RESTFUL_SLEEP_TIME, ui.texts.restful_sleep_time);
     }
 
     ui_layout();
@@ -321,6 +328,7 @@ void ui_refresh_info() {
     ui_set_info(STATUS_ITEMS_DISTANCE_WALKED, ui.texts.distance);
     ui_set_info(STATUS_ITEMS_CALORIES_BURNED, ui.texts.calories);
     ui_set_info(STATUS_ITEMS_SLEEP_TIME, ui.texts.sleep_time);
+    ui_set_info(STATUS_ITEMS_RESTFUL_SLEEP_TIME, ui.texts.restful_sleep_time);
     ui_set_info(STATUS_ITEMS_AMPM, ui.texts.ampm);
     ui_set_info(STATUS_ITEMS_EMPTY, "");
 }
@@ -621,6 +629,7 @@ void ui_init() {
     strncpy(ui.texts.distance, "-", sizeof(ui.texts.distance));
     strncpy(ui.texts.calories, "-", sizeof(ui.texts.calories));
     strncpy(ui.texts.sleep_time, "-", sizeof(ui.texts.sleep_time));
+    strncpy(ui.texts.restful_sleep_time, "-", sizeof(ui.texts.restful_sleep_time));
 
     ui.window = window_create();
     window_set_window_handlers(ui.window, (WindowHandlers) {
