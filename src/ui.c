@@ -134,7 +134,7 @@ void ui_set_datetime(struct tm *tick_time, TimeUnits units_changed) {
 
 void ui_set_temperature(int temp, int error) {
     if (error == WEATHER_ERROR || error == FETCH_ERROR || temp == BAD_DATA) {
-        strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
+        strncpy(ui.texts.temperature, "-", sizeof(ui.texts.temperature));
     }
     else {
         snprintf(ui.texts.temperature, sizeof(ui.texts.temperature), "%d\u00b0", temp);
@@ -182,7 +182,7 @@ void ui_set_condition(int condition, int error) {
 
 void ui_set_aqi(int aqi, int error) {
     if (error == AQI_ERROR || error == FETCH_ERROR || aqi == BAD_DATA) {
-        strncpy(ui.texts.aqi, "", sizeof(ui.texts.aqi));
+        strncpy(ui.texts.aqi, "-", sizeof(ui.texts.aqi));
     }
     else {
         snprintf(ui.texts.aqi, sizeof(ui.texts.aqi), "%d", aqi);
@@ -266,7 +266,7 @@ void ui_set_walk_distance(float distance, MeasurementSystem sys) {
             break;
 
         case MeasurementSystemUnknown:
-            strncpy(ui.texts.distance, "", sizeof(ui.texts.distance));
+            strncpy(ui.texts.distance, "-", sizeof(ui.texts.distance));
             break;
     }
 
@@ -609,18 +609,18 @@ void ui_init() {
     strncpy(ui.texts.date, "", sizeof(ui.texts.date));
     strncpy(ui.texts.time, "", sizeof(ui.texts.time));
     strncpy(ui.texts.month, "", sizeof(ui.texts.month));
-    strncpy(ui.texts.temperature, "", sizeof(ui.texts.temperature));
-    strncpy(ui.texts.aqi, "", sizeof(ui.texts.aqi));
+    strncpy(ui.texts.temperature, "-", sizeof(ui.texts.temperature));
+    strncpy(ui.texts.aqi, "-", sizeof(ui.texts.aqi));
     strncpy(ui.texts.condition, "", sizeof(ui.texts.condition));
     strncpy(ui.texts.ampm, "", sizeof(ui.texts.ampm));
     strncpy(ui.texts.battery_percent, "", sizeof(ui.texts.battery_percent));
     strncpy(ui.texts.battery_icon, "", sizeof(ui.texts.battery_icon));
     strncpy(ui.texts.bluetooth, "", sizeof(ui.texts.bluetooth));
-    strncpy(ui.texts.steps_short, "", sizeof(ui.texts.steps_short));
-    strncpy(ui.texts.steps, "", sizeof(ui.texts.steps));
-    strncpy(ui.texts.distance, "", sizeof(ui.texts.distance));
-    strncpy(ui.texts.calories, "", sizeof(ui.texts.calories));
-    strncpy(ui.texts.sleep_time, "", sizeof(ui.texts.sleep_time));
+    strncpy(ui.texts.steps_short, "-", sizeof(ui.texts.steps_short));
+    strncpy(ui.texts.steps, "-", sizeof(ui.texts.steps));
+    strncpy(ui.texts.distance, "-", sizeof(ui.texts.distance));
+    strncpy(ui.texts.calories, "-", sizeof(ui.texts.calories));
+    strncpy(ui.texts.sleep_time, "-", sizeof(ui.texts.sleep_time));
 
     ui.window = window_create();
     window_set_window_handlers(ui.window, (WindowHandlers) {
