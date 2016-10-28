@@ -361,33 +361,33 @@ void ui_layout() {
 
         if (config.layout == 1) { //Reverse Classic layout
             if (config.hide_battery == 1) {
-                text_layer_move(ui.layers.time, 0, PHEIGHT - 69);
-                text_layer_move(ui.layers.date, 0, PHEIGHT - 99);
+                text_layer_move(ui.layers.time, 0, top + (PHEIGHT - top) * 0.62);
+                text_layer_move(ui.layers.date, 0, top + (PHEIGHT - top) * 0.42);
             }
             else {
-                text_layer_move(ui.layers.time, 0, PHEIGHT - 64);
-                text_layer_move(ui.layers.date, 0, PHEIGHT - 101);
+                text_layer_move(ui.layers.time, 0, top + (PHEIGHT - top) * 0.64);
+                text_layer_move(ui.layers.date, 0, top + (PHEIGHT - top) * 0.40);
             }
 
-            layer_move(ui.layers.battery, 0, PHEIGHT - 90);
-            text_layer_move(ui.layers.month, 0, PHEIGHT - 122);
-            text_layer_move(ui.layers.info_box_left, INFO_MARGIN, PHEIGHT - 157);
-            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, PHEIGHT - 154);
+            layer_move(ui.layers.battery, 0, top + (PHEIGHT - top) * 0.47);
+            text_layer_move(ui.layers.month, 0, top + (PHEIGHT - top) * 0.28);
+            text_layer_move(ui.layers.info_box_left, INFO_MARGIN, top + (PHEIGHT - top) * 0.05);
+            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, top + (PHEIGHT - top) * 0.06);
         }
         else { //Classic layout
             if (config.hide_battery == 1) {
-                text_layer_move(ui.layers.time, 0, top + 5);
-                text_layer_move(ui.layers.date, 0, top + 58);
+                text_layer_move(ui.layers.time, 0, top + (PHEIGHT - top) * 0.02);
+                text_layer_move(ui.layers.date, 0, top + (PHEIGHT - top) * 0.36);
             }
             else {
                 text_layer_move(ui.layers.time, 0, top);
-                text_layer_move(ui.layers.date, 0, top + 60);
+                text_layer_move(ui.layers.date, 0, top + (PHEIGHT - top) * 0.38);
             }
 
-            layer_move(ui.layers.battery, 0, top + 29);
-            text_layer_move(ui.layers.month, 0, top + 96);
-            text_layer_move(ui.layers.info_box_left, INFO_MARGIN, top + 118);
-            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, top + 119);
+            layer_move(ui.layers.battery, 0, top + (PHEIGHT - top) * 0.20);
+            text_layer_move(ui.layers.month, 0, top + (PHEIGHT - top) * 0.59);
+            text_layer_move(ui.layers.info_box_left, INFO_MARGIN, top + (PHEIGHT - top) * 0.74);
+            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, top + (PHEIGHT - top) * 0.75);
         }
 
         if (config.hide_battery == 1) {
@@ -485,7 +485,6 @@ void ui_battery_dirty(Layer *layer, GContext *ctx) {
     graphics_fill_rect(ctx, GRect(offset, 29, width, 4), 0, GCornerNone);
 }
 
-//TODO set layouts based on percentages
 void ui_window_load(Window *window) {
     ui.layers.window = window_get_root_layer(window);
 
@@ -584,7 +583,7 @@ void ui_window_load(Window *window) {
     ui_layout();
     ui_colorize();
 
-    //Check if we ar obstructed
+    //Check if we are obstructed
     ui_set_unobstructed_area(layer_get_unobstructed_bounds(ui.layers.window));
 }
 

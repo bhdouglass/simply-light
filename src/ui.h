@@ -2,18 +2,26 @@
 
 #include <pebble.h>
 
-#ifdef PBL_ROUND
-    #define MARGINTOP 12
+#if PBL_PLATFORM_EMERY
+    #define MARGINTOP 8
     #define MARGINTOP_WITH_STATUS_BAR 12
-    #define STATUS_BAR_MARGINTOP 4
-    #define STATUS_BAR_HEIGHT 20
-    #define INFO_MARGIN 20
-#else
-    #define MARGINTOP 4
-    #define MARGINTOP_WITH_STATUS_BAR 8
     #define STATUS_BAR_MARGINTOP 0
     #define STATUS_BAR_HEIGHT 16
     #define INFO_MARGIN 0
+#else
+    #if PBL_ROUND
+        #define MARGINTOP 12
+        #define MARGINTOP_WITH_STATUS_BAR 12
+        #define STATUS_BAR_MARGINTOP 4
+        #define STATUS_BAR_HEIGHT 20
+        #define INFO_MARGIN 20
+    #else
+        #define MARGINTOP 4
+        #define MARGINTOP_WITH_STATUS_BAR 8
+        #define STATUS_BAR_MARGINTOP 0
+        #define STATUS_BAR_HEIGHT 16
+        #define INFO_MARGIN 0
+    #endif
 #endif
 
 #define STATUS_BAR_MARGIN 3
