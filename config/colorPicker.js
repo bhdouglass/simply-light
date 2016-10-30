@@ -9,12 +9,12 @@ angular.module('app').directive('customColorPicker', function() {
         template: '<div class="item-container-content">' +
             '<label class="item">' +
                 '{{title}}' +
-                '<span ng-if="platform == \'aplite\'">' +
+                '<span ng-if="platform == \'aplite\' || platform == \'diorite\'">' +
                     '<span class="color" ng-style="style(model)"></span>' +
                     '<select class="item-select" ng-model="model" ng-options="c.name for c in colors" ng-change="setModel(model)"></select>' +
                     '<div class="select-triangle"></div>' +
                 '</span>' +
-                '<span ng-if="platform != \'aplite\'">' +
+                '<span ng-if="platform != \'aplite\' && platform != \'diorite\'">' +
                     '<span class="color-name" ng-bind="model.name"></span>' +
                     '<div class="item-styled-color">' +
                         '<span class="value clickable" ng-style="style(model)" ng-click="toggle()"></span>' +
@@ -32,7 +32,7 @@ angular.module('app').directive('customColorPicker', function() {
             $scope.show = false;
 
             $scope.platform = $attrs.platform;
-            if ($scope.platform == 'aplite') {
+            if ($scope.platform == 'aplite' || $scope.platform == 'diorite') {
                 if ($attrs.background) {
                     $scope.colors = aplite_colors_background;
                 }
@@ -47,7 +47,7 @@ angular.module('app').directive('customColorPicker', function() {
             ngModel.$formatters.push(function(modelValue) {
                 var viewValue = null;
 
-                if (modelValue == 1 && $scope.platform != 'aplite') {
+                if (modelValue == 1 && ($scope.platform != 'aplite' || $scope.platform != 'diorite')) {
                     modelValue = 16777215;
                 }
 
@@ -88,7 +88,7 @@ angular.module('app').directive('customColorPicker', function() {
                         'background-color': color.hex,
                     };
 
-                    if ($scope.platform == 'aplite') {
+                    if ($scope.platform == 'aplite' || $scope.platform == 'diorite') {
                         if (color.name == 'White') {
                             style.border = 'black solid 1px';
                         }
