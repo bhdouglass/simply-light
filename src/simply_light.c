@@ -324,6 +324,49 @@ static void msg_received_handler(DictionaryIterator *iter, void *context) {
         t = dict_read_next(iter);
     }
 
+    //For pretty screenshots
+    //SCREENSHOT_0 config.hide_battery = true;
+    #ifdef PBL_HEALTH
+    //SCREENSHOT_0 config.status_bar1 = STATUS_ITEMS_STEPS_SHORT;
+    //SCREENSHOT_0 config.status_bar2 = STATUS_ITEMS_DISTANCE_WALKED;
+    //SCREENSHOT_0 config.status_bar3 = STATUS_ITEMS_CALORIES_BURNED;
+    #else
+    //SCREENSHOT_0 config.status_bar1 = STATUS_ITEMS_BATTERY_LEVEL;
+    //SCREENSHOT_0 config.status_bar2 = STATUS_ITEMS_BLUETOOTH_STATUS;
+    //SCREENSHOT_0 config.status_bar3 = STATUS_ITEMS_AMPM;
+    #endif
+    //SCREENSHOT_1 config.status_bar1 = STATUS_ITEMS_WEATHER_CONDITION;
+    //SCREENSHOT_1 config.status_bar2 = STATUS_ITEMS_EMPTY;
+    //SCREENSHOT_1 config.status_bar3 = STATUS_ITEMS_BLUETOOTH_STATUS;
+    //SCREENSHOT_1 config.info_box_left = STATUS_ITEMS_BATTERY_LEVEL;
+    //SCREENSHOT_1 config.info_box_right = STATUS_ITEMS_TEMPERATURE;
+    //SCREENSHOT_1 config.hide_battery = true;
+    //SCREENSHOT_2 config.show_status_bar = false;
+    //SCREENSHOT_2 config.info_box_left = STATUS_ITEMS_TEMPERATURE;
+    //SCREENSHOT_2 config.info_box_right = STATUS_ITEMS_BATTERY_LEVEL_ICON;
+    //SCREENSHOT_3 config.status_bar2 = STATUS_ITEMS_BATTERY_LEVEL_ICON;
+
+    #ifdef PBL_COLOR
+    //SCREENSHOT_1 config.status_bar_day_color = 43520;
+    //SCREENSHOT_1 config.status_bar_day_text_color = 16777215;
+    //SCREENSHOT_1 config.status_bar_night_color = 43520;
+    //SCREENSHOT_1 config.status_bar_night_text_color = 16777215;
+
+    //SCREENSHOT_2 config.day_background_color = 5636095;
+    //SCREENSHOT_2 config.day_text_color = 170;
+    //SCREENSHOT_2 config.night_background_color = 5636095;
+    //SCREENSHOT_2 config.night_text_color = 170;
+
+    //SCREENSHOT_3 config.day_background_color = 11141290;
+    //SCREENSHOT_3 config.day_text_color = 0;
+    //SCREENSHOT_3 config.night_background_color = 11141290;
+    //SCREENSHOT_3 config.night_text_color = 0;
+    //SCREENSHOT_3 config.status_bar_day_color = 5570645;
+    //SCREENSHOT_3 config.status_bar_day_text_color = 16777215;
+    //SCREENSHOT_3 config.status_bar_night_color = 5570645;
+    //SCREENSHOT_3 config.status_bar_night_text_color = 16777215;
+    #endif
+
     if (e_time != 0) {
         elapsed_time = e_time;
     }

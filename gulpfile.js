@@ -17,6 +17,7 @@ var surge = require('gulp-surge');
 var del = require('del');
 var minimist = require('minimist');
 var fs = require('fs');
+var child_process = require('child_process');
 
 var paths = {
     jslint: ['src/js/*.js', 'gulpfile.js', 'config/*.js', '!config/colors.js', '!src/js/configMeta.js', '!config/configMeta.js'],
@@ -284,10 +285,48 @@ gulp.task('build-pebble-resources', function() {
         .pipe(gulp.dest(paths.pebble.cdist));
 });
 
+function screenshot(config, platform) {
+    var command = installCommand(config).replace('install', 'screenshot');
+    child_process.execSync('sleep 3s && ' + command);
+
+    var files = fs.readdirSync('.');
+    files.forEach(function(file) {
+        if (file.startsWith('pebble_screenshot') && file.endsWith('.png')) {
+            fs.renameSync(file, './screenshots/' + platform + '_' + file);
+        }
+    });
+}
+
+function screenshotAll() {
+    config.basalt = false;
+    config.emulator = true;
+    appinfo.targetPlatforms.forEach(function(platform) {
+        config[platform] = true;
+
+        child_process.execSync('cd ' + paths.pebble.cdist + ' && ' + installCommand(config));
+        screenshot(config, platform);
+
+        config[platform] = false;
+    });
+}
+
 gulp.task('build-config', ['lint', 'clean-config', 'build-html', 'build-js', 'build-css', 'build-fonts', 'build-font']);
 gulp.task('prebuild-pebble', ['lint', 'clean-pebble', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js']);
 gulp.task('build-pebble', ['prebuild-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
 gulp.task('install-pebble', ['build-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && ' + installCommand(config)]));
+gulp.task('screenshot-pebble', ['install-pebble'], screenshot);
+
+//TODO put this in the pebble template
+gulp.task('screenshot-all', ['build-pebble'], screenshotAll);
+
+gulp.task('pretty-screenshots', function() {
+    for (var i = 0; i < 4; i++) {
+        child_process.execSync('gulp prebuild-pebble && sed -i "s/\\/\\/SCREENSHOT_' + i + '//g" ' + paths.pebble.cdist + 'src/*.c'); //TODO this is very hacky :/
+        child_process.execSync('cd ' + paths.pebble.cdist + ' && pebble build');
+        screenshotAll(); //TODO pass i for filename
+    }
+});
+
 gulp.task('server-install', ['build-pebble']);
 
 gulp.task('deploy-config', ['build-config'], function() {

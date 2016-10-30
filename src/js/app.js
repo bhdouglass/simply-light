@@ -1,3 +1,4 @@
+//document = {}; //The emulator doesn't have document defined
 window.location = {}; //shim for iOS
 document.createElement = null; //shim to trick the browserify shims, yay! (also for iOS, yay!)
 

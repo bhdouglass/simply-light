@@ -19,10 +19,10 @@ int STATUS_BAR_ITEM_WIDTH = 46;
 void ui_set_info(int type, char *text) {
     if (config.status_bar1 == type) {
         if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
-            text_layer_set_font(ui.layers.status_bar1, ui.fonts.icons_14);
+            text_layer_set_font(ui.layers.status_bar1, ui.fonts.status_icons);
         }
         else {
-            text_layer_set_font(ui.layers.status_bar1, ui.fonts.droidsans_bold_14);
+            text_layer_set_font(ui.layers.status_bar1, ui.fonts.status_text);
         }
 
         text_layer_set_text(ui.layers.status_bar1, text);
@@ -30,10 +30,10 @@ void ui_set_info(int type, char *text) {
 
     if (config.status_bar2 == type) {
         if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
-            text_layer_set_font(ui.layers.status_bar2, ui.fonts.icons_14);
+            text_layer_set_font(ui.layers.status_bar2, ui.fonts.status_icons);
         }
         else {
-            text_layer_set_font(ui.layers.status_bar2, ui.fonts.droidsans_bold_14);
+            text_layer_set_font(ui.layers.status_bar2, ui.fonts.status_text);
         }
 
         text_layer_set_text(ui.layers.status_bar2, text);
@@ -41,10 +41,10 @@ void ui_set_info(int type, char *text) {
 
     if (config.status_bar3 == type) {
         if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
-            text_layer_set_font(ui.layers.status_bar3, ui.fonts.icons_14);
+            text_layer_set_font(ui.layers.status_bar3, ui.fonts.status_icons);
         }
         else {
-            text_layer_set_font(ui.layers.status_bar3, ui.fonts.droidsans_bold_14);
+            text_layer_set_font(ui.layers.status_bar3, ui.fonts.status_text);
         }
 
         text_layer_set_text(ui.layers.status_bar3, text);
@@ -52,10 +52,10 @@ void ui_set_info(int type, char *text) {
 
     if (config.info_box_left == type) {
         if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
-            text_layer_set_font(ui.layers.info_box_left, ui.fonts.icons_30);
+            text_layer_set_font(ui.layers.info_box_left, ui.fonts.info_icons);
         }
         else {
-            text_layer_set_font(ui.layers.info_box_left, ui.fonts.droidsans_32);
+            text_layer_set_font(ui.layers.info_box_left, ui.fonts.info_text);
         }
 
         text_layer_set_text(ui.layers.info_box_left, text);
@@ -63,10 +63,10 @@ void ui_set_info(int type, char *text) {
 
     if (config.info_box_right == type) {
         if (type == STATUS_ITEMS_WEATHER_CONDITION || type == STATUS_ITEMS_BLUETOOTH_STATUS || type == STATUS_ITEMS_BATTERY_LEVEL_ICON) {
-            text_layer_set_font(ui.layers.info_box_right, ui.fonts.icons_30);
+            text_layer_set_font(ui.layers.info_box_right, ui.fonts.info_icons);
         }
         else {
-            text_layer_set_font(ui.layers.info_box_right, ui.fonts.droidsans_32);
+            text_layer_set_font(ui.layers.info_box_right, ui.fonts.info_text);
         }
 
         text_layer_set_text(ui.layers.info_box_right, text);
@@ -95,21 +95,21 @@ void ui_set_datetime(struct tm *tick_time, TimeUnits units_changed) {
     tr_am_pm(tick_time);
 
     //For pretty screenshots
-    /*strncpy(ui.texts.time, "12:00", sizeof(ui.texts.time));
-    strncpy(ui.texts.date, "Thu 28", sizeof(ui.texts.date));
-    strncpy(ui.texts.month, "May", sizeof(ui.texts.month));*/
-    /*strncpy(ui.texts.time, "6:30", sizeof(ui.texts.time));
-    strncpy(ui.texts.date, "Thu 28", sizeof(ui.texts.date));
-    strncpy(ui.texts.month, "February", sizeof(ui.texts.month));*/
-    /*strncpy(ui.texts.time, "9:00", sizeof(ui.texts.time));
-    strncpy(ui.texts.date, "Fri 27", sizeof(ui.texts.date));
-    strncpy(ui.texts.month, "May", sizeof(ui.texts.month));*/
-    /*strncpy(ui.texts.time, "9:00", sizeof(ui.texts.time));
-    strncpy(ui.texts.date, "Fri 27", sizeof(ui.texts.date));
-    strncpy(ui.texts.month, "May", sizeof(ui.texts.month));*/
-    /*strncpy(ui.texts.time, "12:15", sizeof(ui.texts.time));
-    strncpy(ui.texts.date, "Mon 5", sizeof(ui.texts.date));
-    strncpy(ui.texts.month, "November", sizeof(ui.texts.month));*/
+    //SCREENSHOT_0 strncpy(ui.texts.time, "12:00", sizeof(ui.texts.time));
+    //SCREENSHOT_0 strncpy(ui.texts.date, "Thu 28", sizeof(ui.texts.date));
+    //SCREENSHOT_0 strncpy(ui.texts.month, "May", sizeof(ui.texts.month));
+    //SCREENSHOT_1 strncpy(ui.texts.time, "6:30", sizeof(ui.texts.time));
+    //SCREENSHOT_1 strncpy(ui.texts.date, "Thu 28", sizeof(ui.texts.date));
+    //SCREENSHOT_1 strncpy(ui.texts.month, "February", sizeof(ui.texts.month));
+    //SCREENSHOT_2 strncpy(ui.texts.time, "9:00", sizeof(ui.texts.time));
+    //SCREENSHOT_2 strncpy(ui.texts.date, "Fri 27", sizeof(ui.texts.date));
+    //SCREENSHOT_2 strncpy(ui.texts.month, "May", sizeof(ui.texts.month));
+    //SCREENSHOT_3 strncpy(ui.texts.time, "9:00", sizeof(ui.texts.time));
+    //SCREENSHOT_3 strncpy(ui.texts.date, "Fri 27", sizeof(ui.texts.date));
+    //SCREENSHOT_3 strncpy(ui.texts.month, "May", sizeof(ui.texts.month));
+    //SCREENSHOT_4 strncpy(ui.texts.time, "12:15", sizeof(ui.texts.time));
+    //SCREENSHOT_4 strncpy(ui.texts.date, "Mon 5", sizeof(ui.texts.date));
+    //SCREENSHOT_4 strncpy(ui.texts.month, "November", sizeof(ui.texts.month));
 
     text_layer_set_text(ui.layers.time, ui.texts.time);
     text_layer_set_text(ui.layers.date, ui.texts.date);
@@ -141,10 +141,10 @@ void ui_set_temperature(int temp, int error) {
     }
 
     //For pretty screenshots
-    //strncpy(ui.texts.temperature, "75\u00b0", sizeof(ui.texts.temperature));
-    //strncpy(ui.texts.temperature, "32\u00b0", sizeof(ui.texts.temperature));
-    //strncpy(ui.texts.temperature, "50\u00b0", sizeof(ui.texts.temperature));
-    //strncpy(ui.texts.temperature, "40\u00b0", sizeof(ui.texts.temperature));
+    //SCREENSHOT_0 strncpy(ui.texts.temperature, "75\u00b0", sizeof(ui.texts.temperature));
+    //SCREENSHOT_1 strncpy(ui.texts.temperature, "32\u00b0", sizeof(ui.texts.temperature));
+    //SCREENSHOT_2 strncpy(ui.texts.temperature, "50\u00b0", sizeof(ui.texts.temperature));
+    //SCREENSHOT_3 strncpy(ui.texts.temperature, "40\u00b0", sizeof(ui.texts.temperature));
 
     ui_set_info(STATUS_ITEMS_TEMPERATURE, ui.texts.temperature);
 }
@@ -172,10 +172,10 @@ void ui_set_condition(int condition, int error) {
     }
 
     //For pretty screenshots
-    //strncpy(ui.texts.condition, "\uf00d", sizeof(ui.texts.condition));
-    //strncpy(ui.texts.condition, "\uf02a", sizeof(ui.texts.condition));
-    //strncpy(ui.texts.condition, "\uf008", sizeof(ui.texts.condition));
-    //strncpy(ui.texts.condition, "\uf056", sizeof(ui.texts.condition));
+    //SCREENSHOT_0 strncpy(ui.texts.condition, "\uf00d", sizeof(ui.texts.condition));
+    //SCREENSHOT_1 strncpy(ui.texts.condition, "\uf02a", sizeof(ui.texts.condition));
+    //SCREENSHOT_2 strncpy(ui.texts.condition, "\uf008", sizeof(ui.texts.condition));
+    //SCREENSHOT_3 strncpy(ui.texts.condition, "\uf056", sizeof(ui.texts.condition));
 
     ui_set_info(STATUS_ITEMS_WEATHER_CONDITION, ui.texts.condition);
 }
@@ -189,7 +189,7 @@ void ui_set_aqi(int aqi, int error) {
     }
 
     //For pretty screenshots
-    //snprintf(ui.texts.aqi, sizeof(ui.texts.aqi), "%d", 30);
+    //SCREENSHOT_1 snprintf(ui.texts.aqi, sizeof(ui.texts.aqi), "%d", 30);
 
     ui_set_info(STATUS_ITEMS_AIR_QUALITY_INDEX, ui.texts.aqi);
 }
@@ -234,7 +234,7 @@ void ui_set_battery_level(int level) {
 
 void ui_set_steps(int steps) {
     //For pretty screenshots
-    //steps = 2600;
+    //SCREENSHOT_0 steps = 2600;
 
     if (steps >= 1000000) {
         tr_msteps((float)(steps) / 1000000);
@@ -254,7 +254,7 @@ void ui_set_steps(int steps) {
 
 void ui_set_walk_distance(float distance, MeasurementSystem sys) {
     //For pretty screenshots
-    //distance = 1770.28; //1.1 miles in meters
+    //SCREENSHOT_0 distance = 1770.28; //1.1 miles in meters
 
     switch (sys) {
         case MeasurementSystemMetric:
@@ -275,7 +275,7 @@ void ui_set_walk_distance(float distance, MeasurementSystem sys) {
 
 void ui_set_calories(int calories) {
     //For pretty screenshots
-    //calories = 2350;
+    //SCREENSHOT_0 calories = 2350;
 
     snprintf(ui.texts.calories, sizeof(ui.texts.calories), "%d", calories);
 
@@ -369,10 +369,10 @@ void ui_layout() {
                 text_layer_move(ui.layers.date, 0, top + (PHEIGHT - top) * 0.40);
             }
 
-            layer_move(ui.layers.battery, 0, top + (PHEIGHT - top) * 0.47);
+            layer_move(ui.layers.battery, 0, top + (PHEIGHT - top) * 0.44);
             text_layer_move(ui.layers.month, 0, top + (PHEIGHT - top) * 0.28);
             text_layer_move(ui.layers.info_box_left, INFO_MARGIN, top + (PHEIGHT - top) * 0.05);
-            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, top + (PHEIGHT - top) * 0.06);
+            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, top + (PHEIGHT - top) * 0.05);
         }
         else { //Classic layout
             if (config.hide_battery == 1) {
@@ -384,10 +384,10 @@ void ui_layout() {
                 text_layer_move(ui.layers.date, 0, top + (PHEIGHT - top) * 0.38);
             }
 
-            layer_move(ui.layers.battery, 0, top + (PHEIGHT - top) * 0.20);
+            layer_move(ui.layers.battery, 0, top + (PHEIGHT - top) * 0.18);
             text_layer_move(ui.layers.month, 0, top + (PHEIGHT - top) * 0.59);
             text_layer_move(ui.layers.info_box_left, INFO_MARGIN, top + (PHEIGHT - top) * 0.74);
-            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, top + (PHEIGHT - top) * 0.75);
+            text_layer_move(ui.layers.info_box_right, HALFPWIDTH + 1, top + (PHEIGHT - top) * 0.74);
         }
 
         if (config.hide_battery == 1) {
@@ -499,7 +499,7 @@ void ui_window_load(Window *window) {
     ui.layers.time = text_layer_init(
         ui.layers.window,
         GRect(0, MARGINTOP, PWIDTH, 100),
-        ui.fonts.droidsans_bold_50,
+        ui.fonts.time_text,
         GColorClear,
         GColorBlack,
         GTextAlignmentCenter
@@ -510,7 +510,7 @@ void ui_window_load(Window *window) {
     ui.layers.date = text_layer_init(
         ui.layers.window,
         GRect(0, MARGINTOP + 60, PWIDTH, 100),
-        ui.fonts.droidsans_32,
+        ui.fonts.info_text,
         GColorClear,
         GColorBlack,
         GTextAlignmentCenter
@@ -519,7 +519,7 @@ void ui_window_load(Window *window) {
     ui.layers.month = text_layer_init(
         ui.layers.window,
         GRect(0, MARGINTOP + 96, PWIDTH, 28),
-        ui.fonts.droidsans_mono_20,
+        ui.fonts.month_text,
         GColorClear,
         GColorBlack,
         GTextAlignmentCenter
@@ -528,7 +528,7 @@ void ui_window_load(Window *window) {
     ui.layers.info_box_left = text_layer_init(
         ui.layers.window,
         GRect(INFO_MARGIN, MARGINTOP + 118, HALFPWIDTH + 10, 50),
-        ui.fonts.droidsans_32,
+        ui.fonts.info_text,
         GColorClear,
         GColorBlack,
         GTextAlignmentCenter
@@ -537,7 +537,7 @@ void ui_window_load(Window *window) {
     ui.layers.info_box_right = text_layer_init(
         ui.layers.window,
         GRect(HALFPWIDTH + 1, MARGINTOP + 119, (HALFPWIDTH - INFO_MARGIN), 50),
-        ui.fonts.icons_30,
+        ui.fonts.info_icons,
         GColorClear,
         GColorBlack,
         GTextAlignmentCenter
@@ -547,7 +547,7 @@ void ui_window_load(Window *window) {
     ui.layers.status_bar = text_layer_init(
         ui.layers.window,
         GRect(0, 0, PWIDTH, STATUS_BAR_HEIGHT),
-        ui.fonts.droidsans_bold_14,
+        ui.fonts.status_text,
         get_color(config.status_bar_day_color),
         get_color(config.status_bar_day_text_color),
         GTextAlignmentLeft
@@ -556,7 +556,7 @@ void ui_window_load(Window *window) {
     ui.layers.status_bar1 = text_layer_init(
         ui.layers.window,
         GRect(STATUS_BAR_MARGIN, STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
-        ui.fonts.droidsans_bold_14,
+        ui.fonts.status_text,
         GColorClear,
         get_color(config.status_bar_day_text_color),
         GTextAlignmentLeft
@@ -565,7 +565,7 @@ void ui_window_load(Window *window) {
     ui.layers.status_bar2 = text_layer_init(
         ui.layers.window,
         GRect(STATUS_BAR_MARGIN + STATUS_BAR_ITEM_WIDTH, STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
-        ui.fonts.droidsans_bold_14,
+        ui.fonts.status_text,
         GColorClear,
         get_color(config.status_bar_day_text_color),
         GTextAlignmentCenter
@@ -574,7 +574,7 @@ void ui_window_load(Window *window) {
     ui.layers.status_bar3 = text_layer_init(
         ui.layers.window,
         GRect(STATUS_BAR_MARGIN + (STATUS_BAR_ITEM_WIDTH * 2), STATUS_BAR_MARGINTOP, STATUS_BAR_ITEM_WIDTH, (STATUS_BAR_HEIGHT - STATUS_BAR_MARGINTOP)),
-        ui.fonts.droidsans_bold_14,
+        ui.fonts.status_text,
         GColorClear,
         get_color(config.status_bar_day_text_color),
         GTextAlignmentRight
@@ -609,12 +609,12 @@ void ui_init() {
     ui.texts = texts;
     ui.fonts = fonts;
 
-    ui.fonts.droidsans_bold_50 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_50);
-    ui.fonts.droidsans_32 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_32);
-    ui.fonts.droidsans_bold_14 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_14);
-    ui.fonts.droidsans_mono_20 = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_MONO_20);
-    ui.fonts.icons_30 = fonts_load_resource_font(RESOURCE_ID_ICONS_30);
-    ui.fonts.icons_14 = fonts_load_resource_font(RESOURCE_ID_ICONS_14);
+    ui.fonts.time_text = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_50);
+    ui.fonts.info_text = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_32);
+    ui.fonts.status_text = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_BOLD_14);
+    ui.fonts.month_text = fonts_load_resource_font(RESOURCE_ID_DROIDSANS_MONO_20);
+    ui.fonts.info_icons = fonts_load_resource_font(RESOURCE_ID_ICONS_32);
+    ui.fonts.status_icons = fonts_load_resource_font(RESOURCE_ID_ICONS_14);
 
     strncpy(ui.texts.date, "", sizeof(ui.texts.date));
     strncpy(ui.texts.time, "", sizeof(ui.texts.time));
@@ -646,10 +646,10 @@ void ui_init() {
 void ui_deinit() {
     window_destroy(ui.window);
 
-    fonts_unload_custom_font_safe(ui.fonts.droidsans_bold_50);
-    fonts_unload_custom_font_safe(ui.fonts.droidsans_32);
-    fonts_unload_custom_font_safe(ui.fonts.droidsans_bold_14);
-    fonts_unload_custom_font_safe(ui.fonts.droidsans_mono_20);
-    fonts_unload_custom_font_safe(ui.fonts.icons_30);
-    fonts_unload_custom_font_safe(ui.fonts.icons_14);
+    fonts_unload_custom_font_safe(ui.fonts.time_text);
+    fonts_unload_custom_font_safe(ui.fonts.info_text);
+    fonts_unload_custom_font_safe(ui.fonts.status_text);
+    fonts_unload_custom_font_safe(ui.fonts.month_text);
+    fonts_unload_custom_font_safe(ui.fonts.info_icons);
+    fonts_unload_custom_font_safe(ui.fonts.status_icons);
 }

@@ -3,8 +3,8 @@
 #include <pebble.h>
 
 #if PBL_PLATFORM_EMERY
-    #define MARGINTOP 8
-    #define MARGINTOP_WITH_STATUS_BAR 12
+    #define MARGINTOP 10
+    #define MARGINTOP_WITH_STATUS_BAR 14
     #define STATUS_BAR_MARGINTOP 0
     #define STATUS_BAR_HEIGHT 16
     #define INFO_MARGIN 0
@@ -27,12 +27,12 @@
 #define STATUS_BAR_MARGIN 3
 
 struct Fonts {
-    GFont droidsans_bold_50;
-    GFont droidsans_32;
-    GFont droidsans_bold_14;
-    GFont droidsans_mono_20;
-    GFont icons_30;
-    GFont icons_14;
+    GFont time_text;
+    GFont info_text;
+    GFont status_text;
+    GFont month_text;
+    GFont info_icons;
+    GFont status_icons;
 };
 
 struct Texts {
