@@ -146,7 +146,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         $scope.debug.platform = $scope.platform;
 
         if ($scope.platform == "aplite") { //Don't show health options
-            $scope.status_items = $scope.status_items.slice(0, 7);
+            $scope.status_items = $scope.status_items.slice(0, 8);
         }
 
         $scope.loaded = true;
