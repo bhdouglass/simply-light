@@ -27,6 +27,7 @@ module.exports = {
     WEATHER_UNDERGROUND_WEATHER: 'v',
     WEATHER_UNDERGROUND_NO_KEY: 'w',
     WEATHER_UNLOCKED_WEATHER: 'x',
+    MARS_WEATHER: 'y',
 
     log: function(msg) {
         if (datalog.length > 100) {

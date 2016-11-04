@@ -213,6 +213,12 @@ function fetchWeather(pos) {
         logger.log(logger.WEATHER_UNLOCKED_WEATHER);
         console.log('fetching weather unlocked');
     }
+    else if (config.configuration.weather_provider === constants.MARS) {
+        wm = new WeatherMan(WeatherMan.MARS);
+
+        logger.log(logger.MARS_WEATHER);
+        console.log('fetching mars');
+    }
     else {
         wm = new WeatherMan(WeatherMan.YRNO);
 
