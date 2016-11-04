@@ -59,12 +59,35 @@
                     </div>
                 </label>
             </div>
-
             <div class="item-container-content" ng-show="config.weather_provider == constants.weather_provider.FORECASTIO">
                 <label class="item">
                     Dark Sky API Key
                     <div class="item-input-wrapper">
                         <input type="text" class="item-input" id="forecastio_api_key" ng-model="config.forecastio_api_key" placeholder="API Key" />
+                    </div>
+                </label>
+            </div>
+            <div class="item-container-content" ng-show="config.weather_provider == constants.weather_provider.WEATHER_UNDERGROUND">
+                <label class="item">
+                    Weather Underground API Key
+                    <div class="item-input-wrapper">
+                        <input type="text" class="item-input" id="weather_underground_api_key" ng-model="config.weather_underground_api_key" placeholder="API Key" />
+                    </div>
+                </label>
+            </div>
+            <div class="item-container-content" ng-show="config.weather_provider == constants.weather_provider.WEATHER_UNLOCKED">
+                <label class="item">
+                    Weather Unlocked API Key
+                    <div class="item-input-wrapper">
+                        <input type="text" class="item-input" id="weather_unlocked_api_key" ng-model="config.weather_unlocked_api_key" placeholder="API Key" />
+                    </div>
+                </label>
+            </div>
+            <div class="item-container-content" ng-show="config.weather_provider == constants.weather_provider.WEATHER_UNLOCKED">
+                <label class="item">
+                    Weather Unlocked App ID
+                    <div class="item-input-wrapper">
+                        <input type="text" class="item-input" id="weather_unlocked_app_id" ng-model="config.weather_unlocked_app_id" placeholder="App ID" />
                     </div>
                 </label>
             </div>
@@ -85,6 +108,22 @@
                     <a href="https://darksky.net/poweredby/"><img src="https://darksky.net/dev/img/attribution/poweredby.png" height="30" /></a>
                     <br/>
                     Simply Light does not provide an API key for Dark Sky, you must provide your own key.
+                    <a href="https://darksky.net/dev/">Get your key here.</a>
+                </p>
+                <p ng-if="config.weather_provider == constants.weather_provider.WEATHER_UNDERGROUND">
+                    <a href="https://www.wunderground.com/?apiref=6c06be48e2ac399f"><img src="https://icons.wxug.com/logos/PNG/wundergroundLogo_4c_horz.png" height="30" /></a>
+                    <br/>
+                    Simply Light does not provide an API key for Weather Underground, you must provide your own key.
+                    <a href="https://www.wunderground.com/weather/api">Get your key here.</a>
+                </p>
+                <p ng-if="config.weather_provider == constants.weather_provider.WEATHER_UNLOCKED">
+                    Leave blank to use the community API key and app ID. Using the community key can possibly lead to
+                    errors accessing the weather (as there are limits on the key). If you want to sign up for a key
+                    visit <a href="https://developer.weatherunlocked.com/signup">WeatherUnlocked.com</a> and then enter your key and id here.
+                </p>
+                <p ng-if="config.weather_provider == constants.weather_provider.MARS">
+                    Weather data straight from the Curiosity Rover on Mars via
+                    <a href="http://marsweather.ingenology.com/">MASS</a>.
                 </p>
             </div>
 

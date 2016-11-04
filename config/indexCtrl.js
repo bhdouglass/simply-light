@@ -26,6 +26,10 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
             if ($scope.master_key_data.weather.forecast) {
                 $scope.config.forecastio_api_key = $scope.master_key_data.weather.forecast;
             }
+
+            if ($scope.master_key_data.weather.wu) {
+                $scope.config.weather_underground_api_key = $scope.master_key_data.weather.wu;
+            }
         }
     }, true);
 
@@ -147,6 +151,10 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 
         if ($scope.platform == "aplite") { //Don't show health options
             $scope.status_items = $scope.status_items.slice(0, 8);
+        }
+
+        if ($scope.version < 6.1) { // New providers came in v6.1
+            $scope.weather_provider = $scope.weather_provider.slice(0, 4);
         }
 
         $scope.loaded = true;

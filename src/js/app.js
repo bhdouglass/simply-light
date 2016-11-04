@@ -165,6 +165,7 @@ function fetchWeather(pos) {
         wm = new WeatherMan(WeatherMan.OPENWEATHERMAP, api_key);
 
         logger.log(logger.OPENWEATHERMAP);
+        console.log('fetching open weather map');
     }
     else if (config.configuration.weather_provider === constants.YAHOO_WEATHER) {
         wm = new WeatherMan(WeatherMan.YAHOO);
@@ -176,16 +177,47 @@ function fetchWeather(pos) {
             wm = new WeatherMan(WeatherMan.DARKSKY, config.configuration.forecastio_api_key);
 
             logger.log(logger.FORECASTIO_WEATHER);
+            console.log('fetching darksky');
         }
         else {
             console.warn('No forecast.io api key');
             logger.log(logger.FORECASTIO_NO_KEY);
         }
     }
+    else if (config.configuration.weather_provider === constants.WEATHER_UNDERGROUND) {
+        if (config.configuration.weather_underground_api_key && config.configuration.weather_underground_api_key.length > 0) {
+            wm = new WeatherMan(WeatherMan.WEATHER_UNDERGROUND, config.configuration.weather_underground_api_key);
+
+            logger.log(logger.WEATHER_UNDERGROUND_WEATHER);
+            console.log('fetching weather underground');
+        }
+        else {
+            console.warn('No weather underground api key');
+            logger.log(logger.WEATHER_UNDERGROUND_NO_KEY);
+        }
+    }
+    else if (config.configuration.weather_provider === constants.WEATHER_UNLOCKED) {
+        var wu_api_key = '705a24842b9351385c15b78c9ef8b6dc';
+        var wu_app_id = '0ad1d025';
+        if (
+                config.configuration.weather_unlocked_api_key &&
+                config.configuration.weather_unlocked_api_key.length > 0 &&
+                config.configuration.weather_unlocked_app_id &&
+                config.configuration.weather_unlocked_app_id.length > 0
+            ) {
+            wu_api_key = config.configuration.weather_unlocked_api_key;
+            wu_app_id = config.configuration.weather_unlocked_app_id;
+        }
+        wm = new WeatherMan(WeatherMan.WEATHER_UNLOCKED, wu_api_key, wu_app_id);
+
+        logger.log(logger.WEATHER_UNLOCKED_WEATHER);
+        console.log('fetching weather unlocked');
+    }
     else {
         wm = new WeatherMan(WeatherMan.YRNO);
 
         logger.log(logger.YRNO_WEATHER);
+        console.log('fetching yrno');
     }
 
     if (wm) {

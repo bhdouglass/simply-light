@@ -24,6 +24,9 @@ module.exports = {
     AQI_ERROR: 's',
     NO_FETCH_AQI: 't',
     SKIP_FETCH: 'u',
+    WEATHER_UNDERGROUND_WEATHER: 'v',
+    WEATHER_UNDERGROUND_NO_KEY: 'w',
+    WEATHER_UNLOCKED_WEATHER: 'x',
 
     log: function(msg) {
         if (datalog.length > 100) {

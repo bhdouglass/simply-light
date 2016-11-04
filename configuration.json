@@ -4,7 +4,10 @@
             "OpenWeatherMap": 0,
             "Yahoo Weather": 2,
             "Yr.no": 3,
-            "Forecast.io": 4
+            "Forecast.io": 4,
+            "Weather Underground": 5,
+            "Weather Unlocked": 6,
+            "Mars": 7
         },
         "status_items": {
             "Empty": 0,
@@ -124,6 +127,21 @@
             "default": ""
         }, {
             "name": "forecastio_api_key",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
+            "name": "weather_underground_api_key",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
+            "name": "weather_unlocked_api_key",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
+            "name": "weather_unlocked_app_id",
             "type": "string",
             "only": "js",
             "default": ""
