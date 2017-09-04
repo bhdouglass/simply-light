@@ -336,15 +336,15 @@ void ui_refresh_info() {
 void ui_layout() {
     int top = MARGINTOP;
 
-    if (is_sleeping && config.auto_sleep_mode) {
-        text_layer_move(ui.layers.time, 0, (PHEIGHT / 2) - 35); //centered
+    if ((is_sleeping && config.auto_sleep_mode) || (config.low_power_quiet_mode && quiet_time_is_active())) {
+        text_layer_move(ui.layers.time, 0, top + (PHEIGHT - top) * 0.20);
+        text_layer_move(ui.layers.date, 0, top + (PHEIGHT - top) * 0.50);
 
         text_layer_hide(ui.layers.status_bar);
         text_layer_hide(ui.layers.status_bar1);
         text_layer_hide(ui.layers.status_bar2);
         text_layer_hide(ui.layers.status_bar3);
         layer_hide(ui.layers.battery);
-        text_layer_hide(ui.layers.date);
         text_layer_hide(ui.layers.month);
         text_layer_hide(ui.layers.info_box_left);
         text_layer_hide(ui.layers.info_box_right);
@@ -601,9 +601,9 @@ void ui_window_unload(Window *window) {
 }
 
 void ui_init() {
-    struct Fonts fonts;
-    struct Texts texts;
-    struct Layers layers;
+    struct Fonts fonts = {};
+    struct Texts texts = {};
+    struct Layers layers = {};
 
     ui.layers = layers;
     ui.texts = texts;

@@ -157,8 +157,7 @@
                 "aplite": 0,
                 "basalt": 65535,
                 "chalk": 65535,
-                "diorite": 0,
-                "emery": 65535
+                "diorite": 0
             }
         }, {
             "name": "status_bar_day_text_color",
@@ -167,8 +166,7 @@
                 "aplite": 1,
                 "basalt": 5592405,
                 "chalk": 5592405,
-                "diorite": 1,
-                "emery": 5592405
+                "diorite": 1
             }
         }, {
             "name": "status_bar_night_color",
@@ -177,8 +175,7 @@
                 "aplite": 0,
                 "basalt": 65535,
                 "chalk": 65535,
-                "diorite": 0,
-                "emery": 65535
+                "diorite": 0
             }
         }, {
             "name": "status_bar_night_text_color",
@@ -187,8 +184,7 @@
                 "aplite": 1,
                 "basalt": 5592405,
                 "chalk": 5592405,
-                "diorite": 1,
-                "emery": 5592405
+                "diorite": 1
             }
         }, {
             "name": "status_bar1",
@@ -229,6 +225,10 @@
             "type": "enum",
             "enum": "status_items",
             "default": "Weather Condition"
+        }, {
+            "name": "low_power_quiet_mode",
+            "type": "bool",
+            "default": false
         }
     ]
 }

@@ -48,7 +48,7 @@ struct Texts {
     char bluetooth[4];
     char steps_short[6];
     char steps[8];
-    char distance[6];
+    char distance[8];
     char calories[6];
     char sleep_time[6];
     char restful_sleep_time[6];

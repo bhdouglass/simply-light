@@ -45,7 +45,7 @@ static bool check_refresh(bool do_refresh, bool force_refresh) {
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh_time: %d, error: %d, elapsed_time: %d, wait_time: %d", config.refresh_time, error, elapsed_time, config.wait_time);
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "refresh: %d, do_refresh: %d, force_refresh: %d", refresh, do_refresh, force_refresh);
 
-    if (sleeping && config.auto_sleep_mode) {
+    if ((sleeping && config.auto_sleep_mode) || (config.low_power_quiet_mode && quiet_time_is_active())) {
         force_refresh = false;
         do_refresh = false;
         error = NO_ERROR;

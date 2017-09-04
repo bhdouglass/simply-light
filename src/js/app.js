@@ -1,6 +1,8 @@
 //document = {}; //The emulator doesn't have document defined
 window.location = {}; //shim for iOS
-document.createElement = null; //shim to trick the browserify shims, yay! (also for iOS, yay!)
+if (typeof document !== 'undefined') {
+    document.createElement = null; //shim to trick the browserify shims, yay! (also for iOS, yay!)
+}
 
 var MessageQueue = require('./libs/js-message-queue');
 var WeatherMan = require('./libs/weather-man');

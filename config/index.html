@@ -258,6 +258,13 @@
                     *Note: it may take a few minutes for your smart watch to realize you are awake.
                 </p>
             </div>
+
+            <div class="item-container-content" ng-show="version >= .621">
+                <label class="item">
+                    Low Power during Quiet Time
+                    <input type="checkbox" class="item-toggle" id="low_power_quiet_mode" ng-model="config.low_power_quiet_mode" />
+                </label>
+            </div>
         </div>
 
         <div class="item-container ng-cloak">

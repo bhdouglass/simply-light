@@ -3,8 +3,8 @@
   "shortName": "Simply Light",
   "longName": "Simply Light",
   "companyName": "Brian Douglass",
-  "versionCode": 6.20,
-  "versionLabel": "6.20",
+  "versionCode": 6.21,
+  "versionLabel": "6.21",
   "capabilities": [
     "configurable",
     "health"
@@ -50,7 +50,8 @@
     "auto_sleep_mode": 34,
     "elapsed_time": 35,
     "info_box_left": 36,
-    "info_box_right": 37
+    "info_box_right": 37,
+    "low_power_quiet_mode": 38
   },
   "resources": {
     "media": [
@@ -98,8 +99,7 @@
     "aplite",
     "basalt",
     "chalk",
-    "diorite",
-    "emery"
+    "diorite"
   ],
   "sdkVersion": "3",
   "enableMultiJS": true

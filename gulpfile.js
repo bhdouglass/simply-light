@@ -14,6 +14,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var htmlmin = require('gulp-htmlmin');
 var minifyCSS = require('gulp-minify-css');
 var surge = require('gulp-surge');
+var rename = require('gulp-rename');
 var del = require('del');
 var minimist = require('minimist');
 var fs = require('fs');
@@ -27,7 +28,8 @@ var paths = {
         jsbase: 'src/js',
         c: ['src/*.h', 'src/*.c', 'wscript', 'appinfo.json'],
         resources: 'resources/**/*',
-        cdist: 'dist/pebble/'
+        cdist: 'dist/pebble/',
+        pbw: 'dist/pebble/build/pebble.pbw',
     },
     config: {
         html: 'config/*.html',
@@ -64,12 +66,11 @@ var config = minimist(process.argv.slice(2), {
         basalt: true,
         chalk: false,
         diorite: false,
-        emery: false,
-        ip: '192.168.1.21',
+        ip: '192.168.86.5',
         logs: false,
         config: 'http://simply-light.bhdouglass.com/',
     },
-    boolean: ['emulator', 'aplite', 'basalt', 'chalk', 'diorite', 'emery'],
+    boolean: ['emulator', 'aplite', 'basalt', 'chalk', 'diorite'],
     alias: {
         emulator: ['e', 'emu'],
         logs: 'l',
@@ -89,9 +90,6 @@ function installCommand(config) {
         }
         else if (config.diorite) {
             command += ' diorite';
-        }
-        else if (config.emery) {
-            command += ' emery';
         }
         else {
             command += ' basalt';
@@ -188,10 +186,22 @@ gulp.task('clean-pebble', function() {
 gulp.task('build-pebble-js', function() {
     delete appinfo.resources;
 
+    var config_url = config.config;
+    if (
+        config_url.indexOf('http://') !== 0 &&
+        config_url.indexOf('https://') !== 0
+    ) {
+        config_url = 'http://' + config_url;
+    }
+
+    if (config_url.substring(config_url.length - 2) != '/') {
+        config_url =  config_url + '/';
+    }
+
     return gulp.src(paths.pebble.js, {base: paths.pebble.jsbase})
         .pipe(template({
             version: appinfo.versionLabel,
-            config_url: config.config,
+            config_url: config_url,
             configuration_meta: JSON.stringify(configuration_meta),
         }))
         .pipe(gulp.dest(paths.pebble.jsdist));
@@ -229,13 +239,11 @@ gulp.task('build-pebble-c', function() { //TODO split gulp file into multiple fi
                     var basalt = (meta['default'].basalt === undefined) ? null : meta['default'].basalt;
                     var chalk = (meta['default'].chalk === undefined) ? null : meta['default'].chalk;
                     var diorite = (meta['default'].diorite === undefined) ? null : meta['default'].diorite;
-                    var emery = (meta['default'].emery === undefined) ? null : meta['default'].emery;
 
                     config_defaults += '#ifdef PBL_PLATFORM_APLITE\n    config.' + meta.name + ' = ' + aplite + ';\n#endif\n';
                     config_defaults += '#ifdef PBL_PLATFORM_BASALT\n    config.' + meta.name + ' = ' + basalt + ';\n#endif\n';
                     config_defaults += '#ifdef PBL_PLATFORM_CHALK\n    config.' + meta.name + ' = ' + chalk + ';\n#endif\n';
                     config_defaults += '#ifdef PBL_PLATFORM_DIORITE\n    config.' + meta.name + ' = ' + diorite + ';\n#endif\n';
-                    config_defaults += '#ifdef PBL_PLATFORM_EMERY\n    config.' + meta.name + ' = ' + emery + ';\n#endif\n';
                 }
                 else {
                     var value = (meta['default'] === undefined) ? null : meta['default'];
@@ -311,9 +319,16 @@ function screenshotAll() {
 }
 
 gulp.task('build-config', ['lint', 'clean-config', 'build-html', 'build-js', 'build-css', 'build-fonts', 'build-font']);
-gulp.task('prebuild-pebble', ['lint', 'clean-pebble', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js']);
-gulp.task('build-pebble', ['prebuild-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
+gulp.task('prebuild-pebble', ['lint', 'clean-pebble', 'build-pebble-resources', 'build-pebble-c', 'build-pebble-js'], shell.task(['cd ' + paths.pebble.cdist + ' && pebble build']));
+gulp.task('build-pebble', ['prebuild-pebble'], function() {
+    var filename = appinfo.shortName.toLowerCase().replace(/ /g, '-') + '_' + appinfo.versionLabel + '.pbw';
+
+    return gulp.src(paths.pebble.pbw)
+        .pipe(rename(filename))
+        .pipe(gulp.dest('dist/'));
+});
 gulp.task('install-pebble', ['build-pebble'], shell.task(['cd ' + paths.pebble.cdist + ' && ' + installCommand(config)]));
+
 gulp.task('screenshot-pebble', ['install-pebble'], screenshot);
 
 //TODO put this in the pebble template
