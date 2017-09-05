@@ -129,6 +129,22 @@
                 </p>
             </div>
 
+            <div class="item-container-content" ng-show="version >= 6.30">
+                <label class="item" ng-class="{'error': !locationError}">
+                    Location
+                    <div class="item-input-wrapper">
+                        <input type="text" class="item-input" id="location" ng-model="config.location" />
+                    </div>
+                </label>
+            </div>
+            <div class="item-container-footer" ng-show="version >= 6.30">
+                <span ng-if="!locationError">
+                    Leave this blank to use your phone's GPS to determine location.
+                </span>
+
+                <span ng-if="locationError" ng-bind="locationError"></span>
+            </div>
+
             <div class="item-container-content">
                 <label class="item">
                     "Feels Like" Temperature
@@ -498,8 +514,11 @@
         </div>
 
         <div class="item-container ng-cloak">
-            <div class="button-container">
+            <div class="button-container" ng-if="!saving">
                 <input type="button" class="item-button clickable" value="SAVE" ng-click="save()" />
+            </div>
+            <div ng-if="saving" class="centered">
+                <i class="fa fa-spinner fa-spin"></i>
             </div>
         </div>
 

@@ -14,8 +14,11 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         last_location_error_code: -1,
         platform: '',
     };
+    var originalLocation = null;
+    $scope.locationError = null;
     $scope.config = {};
     $scope.master_key_data = {};
+    $scope.saving = false;
 
     $scope.$watch('master_key_data', function() {
         if ($scope.master_key_data && $scope.master_key_data.weather) {
@@ -75,6 +78,13 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         window.location.href = 'pebblejs://close#cancel';
     };
 
+    function close(config) {
+        console.log(config);
+        window.location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(config));
+
+        $scope.saving = false;
+    }
+
     $scope.save = function() {
         if ($scope.saving) {
             return;
@@ -91,6 +101,8 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
 
         $scope.saving = false;
         if (!error) {
+            $scope.saving = true;
+
             var config = angular.copy($scope.config);
             delete config.last_aqi_location;
 
@@ -102,8 +114,37 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                 }
             }
 
-            console.log(config);
-            window.location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(config));
+            if ($scope.config.location) {
+                if ($scope.config.location != originalLocation) {
+                    $http.get('https://unwiredlabs.com/v2/search.php?token=9c872d2d66de74&q=' + $scope.config.location).then(function(result) {
+                        config.lat = result.data.address[0].lat;
+                        config.lng = result.data.address[0].lon;
+
+                        close(config);
+                    }, function(err) {
+                        console.log('Error performing geocoding lookup', err);
+                        $scope.locationError = 'An error occured finding the coodinates for this locaiton';
+
+                        config.location = null;
+                        config.lat = null;
+                        config.lng = null;
+                        close(config);
+
+                        $scope.saving = false;
+
+                        //TODO error handling
+                    });
+                }
+                else {
+                    close(config);
+                }
+            }
+            else {
+                config.location = null;
+                config.lat = null;
+                config.lng = null;
+                close(config);
+            }
         }
     };
 
@@ -145,6 +186,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
             console.log($scope.config);
         }
 
+        originalLocation = $scope.config.location;
         $scope.debug.config = $scope.config;
         $scope.debug.version = $scope.version;
         $scope.debug.platform = $scope.platform;

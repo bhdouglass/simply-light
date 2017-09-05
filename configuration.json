@@ -147,6 +147,21 @@
             "only": "js",
             "default": ""
         }, {
+            "name": "location",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
+            "name": "lat",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
+            "name": "lng",
+            "type": "string",
+            "only": "js",
+            "default": ""
+        }, {
             "name": "show_status_bar",
             "type": "bool",
             "default": true

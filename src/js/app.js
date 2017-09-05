@@ -133,26 +133,41 @@ function fetch(force) {
 function fetchLocation(callback, error_callback) {
     logger.log(logger.FETCH_LOCATION);
 
-    window.navigator.geolocation.getCurrentPosition(function(pos) { //Success
-        logger.log(logger.LOCATION_SUCCESS);
+    if (config.configuration.lat && config.configuration.lng) {
+        console.log('Using static location: ' + config.configuration.lat + ',' + config.configuration.lng);
+        logger.log(logger.LOCATION_STATIC);
 
-        console.log('lat: ' + pos.coords.latitude);
-        console.log('lng: ' + pos.coords.longitude);
+        callback({
+            coords: {
+                latitude: config.configuration.lat,
+                longitude: config.configuration.lng,
+            }
+        });
+    }
+    else {
+        console.log('Fetching GPS location');
 
-        callback(pos);
+        window.navigator.geolocation.getCurrentPosition(function(pos) { //Success
+            logger.log(logger.LOCATION_SUCCESS);
 
-    }, function(err) { //Error
-        logger.log(logger.LOCATION_ERROR);
-        logger.setLocationErrorCode(err.code);
+            console.log('lat: ' + pos.coords.latitude);
+            console.log('lng: ' + pos.coords.longitude);
 
-        console.warn('location error: ' + err.code + ' - ' + err.message);
+            callback(pos);
 
-        error_callback();
+        }, function(err) { //Error
+            logger.log(logger.LOCATION_ERROR);
+            logger.setLocationErrorCode(err.code);
 
-    }, { //Options
-        timeout: 30000, //30 seconds
-        maximumAge: 300000, //5 minutes
-    });
+            console.warn('location error: ' + err.code + ' - ' + err.message);
+
+            error_callback();
+
+        }, { //Options
+            timeout: 30000, //30 seconds
+            maximumAge: 300000, //5 minutes
+        });
+    }
 }
 
 function fetchWeather(pos) {

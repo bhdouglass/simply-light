@@ -66,3 +66,7 @@
     -ms-user-select: text !important;
     user-select: text !important;
 }
+
+.centered {
+    text-align: center;
+}
