@@ -8,7 +8,6 @@ var concat = require('gulp-concat');
 var template = require('gulp-template');
 var shell = require('gulp-shell');
 var connect = require('gulp-connect');
-var gopen = require('gulp-open');
 var ngAnnotate = require('gulp-ng-annotate');
 var sourcemaps = require('gulp-sourcemaps');
 var htmlmin = require('gulp-htmlmin');
@@ -113,10 +112,7 @@ gulp.task('serve', ['build-config', 'watch-config'], function() {
         port: 9000,
     });
 
-    return gulp.src(paths.config.html)
-        .pipe(gopen('', {
-            url: 'http://localhost:9000?platform=basalt&version=' + appinfo.versionLabel
-        }));
+    console.log('Serving on http://localhost:9000?platform=basalt&version=' + appinfo.versionLabel);
 });
 
 gulp.task('server', ['serve']);

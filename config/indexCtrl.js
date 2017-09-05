@@ -131,8 +131,6 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                         close(config);
 
                         $scope.saving = false;
-
-                        //TODO error handling
                     });
                 }
                 else {

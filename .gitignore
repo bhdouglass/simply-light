@@ -1,7 +1,5 @@
 build
 .lock-waf_linux2_build
 node_modules/
-
-#Generated files
 dist
-
+archive
