@@ -133,6 +133,14 @@ function fetch(force) {
 function fetchLocation(callback, error_callback) {
     logger.log(logger.FETCH_LOCATION);
 
+    if (config.configuration.lat == 'null') {
+        config.configuration.lat = '';
+    }
+
+    if (config.configuration.lng == 'null') {
+        config.configuration.lng = '';
+    }
+
     if (config.configuration.lat && config.configuration.lng) {
         console.log('Using static location: ' + config.configuration.lat + ',' + config.configuration.lng);
         logger.log(logger.LOCATION_STATIC);

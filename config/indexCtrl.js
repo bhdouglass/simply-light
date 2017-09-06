@@ -14,7 +14,7 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
         last_location_error_code: -1,
         platform: '',
     };
-    var originalLocation = null;
+    var originalLocation = '';
     $scope.locationError = null;
     $scope.config = {};
     $scope.master_key_data = {};
@@ -125,9 +125,9 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                         console.log('Error performing geocoding lookup', err);
                         $scope.locationError = 'An error occured finding the coodinates for this locaiton';
 
-                        config.location = null;
-                        config.lat = null;
-                        config.lng = null;
+                        config.location = '';
+                        config.lat = '';
+                        config.lng = '';
                         close(config);
 
                         $scope.saving = false;
@@ -138,9 +138,9 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
                 }
             }
             else {
-                config.location = null;
-                config.lat = null;
-                config.lng = null;
+                config.location = '';
+                config.lat = '';
+                config.lng = '';
                 close(config);
             }
         }
@@ -182,6 +182,12 @@ angular.module('app').controller('indexCtrl', function($scope, $http, $location,
             }
 
             console.log($scope.config);
+        }
+
+        if ($scope.config.location == 'null') {
+            $scope.config.location = '';
+            $scope.config.lat = '';
+            $scope.config.lng = '';
         }
 
         originalLocation = $scope.config.location;
