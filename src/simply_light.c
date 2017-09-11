@@ -11,6 +11,7 @@ int elapsed_time = 0;
 int error = FETCH_ERROR;
 bool sleeping = false;
 int sleeping_movements = 0;
+bool active_quiet_time = false;
 
 //From https://github.com/smallstoneapps/message-queue/blob/master/message-queue.c#L222
 /*static char *translate_error(AppMessageResult result) {
@@ -98,6 +99,14 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 
     ui_set_datetime(tick_time, units_changed);
     ui_colorize(); //TODO only colorize when changing from night to day
+
+    if (config.low_power_quiet_mode) {
+        if (active_quiet_time != quiet_time_is_active()) {
+            ui_layout();
+        }
+
+        active_quiet_time = quiet_time_is_active();
+    }
 }
 
 static void msg_failed_handler(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
